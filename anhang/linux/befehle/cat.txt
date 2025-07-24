@@ -1,0 +1,123 @@
+====== cat ======
+
+**cat** (concatenate) - Zeigt Dateiinhalte an oder verkettet mehrere Dateien.
+
+===== Syntax =====
+
+<code>
+cat [OPTIONEN] [DATEI...]
+</code>
+
+===== Beschreibung =====
+
+Der **cat**-Befehl liest Dateien sequenziell und gibt deren Inhalt auf der Standardausgabe aus. Ohne Dateiargumente liest cat von der Standardeingabe.
+
+===== Optionen =====
+
+^ Option ^ Beschreibung ^
+| **-n** | Nummeriert alle Ausgabezeilen |
+| **-b** | Nummeriert nur nicht-leere Zeilen |
+| **-s** | Unterdrückt mehrfache aufeinanderfolgende Leerzeilen |
+| **-E** | Zeigt $ am Ende jeder Zeile |
+| **-T** | Zeigt Tabulatoren als ^I |
+| **-v** | Zeigt nicht-druckbare Zeichen |
+| **-A** | Entspricht -vET (alle nicht-druckbaren Zeichen) |
+| **--help** | Zeigt Hilfeinformationen an |
+| **--version** | Zeigt Versionsinformationen an |
+
+===== Beispiele =====
+
+**Dateien anzeigen:**
+<code>
+cat datei.txt                  # Zeigt Inhalt von datei.txt
+cat file1.txt file2.txt        # Zeigt beide Dateien nacheinander
+cat *.txt                      # Zeigt alle .txt Dateien
+</code>
+
+**Mit Optionen:**
+<code>
+cat -n datei.txt               # Mit Zeilennummern
+cat -b datei.txt               # Nur nicht-leere Zeilen nummerieren
+cat -s datei.txt               # Mehrfache Leerzeilen zusammenfassen
+cat -E datei.txt               # Zeilenendes sichtbar machen
+cat -T datei.txt               # Tabulatoren sichtbar machen
+cat -A datei.txt               # Alle nicht-druckbaren Zeichen anzeigen
+</code>
+
+**Dateien erstellen:**
+<code>
+cat > neue_datei.txt           # Erstellt neue Datei (Ende mit Ctrl+D)
+Hier ist der Inhalt
+der neuen Datei.
+^D
+
+cat >> bestehende_datei.txt    # Anhängen an bestehende Datei
+Neue Zeile wird angehängt.
+^D
+</code>
+
+**Dateien verketten:**
+<code>
+cat file1.txt file2.txt > combined.txt    # Dateien zusammenfügen
+cat header.txt content.txt footer.txt > complete.txt
+</code>
+
+**Mit Pipes verwenden:**
+<code>
+cat /etc/passwd | grep root    # Pipe zu grep
+cat logfile.txt | tail -20     # Letzten 20 Zeilen
+cat datei.txt | wc -l          # Zeilen zählen
+</code>
+
+**Here Documents:**
+<code>
+cat << EOF > config.txt
+server=localhost
+port=8080
+debug=true
+EOF
+</code>
+
+**Spezielle Anwendungen:**
+<code>
+cat /proc/cpuinfo              # CPU-Informationen
+cat /proc/meminfo              # Speicher-Informationen
+cat /etc/os-release            # Betriebssystem-Info
+cat /dev/null > datei.txt      # Datei leeren
+</code>
+
+===== Hinweise =====
+
+  * **cat** zeigt komplette Dateien an - für große Dateien **less** oder **more** verwenden
+  * Ohne Dateiargument liest cat von stdin (Tastatur)
+  * **cat** ist ideal zum Verketten kleiner Dateien
+  * Mit **>** wird Ausgabe umgeleitet, mit **>>** angehängt
+  * **Ctrl+D** beendet Eingabe bei stdin
+  * **cat** kann binäre Dateien "kaputtmachen" (Terminal durcheinanderbringen)
+
+===== Performance-Tipps =====
+
+<code>
+# Für große Dateien besser:
+less große_datei.txt           # Seitenweise anzeigen
+head -20 datei.txt             # Erste 20 Zeilen
+tail -20 datei.txt             # Letzte 20 Zeilen
+
+# Für Binärdateien:
+hexdump -C binär_datei         # Hex-Ansicht
+file datei                     # Dateityp prüfen
+</code>
+
+===== Verwandte Befehle =====
+
+  * **less/more** - Seitenweise Dateianzeige
+  * **head** - Erste Zeilen einer Datei
+  * **tail** - Letzte Zeilen einer Datei
+  * **tac** - Datei rückwärts anzeigen
+  * **zcat** - Komprimierte Dateien anzeigen
+  * **nl** - Dateien mit Zeilennummern anzeigen
+
+===== Siehe auch =====
+
+  * **man cat** - Ausführliche Dokumentation
+  * **info coreutils 'cat invocation'** - GNU-Dokumentation

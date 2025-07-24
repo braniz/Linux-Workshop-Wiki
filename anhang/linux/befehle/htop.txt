@@ -1,0 +1,278 @@
+====== htop ======
+
+**htop** - Interaktiver Prozess-Monitor und System-Monitor für Linux.
+
+===== Syntax =====
+
+<code>
+htop [OPTIONEN]
+</code>
+
+===== Beschreibung =====
+
+**htop** ist eine erweiterte, interaktive Version des **top**-Befehls. Es bietet eine farbige Benutzeroberfläche zur Überwachung von Systemprozessen, CPU-, Speicher- und Swap-Nutzung in Echtzeit.
+
+===== Optionen =====
+
+^ Option ^ Beschreibung ^
+| **-d SEKUNDEN** | Aktualisierungsintervall in Sekunden |
+| **-u USERNAME** | Nur Prozesse des Benutzers anzeigen |
+| **-p PID,PID...** | Nur bestimmte Prozess-IDs anzeigen |
+| **-s SPALTE** | Nach Spalte sortieren |
+| **-C** | Monochrome Ausgabe (keine Farben) |
+| **-h** | Hilfe anzeigen |
+| **--tree** | Prozessbaum-Ansicht aktivieren |
+
+===== Hauptansicht =====
+
+**Header-Bereich:**
+  * **CPU-Balken**: Zeigt CPU-Auslastung pro Kern
+  * **Speicher-Balken**: RAM-Nutzung (grün=genutzt, blau=Buffer, gelb=Cache)
+  * **Swap-Balken**: Swap-Speicher-Nutzung
+  * **Aufgaben**: Anzahl laufender Prozesse/Threads
+  * **Lastdurchschnitt**: System-Load über 1, 5, 15 Minuten
+  * **Uptime**: Systemlaufzeit
+
+**Prozess-Liste:**
+^ Spalte ^ Beschreibung ^
+| **PID** | Prozess-ID |
+| **USER** | Benutzer des Prozesses |
+| **PRI** | Priorität des Prozesses |
+| **NI** | Nice-Wert (-20 bis 19) |
+| **VIRT** | Virtueller Speicher |
+| **RES** | Physischer Speicher (Resident) |
+| **SHR** | Geteilter Speicher |
+| **S** | Status (R=Running, S=Sleeping, Z=Zombie) |
+| **%CPU** | CPU-Nutzung in Prozent |
+| **%MEM** | Speicher-Nutzung in Prozent |
+| **TIME+** | Gesamt-CPU-Zeit |
+| **COMMAND** | Befehl/Programmname |
+
+===== Tastenkombinationen =====
+
+**Navigation:**
+^ Taste ^ Aktion ^
+| **↑/↓** | Prozess auswählen |
+| **PageUp/PageDown** | Seitenweise scrollen |
+| **Home/End** | Zum ersten/letzten Prozess |
+| **Tab** | Zwischen Prozess-Liste und Prozess-Details wechseln |
+
+**Sortierung:**
+^ Taste ^ Aktion ^
+| **P** | Nach CPU-Nutzung sortieren |
+| **M** | Nach Speicher-Nutzung sortieren |
+| **T** | Nach Zeit sortieren |
+| **F6** oder **<** **>** | Sortier-Spalte wählen |
+| **I** | Sortier-Reihenfolge umkehren |
+
+**Ansicht:**
+^ Taste ^ Aktion ^
+| **t** | Prozessbaum-Ansicht umschalten |
+| **u** | Benutzer-Filter aktivieren |
+| **H** | Threads anzeigen/verstecken |
+| **K** | Kernel-Threads anzeigen/verstecken |
+| **F** | Programm-Pfad komplett anzeigen |
+| **F2** | Setup-Menü öffnen |
+
+**Prozess-Aktionen:**
+^ Taste ^ Aktion ^
+| **F9** oder **k** | Prozess beenden (Signal senden) |
+| **F7** oder **]** | Nice-Wert erhöhen (niedrigere Priorität) |
+| **F8** oder **[** | Nice-Wert verringern (höhere Priorität) |
+| **Space** | Prozess markieren/entmarkieren |
+| **U** | Markierte Prozesse entmarkieren |
+| **c** | Befehlszeile des Prozesses anzeigen |
+
+**System:**
+^ Taste ^ Aktion ^
+| **F1** oder **h** | Hilfe anzeigen |
+| **F10** oder **q** | htop beenden |
+| **F3** oder **/** | Suchen |
+| **F4** oder **\\** | Filter aktivieren |
+| **F5** | Aktualisierung pausieren/fortsetzen |
+
+===== Beispiele =====
+
+**Grundlegende Verwendung:**
+<code>
+htop                            # htop starten
+htop -d 5                       # Aktualisierung alle 5 Sekunden
+htop -u username                # Nur Prozesse eines Benutzers
+htop -p 1234,5678              # Nur bestimmte PIDs anzeigen
+</code>
+
+**Mit Sortierung:**
+<code>
+htop -s PERCENT_CPU            # Nach CPU-Nutzung sortiert starten
+htop -s PERCENT_MEM            # Nach Speicher-Nutzung sortiert
+htop --tree                    # Mit Prozessbaum-Ansicht starten
+</code>
+
+**Für Monitoring:**
+<code>
+htop -C > htop_output.txt      # Monochrome Ausgabe in Datei (für Logs)
+watch -n 1 "htop -b -n 1"      # Batch-Modus für Scripting
+</code>
+
+===== Setup und Konfiguration =====
+
+**Setup-Menü (F2):**
+  * **Meters**: CPU/Memory/Swap-Anzeige anpassen
+  * **Display options**: Verschiedene Anzeigeoptionen
+  * **Colors**: Farbschema wählen
+  * **Columns**: Spalten hinzufügen/entfernen/anordnen
+
+**Konfigurationsdatei:**
+<code>
+~/.config/htop/htoprc          # Benutzer-spezifische Konfiguration
+</code>
+
+**Wichtige Konfigurationsoptionen:**
+<code>
+# Beispiel htoprc-Einstellungen:
+color_scheme=6                 # Farbschema
+show_cpu_usage=1              # CPU-Nutzung anzeigen
+show_cpu_frequency=1          # CPU-Frequenz anzeigen
+tree_view=1                   # Prozessbaum standardmäßig aktiv
+hide_kernel_threads=1         # Kernel-Threads verstecken
+</code>
+
+===== Prozess-Management =====
+
+**Prozesse beenden:**
+<code>
+# In htop:
+k oder F9                     # Signal-Menü öffnen
+# Häufige Signale:
+15 (TERM)                     # Normale Beendigung
+9 (KILL)                      # Sofortige Beendigung
+1 (HUP)                       # Hangup (Neustart bei Daemons)
+</code>
+
+**Prioritäten ändern:**
+<code>
+# In htop:
+] oder F7                     # Nice-Wert erhöhen (niedrigere Priorität)
+[ oder F8                     # Nice-Wert verringern (höhere Priorität)
+# Nice-Werte: -20 (höchste) bis +19 (niedrigste Priorität)
+</code>
+
+===== Erweiterte Features =====
+
+**Filter und Suche:**
+<code>
+# In htop:
+F4 oder \                     # Filter aktivieren
+F3 oder /                     # Suche starten
+# Filter Beispiele:
+USER=apache                   # Nur Apache-Prozesse
+COMMAND=python               # Nur Python-Prozesse
+STATE=R                      # Nur laufende Prozesse
+</code>
+
+**Batch-Modus für Scripting:**
+<code>
+htop -b -n 1                  # Ein Snapshot im Batch-Modus
+htop -b -n 1 -d 1 | head -20  # Erste 20 Zeilen eines Snapshots
+</code>
+
+**Mehrere Prozesse markieren:**
+<code>
+# In htop:
+Space                         # Prozess markieren
+U                            # Alle markierten entmarkieren
+# Dann k für Signal an alle markierte Prozesse
+</code>
+
+===== Speicher-Analyse =====
+
+**Speicher-Farben verstehen:**
+  * **Grün**: Genutzter Speicher
+  * **Blau**: Buffer (Dateisystem-Puffer)
+  * **Gelb/Orange**: Cache (Page Cache)
+  * **Rot**: Swap-Nutzung
+
+**Speicher-intensive Prozesse finden:**
+<code>
+# In htop:
+M                            # Nach Speicher sortieren
+F4, dann "PERCENT_MEM>5"     # Nur Prozesse mit >5% Speicher
+</code>
+
+===== Systemüberwachung =====
+
+**CPU-Monitoring:**
+<code>
+# CPU-Balken zeigen:
+# │ - Idle
+# ░ - Nice-Prozesse
+# ▓ - Normale Prozesse
+# ▓ - Kernel-Prozesse
+# ▓ - IRQ/SoftIRQ
+# ▓ - IOWait
+</code>
+
+**Load Average verstehen:**
+<code>
+# 1-Minuten, 5-Minuten, 15-Minuten Durchschnitt
+# < Anzahl CPU-Kerne = OK
+# > Anzahl CPU-Kerne = System überlastet
+</code>
+
+===== Troubleshooting =====
+
+**Häufige Probleme:**
+<code>
+# htop zeigt keine Daten:
+sudo htop                     # Mit sudo starten für alle Prozesse
+
+# htop reagiert nicht:
+Ctrl+C                       # htop beenden
+kill $(pgrep htop)           # htop-Prozess von anderem Terminal beenden
+
+# Konfiguration zurücksetzen:
+rm ~/.config/htop/htoprc     # Konfigurationsdatei löschen
+</code>
+
+===== Alternativen und Vergleich =====
+
+**Vergleich mit anderen Tools:**
+  * **top**: Grundlegender Prozess-Monitor
+  * **atop**: Detaillierte System- und Prozess-Statistiken
+  * **iotop**: I/O-fokussierter Prozess-Monitor
+  * **nethogs**: Netzwerk-Nutzung pro Prozess
+  * **glances**: Web-basierter System-Monitor
+
+===== Installation =====
+
+<code>
+# Ubuntu/Debian:
+sudo apt install htop
+
+# CentOS/RHEL/Fedora:
+sudo yum install htop         # CentOS 7
+sudo dnf install htop         # Fedora/CentOS 8+
+
+# Arch Linux:
+sudo pacman -S htop
+
+# macOS:
+brew install htop
+</code>
+
+===== Verwandte Befehle =====
+
+  * **top** - Standard-Prozess-Monitor
+  * **ps** - Prozess-Snapshots
+  * **pgrep/pkill** - Prozesse nach Namen finden/beenden
+  * **kill/killall** - Prozesse beenden
+  * **nice/renice** - Prozess-Prioritäten setzen
+  * **iotop** - I/O-Monitoring
+  * **netstat** - Netzwerk-Verbindungen
+  * **free** - Speicher-Informationen
+
+===== Siehe auch =====
+
+  * **man htop** - Ausführliche Dokumentation
+  * **man top** - Vergleich mit standard top
+  * **man ps** - Prozess-Status

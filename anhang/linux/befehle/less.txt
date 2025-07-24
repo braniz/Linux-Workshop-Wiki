@@ -1,0 +1,156 @@
+====== less ======
+
+**less** - Ein erweiteter Pager zum seitenweisen Anzeigen von Textdateien.
+
+===== Syntax =====
+
+<code>
+less [OPTIONEN] [DATEI...]
+</code>
+
+===== Beschreibung =====
+
+**less** ist ein Programm zum seitenweisen Betrachten von Textdateien. Es ist eine erweiterte Version von **more** und ermöglicht sowohl Vorwärts- als auch Rückwärts-Navigation durch Dateien.
+
+===== Optionen =====
+
+^ Option ^ Beschreibung ^
+| **-N** | Zeigt Zeilennummern an |
+| **-S** | Schneidet lange Zeilen ab (kein Zeilenumbruch) |
+| **-i** | Ignoriert Groß-/Kleinschreibung bei Suche |
+| **-I** | Ignoriert Groß-/Kleinschreibung komplett |
+| **-F** | Beendet automatisch wenn Inhalt auf eine Seite passt |
+| **-X** | Deaktiviert Bildschirm-Initialisierung |
+| **-R** | Zeigt ANSI-Farbcodes korrekt an |
+| **+num** | Startet bei Zeile num |
+| **+/pattern** | Startet bei erstem Vorkommen von pattern |
+
+===== Navigation in less =====
+
+**Grundlegende Bewegungen:**
+^ Taste ^ Aktion ^
+| **Leertaste** oder **f** | Eine Seite vorwärts |
+| **b** | Eine Seite rückwärts |
+| **↑** oder **k** | Eine Zeile nach oben |
+| **↓** oder **j** | Eine Zeile nach unten |
+| **g** | Zum Anfang der Datei |
+| **G** | Zum Ende der Datei |
+| **q** | less beenden |
+
+**Suchen:**
+^ Taste ^ Aktion ^
+| **/text** | Vorwärts nach "text" suchen |
+| **?text** | Rückwärts nach "text" suchen |
+| **n** | Nächstes Suchergebnis |
+| **N** | Vorheriges Suchergebnis |
+
+**Erweiterte Navigation:**
+^ Taste ^ Aktion ^
+| **num G** | Zu Zeile num springen |
+| **%** | Zum Prozentsatz der Datei springen |
+| **m** + **Buchstabe** | Markierung setzen |
+| **'** + **Buchstabe** | Zu Markierung springen |
+| **h** | Hilfe anzeigen |
+
+===== Beispiele =====
+
+**Grundlegende Verwendung:**
+<code>
+less datei.txt                 # Datei anzeigen
+less *.txt                     # Mehrere Dateien (mit :n und :p wechseln)
+less +50 datei.txt             # Bei Zeile 50 starten
+less +/ERROR logfile.txt       # Bei erstem "ERROR" starten
+</code>
+
+**Mit Optionen:**
+<code>
+less -N datei.txt              # Mit Zeilennummern
+less -S datei.txt              # Lange Zeilen abschneiden
+less -i datei.txt              # Case-insensitive Suche
+less -R colored_output.txt     # ANSI-Farben anzeigen
+</code>
+
+**Mit Pipes:**
+<code>
+ls -la | less                  # ls-Ausgabe seitenweise anzeigen
+grep ERROR /var/log/syslog | less    # grep-Ergebnisse anzeigen
+man bash | less                # Manual page anzeigen (automatisch)
+ps aux | less                  # Prozessliste anzeigen
+</code>
+
+**In Kombination mit anderen Befehlen:**
+<code>
+cat große_datei.txt | less     # Pipe von cat
+tail -f /var/log/syslog | less +F    # Live-Log-Verfolgung
+dmesg | less                   # Kernel-Messages anzeigen
+</code>
+
+**Mehrere Dateien:**
+<code>
+less file1.txt file2.txt       # Mehrere Dateien laden
+# In less:
+# :n - nächste Datei
+# :p - vorherige Datei
+# :e datei.txt - neue Datei laden
+</code>
+
+===== Erweiterte Features =====
+
+**Markierungen verwenden:**
+<code>
+# In less:
+ma          # Markierung 'a' setzen
+'a          # Zu Markierung 'a' springen
+</code>
+
+**Externe Befehle:**
+<code>
+# In less:
+!befehl     # Externen Befehl ausführen
+v           # Datei in Editor öffnen ($EDITOR)
+</code>
+
+**Log-Verfolgung:**
+<code>
+less +F /var/log/syslog        # Live-Verfolgung (wie tail -f)
+# F in less drücken für Follow-Modus
+# Ctrl+C um Follow-Modus zu verlassen
+</code>
+
+===== Konfiguration =====
+
+**Umgebungsvariablen:**
+<code>
+export LESS="-N -i -F -X"      # Standard-Optionen setzen
+export LESSOPEN="|lesspipe %s" # Für komprimierte Dateien
+export PAGER="less"            # less als Standard-Pager
+</code>
+
+**Konfigurationsdatei:**
+<code>
+# ~/.lesskey erstellen für benutzerdefinierte Tastenbelegung
+</code>
+
+===== Hinweise =====
+
+  * **less** lädt nicht die komplette Datei in den Speicher (gut für große Dateien)
+  * **F** aktiviert Follow-Modus für wachsende Dateien (wie tail -f)
+  * **v** öffnet Datei im konfigurierten Editor ($EDITOR)
+  * Mit **:e** können neue Dateien geladen werden
+  * **less** ist der Standard-Pager für **man** und **git**
+  * Reguläre Ausdrücke werden in der Suche unterstützt
+
+===== Verwandte Befehle =====
+
+  * **more** - Einfacherer Pager (nur vorwärts)
+  * **cat** - Komplette Datei ausgeben
+  * **head** - Erste Zeilen anzeigen
+  * **tail** - Letzte Zeilen anzeigen
+  * **grep** - Text in Dateien suchen
+  * **vim/nano** - Text-Editoren
+
+===== Siehe auch =====
+
+  * **man less** - Ausführliche Dokumentation
+  * **man lesskey** - Tastenbelegung anpassen
+  * **man lesspipe** - Filter für komprimierte Dateien

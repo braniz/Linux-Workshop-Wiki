@@ -1,0 +1,253 @@
+====== 07 - LVM & RAID ======
+
+**LVM (Logical Volume Manager)** und **RAID (Redundant Array of Independent Disks)** sind wichtige Technologien für die Festplattenverwaltung und Datensicherheit in Linux-Systemen.
+
+===== Syntax =====
+
+**LVM Befehle:**
+<code>
+# Physical Volume (PV) Verwaltung
+pvcreate /dev/sdX        # Physical Volume erstellen
+pvdisplay               # Physical Volumes anzeigen
+pvremove /dev/sdX       # Physical Volume entfernen
+
+# Volume Group (VG) Verwaltung
+vgcreate vg_name /dev/sdX /dev/sdY    # Volume Group erstellen
+vgdisplay               # Volume Groups anzeigen
+vgextend vg_name /dev/sdZ             # Volume Group erweitern
+vgreduce vg_name /dev/sdX             # Volume Group verkleinern
+
+# Logical Volume (LV) Verwaltung
+lvcreate -L 10G -n lv_name vg_name   # Logical Volume erstellen
+lvdisplay               # Logical Volumes anzeigen
+lvextend -L +5G /dev/vg_name/lv_name  # Logical Volume erweitern
+lvreduce -L -2G /dev/vg_name/lv_name  # Logical Volume verkleinern
+</code>
+
+**RAID Befehle:**
+<code>
+# Software RAID mit mdadm
+mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/sdX /dev/sdY
+mdadm --detail /dev/md0             # RAID-Details anzeigen
+mdadm --examine /dev/sdX            # Festplatte untersuchen
+cat /proc/mdstat                    # RAID-Status anzeigen
+</code>
+
+----
+
+===== Wichtige Optionen =====
+
+**LVM Optionen:**
+  * **-L**: Größe in Bytes (K, M, G, T)
+  * **-l**: Größe in Extents
+  * **-n**: Name des Logical Volumes
+  * **-s**: Snapshot erstellen
+  * **-r**: Resize Filesystem automatisch
+  * **-v**: Verbose Ausgabe
+  * **--force**: Aktion erzwingen
+
+**RAID Level:**
+  * **RAID 0**: Striping - Geschwindigkeit, keine Redundanz
+  * **RAID 1**: Mirroring - Vollständige Duplizierung
+  * **RAID 5**: Striping mit Parität - Redundanz mit einem Ausfall
+  * **RAID 6**: Striping mit doppelter Parität - Redundanz mit zwei Ausfällen
+  * **RAID 10**: Kombination aus RAID 1 und 0
+
+**mdadm Optionen:**
+  * **--create**: RAID-Array erstellen
+  * **--level=N**: RAID-Level festlegen
+  * **--raid-devices=N**: Anzahl der Geräte
+  * **--spare-devices=N**: Anzahl der Ersatzgeräte
+  * **--detail**: Detaillierte Informationen
+  * **--stop**: RAID-Array stoppen
+  * **--assemble**: RAID-Array assemblieren
+
+----
+
+===== Beispiele =====
+
+**LVM Setup (Schritt für Schritt):**
+<code>
+# 1. Physical Volumes erstellen
+pvcreate /dev/sdb /dev/sdc
+
+# 2. Volume Group erstellen
+vgcreate datavg /dev/sdb /dev/sdc
+
+# 3. Logical Volume erstellen
+lvcreate -L 50G -n datalv datavg
+
+# 4. Dateisystem erstellen
+mkfs.ext4 /dev/datavg/datalv
+
+# 5. Mounten
+mkdir /mnt/data
+mount /dev/datavg/datalv /mnt/data
+
+# 6. Logical Volume erweitern
+lvextend -L +20G /dev/datavg/datalv
+resize2fs /dev/datavg/datalv
+</code>
+
+**RAID 1 (Mirror) Setup:**
+<code>
+# RAID 1 erstellen
+mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/sdb /dev/sdc
+
+# Konfiguration speichern
+mdadm --detail --scan >> /etc/mdadm/mdadm.conf
+
+# Dateisystem erstellen
+mkfs.ext4 /dev/md0
+
+# Mounten
+mkdir /mnt/raid1
+mount /dev/md0 /mnt/raid1
+
+# Status prüfen
+cat /proc/mdstat
+mdadm --detail /dev/md0
+</code>
+
+**RAID 5 Setup:**
+<code>
+# RAID 5 mit 3 Festplatten erstellen
+mdadm --create /dev/md1 --level=5 --raid-devices=3 /dev/sdb /dev/sdc /dev/sdd
+
+# Mit Ersatzgerät
+mdadm --create /dev/md1 --level=5 --raid-devices=3 --spare-devices=1 \
+  /dev/sdb /dev/sdc /dev/sdd /dev/sde
+</code>
+
+**LVM mit RAID kombinieren:**
+<code>
+# RAID 1 als Physical Volume
+pvcreate /dev/md0
+vgcreate raidvg /dev/md0
+lvcreate -L 100G -n raidlv raidvg
+</code>
+
+----
+
+===== Hinweis =====
+
+**Sicherheitshinweise:**
+  * **Immer Backups erstellen** vor LVM/RAID-Operationen
+  * **Testen Sie Konfigurationen** in virtuellen Umgebungen
+  * **Überwachen Sie RAID-Arrays** regelmäßig auf Ausfälle
+  * **Dokumentieren Sie Ihre Konfiguration** für Notfälle
+
+**LVM Besonderheiten:**
+  * Logical Volumes können **online vergrößert** werden
+  * **Snapshots** ermöglichen Punkt-in-Zeit Backups
+  * **Thin Provisioning** spart Speicherplatz
+  * LVM funktioniert **über mehrere Festplatten** hinweg
+
+**RAID Besonderheiten:**
+  * **Hardware-RAID** vs. **Software-RAID** (mdadm)
+  * RAID ist **kein Backup-Ersatz**
+  * **Hot-Swap** bei entsprechender Hardware möglich
+  * **Rebuild-Zeit** kann bei großen Festplatten sehr lang sein
+
+**Monitoring:**
+<code>
+# RAID Status überwachen
+watch -n 1 cat /proc/mdstat
+
+# LVM Status
+vgs        # Volume Group Status
+lvs        # Logical Volume Status
+pvs        # Physical Volume Status
+
+# E-Mail Benachrichtigungen einrichten
+echo "MAILADDR root@localhost" >> /etc/mdadm/mdadm.conf
+</code>
+
+**Troubleshooting:**
+<code>
+# Defekte Festplatte aus RAID entfernen
+mdadm --manage /dev/md0 --fail /dev/sdb
+mdadm --manage /dev/md0 --remove /dev/sdb
+
+# Neue Festplatte hinzufügen
+mdadm --manage /dev/md0 --add /dev/sde
+
+# LVM Reparatur
+vgck vg_name          # Volume Group prüfen
+fsck /dev/vg_name/lv_name  # Dateisystem prüfen
+</code>
+
+----
+
+===== Alternativen =====
+
+**LVM Alternativen:**
+  * **ZFS**: Kombiniert Dateisystem und Volume Manager
+  * **Btrfs**: Modernes Dateisystem mit integrierter Volume-Verwaltung
+  * **Device Mapper**: Low-Level Alternative zu LVM
+  * **Partitionierung**: Klassische Festplattenaufteilung
+
+**RAID Alternativen:**
+  * **Hardware-RAID**: Dedizierte RAID-Controller
+  * **ZFS RAID**: Integriert in ZFS Dateisystem
+  * **Btrfs RAID**: RAID-Funktionalität in Btrfs
+  * **Network RAID**: Verteilte Speichersysteme (GlusterFS, Ceph)
+
+**Storage-Lösungen:**
+  * **iSCSI**: Netzwerk-basierter Block-Storage
+  * **NFS/CIFS**: Netzwerk-Dateisysteme
+  * **GlusterFS**: Verteiltes Dateisystem
+  * **Ceph**: Objekt-, Block- und Dateispeicher
+
+**Cloud-Storage:**
+  * **AWS EBS**: Elastic Block Store
+  * **Google Persistent Disk**: Google Cloud Storage
+  * **Azure Managed Disks**: Microsoft Azure Storage
+
+----
+
+===== Weitere Informationen =====
+
+**Dokumentation:**
+<code>
+man lvm              # LVM Handbuch
+man mdadm            # RAID Handbuch
+man pvcreate         # Physical Volume Erstellung
+man vgcreate         # Volume Group Erstellung
+man lvcreate         # Logical Volume Erstellung
+</code>
+
+**Konfigurationsdateien:**
+  * **/etc/lvm/lvm.conf**: LVM Hauptkonfiguration
+  * **/etc/mdadm/mdadm.conf**: RAID Konfiguration
+  * **/proc/mdstat**: Aktueller RAID Status
+  * **/proc/mounts**: Gemountete Dateisysteme
+
+**Online-Ressourcen:**
+  * [[https://wiki.archlinux.org/title/LVM|Arch Linux LVM Wiki]]
+  * [[https://wiki.archlinux.org/title/RAID|Arch Linux RAID Wiki]]
+  * [[https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_logical_volumes/index|Red Hat LVM Guide]]
+  * [[https://raid.wiki.kernel.org/|Linux RAID Wiki]]
+
+**Weiterführende Themen:**
+  * LVM Snapshots für Backups
+  * Thin Provisioning und Thin Pools
+  * RAID-Level Vergleich und Auswahl
+  * Performance-Optimierung
+  * Disaster Recovery Strategien
+  * Integration mit Backup-Systemen
+
+**Tools und GUIs:**
+  * **system-config-lvm**: Grafische LVM-Verwaltung
+  * **gparted**: Grafischer Partitions-Editor
+  * **mdadm-qt**: GUI für RAID-Verwaltung
+  * **webmin**: Web-basierte Systemverwaltung
+
+**Best Practices:**
+  * Regelmäßige Überwachung der Array-Gesundheit
+  * Dokumentation aller Konfigurationen
+  * Test der Disaster Recovery Prozeduren
+  * Monitoring und Alerting einrichten
+
+
+

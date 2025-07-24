@@ -1,0 +1,83 @@
+====== pwd ======
+
+**pwd** (print working directory) - Zeigt den vollständigen Pfad des aktuellen Arbeitsverzeichnisses an.
+
+===== Syntax =====
+
+<code>
+pwd [OPTIONEN]
+</code>
+
+===== Beschreibung =====
+
+Der **pwd**-Befehl gibt den absoluten Pfad des aktuellen Arbeitsverzeichnisses aus. Dies ist nützlich, um zu sehen, wo Sie sich gerade im Dateisystem befinden.
+
+===== Optionen =====
+
+^ Option ^ Beschreibung ^
+| **-L** | Zeigt logischen Pfad an (folgt symbolischen Links nicht, Standard) |
+| **-P** | Zeigt physischen Pfad an (löst symbolische Links auf) |
+| **--help** | Zeigt Hilfeinformationen an |
+| **--version** | Zeigt Versionsinformationen an |
+
+===== Beispiele =====
+
+**Grundlegende Verwendung:**
+<code>
+pwd                            # Zeigt aktuelles Verzeichnis
+/home/user/Documents
+</code>
+
+**Mit Optionen:**
+<code>
+pwd -L                         # Logischer Pfad (Standard)
+pwd -P                         # Physischer Pfad (löst Symlinks auf)
+</code>
+
+**In Kombination mit anderen Befehlen:**
+<code>
+echo "Aktuelles Verzeichnis: $(pwd)"
+ls $(pwd)                      # Listet aktuelles Verzeichnis auf
+cd /tmp && pwd                 # Wechselt und zeigt neues Verzeichnis
+</code>
+
+**In Shell-Skripten:**
+<code>
+#!/bin/bash
+CURRENT_DIR=$(pwd)
+echo "Arbeite in: $CURRENT_DIR"
+
+# Verzeichnis merken und später zurückkehren
+ORIGINAL_DIR=$(pwd)
+cd /tmp
+# ... Arbeit in /tmp ...
+cd "$ORIGINAL_DIR"
+</code>
+
+===== Hinweise =====
+
+  * **pwd** zeigt immer einen absoluten Pfad an (beginnend mit /)
+  * Bei symbolischen Links zeigt **pwd -L** den Link-Pfad, **pwd -P** den echten Pfad
+  * Die Umgebungsvariable **$PWD** enthält dasselbe wie **pwd**
+  * **pwd** ist sowohl als builtin als auch als externes Programm verfügbar
+  * Der Pfad wird immer ohne abschließenden Schrägstrich angezeigt (außer bei Root /)
+
+===== Umgebungsvariablen =====
+
+<code>
+echo $PWD                      # Aktuelle Verzeichnis-Variable
+echo $OLDPWD                   # Vorheriges Verzeichnis
+</code>
+
+===== Verwandte Befehle =====
+
+  * **cd** - Verzeichnis wechseln
+  * **ls** - Verzeichnisinhalt anzeigen
+  * **dirname** - Verzeichnisteil eines Pfades extrahieren
+  * **basename** - Dateiteil eines Pfades extrahieren
+  * **realpath** - Absoluten Pfad ermitteln
+
+===== Siehe auch =====
+
+  * **man pwd** - Ausführliche Dokumentation
+  * **help pwd** - Builtin-Hilfe (in bash)

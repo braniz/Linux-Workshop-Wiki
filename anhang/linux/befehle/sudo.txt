@@ -1,0 +1,301 @@
+====== sudo ======
+
+**sudo** - Befehle als anderer Benutzer ausführen (meist als root/Administrator).
+
+===== Syntax =====
+
+<code>
+sudo [OPTIONEN] BEFEHL [ARGUMENTE]
+sudo [OPTIONEN] -u BENUTZER BEFEHL [ARGUMENTE]
+sudo -l [BENUTZER]
+sudo -e DATEI
+</code>
+
+===== Beschreibung =====
+
+**sudo** (Super User DO) ermöglicht es autorisierten Benutzern, Befehle als anderer Benutzer (standardmäßig als root) auszuführen. Es bietet eine sichere Alternative zu **su** und protokolliert alle ausgeführten Befehle.
+
+===== Wichtige Optionen =====
+
+**Grundlegende Optionen:**
+^ Option ^ Beschreibung ^
+| **-u BENUTZER** | Als bestimmten Benutzer ausführen |
+| **-g GRUPPE** | Als bestimmte Gruppe ausführen |
+| **-i** | Login-Shell starten (wie sudo su -) |
+| **-s** | Shell des Zielbenutzers verwenden |
+| **-k** | Cached credentials invalidieren |
+| **-K** | Alle cached credentials entfernen |
+
+**Informations-Optionen:**
+^ Option ^ Beschreibung ^
+| **-l** | Verfügbare sudo-Berechtigungen auflisten |
+| **-ll** | Detaillierte Berechtigungen anzeigen |
+| **-U BENUTZER** | Berechtigungen für anderen Benutzer zeigen |
+| **-v** | Credentials erneuern/validieren |
+
+**Bearbeitungs-Optionen:**
+^ Option ^ Beschreibung ^
+| **-e DATEI** | Datei mit sudoedit bearbeiten |
+| **-A** | Grafische Passwort-Eingabe verwenden |
+| **-S** | Passwort von stdin lesen |
+| **-n** | Nicht nach Passwort fragen (non-interactive) |
+
+**Erweiterte Optionen:**
+^ Option ^ Beschreibung ^
+| **-b** | Befehl im Hintergrund ausführen |
+| **-H** | HOME-Variable auf Zielbenutzer setzen |
+| **--preserve-env** | Umgebungsvariablen beibehalten |
+| **-E** | Umgebungsvariablen beibehalten (kurz) |
+
+===== Beispiele =====
+
+**Grundlegende Verwendung:**
+<code>
+sudo apt update                 # Paketliste als root aktualisieren
+sudo systemctl restart nginx   # Service als root neustarten
+sudo cat /etc/shadow           # Geschützte Datei lesen
+sudo mkdir /root/backup        # Verzeichnis als root erstellen
+</code>
+
+**Als anderer Benutzer:**
+<code>
+sudo -u www-data ls /var/www   # Als www-data Benutzer
+sudo -u postgres psql          # PostgreSQL als postgres-Benutzer
+sudo -g admin mkdir /shared    # Mit admin-Gruppe
+sudo -u nobody whoami          # Als nobody-Benutzer
+</code>
+
+**Shell-Zugang:**
+<code>
+sudo -i                        # Root-Login-Shell starten
+sudo -s                        # Root-Shell mit aktueller Umgebung
+sudo -u postgres -i            # Login-Shell als postgres
+sudo su - username             # Zu anderem Benutzer wechseln
+</code>
+
+**Dateien bearbeiten:**
+<code>
+sudo -e /etc/hosts             # Sichere Bearbeitung mit sudoedit
+sudoedit /etc/fstab           # Alias für sudo -e
+sudo nano /etc/ssh/sshd_config # Direkte Bearbeitung (weniger sicher)
+</code>
+
+**Berechtigungen prüfen:**
+<code>
+sudo -l                        # Eigene sudo-Berechtigungen
+sudo -l username               # Berechtigungen für anderen Benutzer
+sudo -ll                       # Detaillierte Berechtigungen
+sudo -v                        # Passwort-Cache erneuern
+</code>
+
+===== Konfiguration (/etc/sudoers) =====
+
+**sudoers-Datei bearbeiten:**
+<code>
+sudo visudo                    # Sichere Bearbeitung der sudoers-Datei
+# NIEMALS direkt mit Editor bearbeiten!
+</code>
+
+**Grundlegende sudoers-Syntax:**
+<code>
+# Benutzer Host=(RunAs) Befehle
+username ALL=(ALL:ALL) ALL
+%groupname ALL=(ALL) ALL
+</code>
+
+**Praktische sudoers-Beispiele:**
+<code>
+# Benutzer darf alles als root
+username ALL=(ALL) ALL
+
+# Benutzer darf ohne Passwort alles
+username ALL=(ALL) NOPASSWD: ALL
+
+# Gruppe darf Systemdienste verwalten
+%sysadmin ALL=(ALL) /bin/systemctl
+
+# Benutzer darf nur bestimmte Befehle
+webmaster ALL=(ALL) /usr/sbin/apache2ctl, /bin/systemctl reload apache2
+
+# Benutzer darf als www-data arbeiten
+developer ALL=(www-data) ALL
+
+# Ohne Passwort für bestimmte Befehle
+backup ALL=(ALL) NOPASSWD: /bin/mount, /bin/umount
+</code>
+
+**sudoers.d-Verzeichnis:**
+<code>
+# Separate Konfigurationsdateien in /etc/sudoers.d/
+sudo nano /etc/sudoers.d/webteam
+# Inhalt:
+%webteam ALL=(ALL) /usr/sbin/service apache2 *
+</code>
+
+===== Sicherheits-Features =====
+
+**Passwort-Caching:**
+<code>
+sudo command1                  # Passwort eingeben
+sudo command2                  # Kein Passwort (Cache aktiv, ~15 Min)
+sudo -k                        # Cache leeren
+sudo command3                  # Passwort wieder erforderlich
+</code>
+
+**Umgebungsvariablen:**
+<code>
+sudo env                       # Gefilterte Umgebung
+sudo -E env                    # Umgebung beibehalten
+sudo --preserve-env=HOME,PATH command  # Nur bestimmte Variablen
+</code>
+
+**Sichere Dateibearbeitung:**
+<code>
+sudo -e /etc/hosts             # Verwendet temporäre Kopie
+sudoedit /etc/passwd           # Race-Condition-sicher
+# Vorteile: Keine direkten root-Rechte für Editor
+# Atomare Schreibvorgänge
+</code>
+
+===== Logging und Überwachung =====
+
+**sudo-Logs prüfen:**
+<code>
+# Ubuntu/Debian:
+grep sudo /var/log/auth.log
+journalctl | grep sudo
+
+# CentOS/RHEL:
+grep sudo /var/log/secure
+journalctl -u sudo
+
+# Alle sudo-Aktivitäten:
+grep "sudo:" /var/log/syslog
+</code>
+
+**Beispiel-Log-Einträge:**
+<code>
+# Erfolgreiche Ausführung:
+May 15 10:30:15 server sudo: username : TTY=pts/0 ; PWD=/home/username ; USER=root ; COMMAND=/bin/ls
+
+# Fehlgeschlagener Versuch:
+May 15 10:31:20 server sudo: username : user NOT in sudoers ; TTY=pts/0 ; PWD=/home/username ; USER=root ; COMMAND=/bin/cat /etc/shadow
+</code>
+
+===== Erweiterte Konfiguration =====
+
+**Timeout-Einstellungen:**
+<code>
+# In /etc/sudoers:
+Defaults timestamp_timeout=60  # Cache 60 Minuten
+Defaults timestamp_timeout=0   # Immer nach Passwort fragen
+Defaults timestamp_timeout=-1  # Nie ablaufen lassen
+</code>
+
+**Passwort-Einstellungen:**
+<code>
+# Eigenes Passwort verwenden (Standard):
+Defaults targetpw              # Zielbenutzer-Passwort
+Defaults rootpw                # Root-Passwort
+Defaults runaspw               # RunAs-Benutzer-Passwort
+</code>
+
+**Umgebungs-Einstellungen:**
+<code>
+# Umgebungsvariablen beibehalten:
+Defaults env_keep += "HOME MAIL"
+Defaults env_keep += "PATH"
+
+# Umgebungsvariablen entfernen:
+Defaults env_delete += "DANGEROUS_VAR"
+</code>
+
+**Aliase und Befehls-Gruppen:**
+<code>
+# Aliase definieren:
+Cmnd_Alias NETWORKING = /sbin/route, /sbin/ifconfig
+Cmnd_Alias SOFTWARE = /bin/rpm, /usr/bin/yum
+Cmnd_Alias SERVICES = /sbin/service, /bin/systemctl
+
+# Verwenden:
+%netadmin ALL = NETWORKING
+%sysadmin ALL = SOFTWARE, SERVICES
+</code>
+
+===== Troubleshooting =====
+
+**Häufige Probleme:**
+<code>
+# "user is not in the sudoers file":
+sudo usermod -aG sudo username     # Ubuntu/Debian
+sudo usermod -aG wheel username    # CentOS/RHEL
+
+# "sudo: command not found":
+/usr/bin/sudo command              # Vollständiger Pfad
+export PATH="/usr/bin:$PATH"       # PATH korrigieren
+
+# "sudo: no tty present":
+sudo -S < password_file command    # Passwort aus Datei
+echo "password" | sudo -S command  # Passwort aus Pipe
+</code>
+
+**sudoers-Datei reparieren:**
+<code>
+# Wenn sudoers korrupt ist:
+pkexec visudo                      # Mit PolicyKit
+su -c visudo                       # Als root (wenn su funktioniert)
+# Von Rescue-System booten und reparieren
+</code>
+
+**Debug-Modi:**
+<code>
+sudo -l -d                         # Debug-Informationen
+sudo -D9 command                   # Maximales Debug-Level
+</code>
+
+===== Best Practices =====
+
+**Sicherheit:**
+  * **Niemals** ''sudo chmod 777'' verwenden
+  * **sudoedit** statt direkter Dateibearbeitung
+  * **Principle of Least Privilege** befolgen
+  * Regelmäßige Überprüfung der sudoers-Datei
+  * Logging aktiviert lassen
+
+**Konfiguration:**
+  * **visudo** für sudoers-Änderungen verwenden
+  * Separate Dateien in ''/etc/sudoers.d/'' nutzen
+  * Gruppen statt individueller Benutzer konfigurieren
+  * NOPASSWD sparsam einsetzen
+
+===== Alternativen zu sudo =====
+
+**Andere Privilege-Escalation-Tools:**
+<code>
+su                                 # Switch User
+doas                               # OpenBSD-Alternative zu sudo
+pkexec                             # PolicyKit
+run0                               # systemd (experimentell)
+</code>
+
+**Vergleich:**
+  * **su**: Vollständiger Benutzerwechsel, weniger granular
+  * **doas**: Einfacher als sudo, weniger Features
+  * **pkexec**: GUI-orientiert, PolicyKit-basiert
+
+===== Verwandte Befehle =====
+
+  * **su** - Switch User/Substitute User
+  * **visudo** - sudoers-Datei sicher bearbeiten
+  * **sudoedit** - Dateien sicher mit sudo bearbeiten
+  * **pkexec** - PolicyKit-basierte Privilege-Escalation
+  * **groups** - Gruppenzmitgliedschaft anzeigen
+  * **id** - Benutzer- und Gruppen-IDs anzeigen
+  * **whoami** - Aktuellen Benutzer anzeigen
+
+===== Siehe auch =====
+
+  * **man sudo** - Ausführliche Dokumentation
+  * **man sudoers** - sudoers-Datei Syntax
+  * **man visudo** - visudo-Editor
+  * **man su** - su-Befehl Vergleich

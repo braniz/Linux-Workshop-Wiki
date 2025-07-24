@@ -1,0 +1,198 @@
+====== find ======
+
+**find** - Dateien und Verzeichnisse im Dateisystem suchen.
+
+===== Syntax =====
+
+<code>
+find [PFAD...] [OPTIONEN] [TESTS] [AKTIONEN]
+</code>
+
+===== Beschreibung =====
+
+**find** durchsucht Verzeichnisbäume nach Dateien und Verzeichnissen, die bestimmte Kriterien erfüllen. Es ist eines der mächtigsten Werkzeuge zur Dateisuche unter Linux.
+
+===== Wichtige Suchkriterien =====
+
+**Nach Namen:**
+^ Option ^ Beschreibung ^
+| **-name "pattern"** | Dateiname entspricht pattern (case-sensitive) |
+| **-iname "pattern"** | Dateiname entspricht pattern (case-insensitive) |
+| **-path "pattern"** | Kompletter Pfad entspricht pattern |
+| **-regex "pattern"** | Pfad entspricht regulärem Ausdruck |
+
+**Nach Typ:**
+^ Option ^ Beschreibung ^
+| **-type f** | Nur reguläre Dateien |
+| **-type d** | Nur Verzeichnisse |
+| **-type l** | Nur symbolische Links |
+| **-type b** | Block-Geräte |
+| **-type c** | Character-Geräte |
+
+**Nach Größe:**
+^ Option ^ Beschreibung ^
+| **-size +100M** | Größer als 100 MB |
+| **-size -1k** | Kleiner als 1 KB |
+| **-size 50c** | Genau 50 Bytes |
+| **-empty** | Leere Dateien/Verzeichnisse |
+
+**Nach Zeit:**
+^ Option ^ Beschreibung ^
+| **-mtime -7** | Geändert in letzten 7 Tagen |
+| **-mtime +30** | Geändert vor mehr als 30 Tagen |
+| **-atime -1** | Zugriff in letzten 24 Stunden |
+| **-ctime +7** | Status geändert vor mehr als 7 Tagen |
+| **-newer datei** | Neuer als referenz-datei |
+
+**Nach Berechtigungen:**
+^ Option ^ Beschreibung ^
+| **-perm 644** | Exakte Berechtigung 644 |
+| **-perm -644** | Mindestens Berechtigung 644 |
+| **-perm /644** | Beliebige der Berechtigungen 644 |
+| **-user username** | Gehört Benutzer username |
+| **-group groupname** | Gehört Gruppe groupname |
+
+===== Wichtige Aktionen =====
+
+^ Aktion ^ Beschreibung ^
+| **-print** | Pfad ausgeben (Standard) |
+| **-print0** | Pfad mit Null-Byte beenden |
+| **-delete** | Gefundene Dateien löschen |
+| **-exec command {} \;** | Befehl für jede Datei ausführen |
+| **-exec command {} +** | Befehl mit mehreren Dateien ausführen |
+| **-ok command {} \;** | Wie -exec, aber mit Bestätigung |
+
+===== Beispiele =====
+
+**Grundlegende Suche:**
+<code>
+find /home -name "*.txt"                    # Alle .txt-Dateien
+find . -iname "readme*"                     # README-Dateien (case-insensitive)
+find /var/log -name "*.log" -type f         # Nur Log-Dateien
+find . -type d -name "backup*"              # Backup-Verzeichnisse
+</code>
+
+**Nach Größe suchen:**
+<code>
+find / -size +100M -type f                  # Dateien größer 100MB
+find /home -size -1k -type f                # Dateien kleiner 1KB
+find . -empty -type f                       # Leere Dateien
+find /tmp -size +1G -delete                 # Große Dateien löschen
+</code>
+
+**Nach Zeit suchen:**
+<code>
+find /home -mtime -7                        # Geändert in letzten 7 Tagen
+find /var/log -mtime +30 -delete            # Alte Logs löschen
+find . -newer reference.txt                 # Neuer als Referenzdatei
+find /tmp -atime +7 -type f -delete         # Nicht genutzte Temp-Dateien
+</code>
+
+**Nach Berechtigungen:**
+<code>
+find /home -perm 777 -type f                # Dateien mit 777-Rechten
+find . -user root -type f                   # Dateien von root
+find /var/www -group www-data               # Dateien der www-data Gruppe
+find . -perm /u+s,g+s -type f               # SUID/SGID-Dateien
+</code>
+
+**Kombinierte Suche (Logische Operatoren):**
+<code>
+find . -name "*.log" -and -size +10M        # Große Log-Dateien
+find . -name "*.tmp" -or -name "*.bak"      # tmp ODER bak Dateien
+find . -not -name "*.txt" -type f           # Keine .txt-Dateien
+find . \( -name "*.jpg" -or -name "*.png" \) -and -size +1M
+</code>
+
+**Mit Aktionen:**
+<code>
+find . -name "*.txt" -exec cat {} \;        # Inhalt aller .txt-Dateien
+find . -name "*.bak" -delete                # Backup-Dateien löschen
+find . -type f -exec chmod 644 {} \;        # Dateiberechtigungen setzen
+find . -name "*.py" -exec grep -l "import" {} \;  # Python-Files mit import
+</code>
+
+**Erweiterte Beispiele:**
+<code>
+# Duplikate nach Größe finden
+find . -type f -exec ls -s {} \; | sort -n | uniq -d
+
+# Große Verzeichnisse finden
+find /home -type d -exec du -sh {} \; | sort -hr | head -10
+
+# Sicherheitsprüfung - World-writable Dateien
+find / -perm -002 -type f 2>/dev/null
+
+# Broken symbolic links finden
+find . -type l -exec test ! -e {} \; -print
+
+# Dateien nach Datum organisieren
+find /source -name "*.jpg" -exec mkdir -p /dest/{} \; -exec mv {} /dest/{} \;
+</code>
+
+**Mit xargs kombinieren:**
+<code>
+find . -name "*.txt" -print0 | xargs -0 grep "pattern"
+find . -name "*.log" | xargs rm               # Mehrere Dateien löschen
+find . -type f -print0 | xargs -0 wc -l      # Zeilen in allen Dateien zählen
+</code>
+
+===== Leistungsoptimierung =====
+
+**Effiziente Suche:**
+<code>
+find . -name "*.txt" -prune                 # Stoppe nach erstem Fund
+find . -path "*/.*" -prune -o -name "*.txt" -print  # Versteckte Verz. überspringen
+find . -maxdepth 3 -name "*.txt"           # Nur 3 Ebenen tief suchen
+find . -mindepth 2 -name "*.txt"           # Erste 2 Ebenen überspringen
+</code>
+
+**Mit locate kombinieren:**
+<code>
+# Erst locate versuchen, dann find
+locate "*.txt" 2>/dev/null || find / -name "*.txt"
+</code>
+
+===== Erweiterte Features =====
+
+**Reguläre Ausdrücke:**
+<code>
+find . -regex ".*\.\(jpg\|png\|gif\)"      # Bild-Dateien
+find . -regex ".*/[0-9].*\.log"             # Logs mit Nummer
+</code>
+
+**Dateisystem-Grenzen:**
+<code>
+find / -xdev -name "*.txt"                  # Nicht in andere Dateisysteme
+find . -mount -type f                       # Mount-Points nicht überqueren
+</code>
+
+===== Tipps und Tricks =====
+
+  * **Anführungszeichen** bei Patterns verwenden: ''find . -name "*.txt"''
+  * **-print0** und **xargs -0** für Dateien mit Leerzeichen
+  * **2>/dev/null** um Fehlermeldungen zu unterdrücken
+  * **-prune** um Verzeichnisse von der Suche auszuschließen
+  * **locate** ist schneller für einfache Namenssuchen
+
+===== Häufige Fehler =====
+
+  * **Vergessene Anführungszeichen**: Pattern wird von Shell erweitert
+  * **Falsche Reihenfolge**: Kriterien vor Aktionen setzen
+  * **Performance**: Suche im Root ohne Einschränkungen
+  * **Berechtigungen**: Fehlende Zugriffsrechte auf Verzeichnisse
+
+===== Verwandte Befehle =====
+
+  * **locate** - Schnelle Dateisuche in Index
+  * **which** - Programm im PATH finden
+  * **whereis** - Binärdateien, Quellen und Manual-Seiten finden
+  * **grep** - Text in Dateien suchen
+  * **ls** - Verzeichnisinhalte auflisten
+  * **xargs** - Befehle mit vielen Argumenten ausführen
+
+===== Siehe auch =====
+
+  * **man find** - Ausführliche Dokumentation
+  * **man xargs** - Für Kombination mit find
+  * **man locate** - Alternative für schnelle Suche

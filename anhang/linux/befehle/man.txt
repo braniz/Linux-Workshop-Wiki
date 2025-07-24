@@ -1,0 +1,275 @@
+====== man ======
+
+**man** - Manual-Seiten des Systems anzeigen und durchsuchen.
+
+===== Syntax =====
+
+<code>
+man [OPTIONEN] [SEKTION] NAME
+man [OPTIONEN] -k STICHWORT
+man [OPTIONEN] -f NAME
+</code>
+
+===== Beschreibung =====
+
+**man** zeigt die Manual-Seiten (Handbuch-Seiten) für Befehle, Systemaufrufe, Bibliotheksfunktionen und andere Systemdokumentation an. Es ist das primäre Dokumentationssystem unter Linux/Unix.
+
+===== Manual-Sektionen =====
+
+^ Sektion ^ Inhalt ^
+| **1** | Benutzerbefehle (Programme) |
+| **2** | Systemaufrufe (Kernel-Funktionen) |
+| **3** | Bibliotheksfunktionen (C-Library) |
+| **4** | Gerätedateien (/dev) |
+| **5** | Dateiformate und Konfigurationsdateien |
+| **6** | Spiele |
+| **7** | Verschiedenes (Protokolle, Dateisysteme) |
+| **8** | Systemadministration (root-Befehle) |
+| **9** | Kernel-Routinen (nicht-standard) |
+
+===== Wichtige Optionen =====
+
+**Grundlegende Optionen:**
+^ Option ^ Beschreibung ^
+| **-k STICHWORT** | Stichwort-Suche in Beschreibungen |
+| **-f NAME** | Kurze Beschreibung anzeigen (whatis) |
+| **-a** | Alle Manual-Seiten zu einem Namen anzeigen |
+| **-u** | Nur veraltete Manual-Seiten anzeigen |
+| **-P PAGER** | Anderen Pager verwenden |
+| **-H BROWSER** | HTML-Browser für Anzeige |
+
+**Sektion-Optionen:**
+^ Option ^ Beschreibung ^
+| **-S LISTE** | Sektionen in bestimmter Reihenfolge durchsuchen |
+| **-s SEKTION** | Nur bestimmte Sektion durchsuchen |
+
+**Ausgabe-Optionen:**
+^ Option ^ Beschreibung ^
+| **-w** | Pfad zur Manual-Seite anzeigen |
+| **-W** | Alle Pfade zu Manual-Seiten anzeigen |
+| **--html** | HTML-Version anzeigen |
+| **-t** | Für Druckausgabe formatieren |
+
+===== Beispiele =====
+
+**Grundlegende Verwendung:**
+<code>
+man ls                          # Manual-Seite für ls
+man 1 ls                        # Explizit Sektion 1
+man 5 passwd                    # passwd-Dateiformat (nicht Befehl)
+man 8 mount                     # mount-Befehl für Administratoren
+</code>
+
+**Mehrere Sektionen:**
+<code>
+man -a passwd                   # Alle passwd-Seiten anzeigen
+man -f passwd                   # Kurze Beschreibung aller passwd-Einträge
+whatis passwd                   # Alias für man -f
+</code>
+
+**Suche:**
+<code>
+man -k network                  # Alle Seiten mit "network" in Beschreibung
+man -k "copy files"             # Suche nach Phrase
+apropos network                 # Alias für man -k
+</code>
+
+**Spezielle Sektionen:**
+<code>
+man 2 open                      # open() Systemaufruf
+man 3 printf                    # printf() C-Bibliotheksfunktion
+man 5 fstab                     # fstab Dateiformat
+man 7 signal                    # Signal-Überblick
+man 8 iptables                  # iptables Systemadministration
+</code>
+
+**Pfade und Info:**
+<code>
+man -w ls                       # Pfad zur ls Manual-Seite
+man -W passwd                   # Alle Pfade zu passwd-Seiten
+man --path                      # Manual-Pfade anzeigen
+</code>
+
+===== Navigation in man =====
+
+**Grundlegende Navigation:**
+^ Taste ^ Aktion ^
+| **Leertaste** oder **f** | Eine Seite vorwärts |
+| **b** | Eine Seite rückwärts |
+| **↑/↓** | Zeile für Zeile |
+| **g** | Zum Anfang |
+| **G** | Zum Ende |
+| **q** | man beenden |
+
+**Suche in man:**
+^ Taste ^ Aktion ^
+| **/text** | Vorwärts nach "text" suchen |
+| **?text** | Rückwärts nach "text" suchen |
+| **n** | Nächster Treffer |
+| **N** | Vorheriger Treffer |
+| **h** | Hilfe anzeigen |
+
+===== Praktische Anwendungen =====
+
+**Schnelle Hilfe:**
+<code>
+man -f ls                       # Kurzbeschreibung
+man -k copy                     # Befehle zum Kopieren finden
+man -k "regular expression"     # Regex-bezogene Befehle
+man 7 regex                     # Überblick über reguläre Ausdrücke
+</code>
+
+**Systemkonfiguration:**
+<code>
+man 5 fstab                     # Dateisystem-Tabelle
+man 5 passwd                    # Passwort-Datei Format
+man 5 crontab                   # Cron-Syntax
+man 5 ssh_config                # SSH-Client-Konfiguration
+man 5 sshd_config               # SSH-Server-Konfiguration
+</code>
+
+**Programmierung:**
+<code>
+man 2 fork                      # fork() Systemaufruf
+man 3 malloc                    # malloc() C-Funktion
+man 3 stdio                     # Standard I/O Bibliothek
+man 7 pthreads                  # POSIX Threads Überblick
+</code>
+
+**Netzwerk und Protokolle:**
+<code>
+man 7 tcp                       # TCP Protokoll
+man 7 ip                        # IP Protokoll
+man 5 hosts                     # /etc/hosts Format
+man 8 route                     # Routing-Tabelle
+</code>
+
+===== Manual-Seiten-Struktur =====
+
+**Typische Abschnitte:**
+  * **NAME** - Befehlsname und kurze Beschreibung
+  * **SYNOPSIS** - Syntax und Optionen
+  * **DESCRIPTION** - Detaillierte Beschreibung
+  * **OPTIONS** - Befehlszeilen-Optionen
+  * **EXAMPLES** - Verwendungsbeispiele
+  * **FILES** - Zugehörige Dateien
+  * **SEE ALSO** - Verwandte Befehle
+  * **BUGS** - Bekannte Probleme
+  * **AUTHOR** - Autor/Maintainer
+
+===== Konfiguration =====
+
+**Umgebungsvariablen:**
+<code>
+export MANPATH="/usr/local/man:/usr/share/man"  # Manual-Pfade
+export PAGER="less"                             # Standard-Pager
+export MANPAGER="less -s"                      # Man-spezifischer Pager
+export BROWSER="firefox"                        # Browser für HTML-Mans
+</code>
+
+**Man-Konfiguration:**
+<code>
+/etc/manpath.config             # System-weite Konfiguration
+~/.manpath                      # Benutzer-spezifische Pfade
+</code>
+
+**manpath-Befehl:**
+<code>
+manpath                         # Aktuelle Manual-Pfade anzeigen
+manpath -q                      # Weniger detaillierte Ausgabe
+</code>
+
+===== Erweiterte Funktionen =====
+
+**Manual-Seiten erstellen:**
+<code>
+man 7 man-pages                # Richtlinien für Manual-Seiten
+man groff                       # Formatierungs-System
+</code>
+
+**Verschiedene Formate:**
+<code>
+man -t ls | lpr                 # Manual-Seite drucken
+man --html ls > ls.html         # HTML-Version erstellen
+zcat /usr/share/man/man1/ls.1.gz  # Compressed manual direkt lesen
+</code>
+
+**Lokalisierung:**
+<code>
+LANG=de_DE.UTF-8 man ls         # Deutsche Manual-Seite (falls vorhanden)
+man -L de ls                    # Explizit deutsche Sprache
+</code>
+
+===== Fehlerdiagnose =====
+
+**Häufige Probleme:**
+<code>
+# Manual-Seite nicht gefunden:
+mandb                           # Manual-Datenbank aktualisieren
+sudo mandb                      # Als root aktualisieren
+
+# Leere oder korrupte Anzeige:
+man -P cat ls                   # Anderen Pager verwenden
+MANPAGER=cat man ls             # Temporär anderen Pager setzen
+
+# Encoding-Probleme:
+LANG=C man ls                   # ASCII-Ausgabe erzwingen
+</code>
+
+**Manual-Datenbank:**
+<code>
+mandb                           # Datenbank neu aufbauen
+apropos -l pattern              # Locale-aware Suche
+whatis -l pattern               # Locale-aware whatis
+</code>
+
+===== Alternative Manual-Systeme =====
+
+**Info-Seiten:**
+<code>
+info ls                         # GNU Info-System
+info --help                     # Info-Hilfe
+</code>
+
+**Online-Dokumentation:**
+<code>
+# Moderne Alternativen:
+tldr ls                         # Vereinfachte Beispiele
+cheat ls                        # Cheat-Sheets
+--help                          # Built-in Hilfe der meisten Programme
+</code>
+
+===== Manual-Pfade =====
+
+**Standard-Pfade:**
+<code>
+/usr/share/man                  # System Manual-Seiten
+/usr/local/man                  # Lokal installierte Programme
+/usr/local/share/man            # Alternative lokale Pfade
+~/.local/share/man              # Benutzer-spezifische Manual-Seiten
+</code>
+
+**Sektions-Verzeichnisse:**
+<code>
+/usr/share/man/man1/            # Benutzer-Befehle
+/usr/share/man/man5/            # Konfigurationsdateien
+/usr/share/man/man8/            # Admin-Befehle
+</code>
+
+===== Verwandte Befehle =====
+
+  * **apropos** - Suche in Manual-Beschreibungen (man -k)
+  * **whatis** - Kurze Beschreibung (man -f)
+  * **mandb** - Manual-Datenbank aufbauen
+  * **info** - GNU Info-System
+  * **help** - Shell-builtin Hilfe
+  * **--help** - Programmspezifische Hilfe
+  * **tldr** - Vereinfachte Beispiele
+  * **cheat** - Kommando-Cheat-Sheets
+
+===== Siehe auch =====
+
+  * **man man** - Manual über man selbst
+  * **man 7 man-pages** - Richtlinien für Manual-Seiten
+  * **info man** - Info-Dokumentation zu man
+  * **/usr/share/doc/** - Zusätzliche Dokumentation

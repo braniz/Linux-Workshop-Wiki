@@ -1,0 +1,268 @@
+====== apropos ======
+
+**apropos** - Suche in den Manual-Seiten-Beschreibungen nach Stichwörtern.
+
+===== Syntax =====
+
+<code>
+apropos [OPTIONEN] STICHWORT...
+apropos [OPTIONEN] -e REGEX
+</code>
+
+===== Beschreibung =====
+
+**apropos** durchsucht die whatis-Datenbank nach Manual-Seiten, deren Beschreibungen die angegebenen Stichwörter enthalten. Es ist äquivalent zu **man -k** und hilft beim Finden von Befehlen, wenn man nur eine ungefähre Beschreibung kennt.
+
+===== Wichtige Optionen =====
+
+**Grundlegende Optionen:**
+^ Option ^ Beschreibung ^
+| **-e** | Behandelt Stichwort als regulären Ausdruck |
+| **-w** | Behandelt Stichwort als Wildcard-Pattern |
+| **-r** | Interpretiert als regulären Ausdruck (wie -e) |
+| **-a** | Alle Stichwörter müssen übereinstimmen (AND) |
+| **-l** | Suchbereich auf aktuelle Locale beschränken |
+
+**Ausgabe-Optionen:**
+^ Option ^ Beschreibung ^
+| **-s LISTE** | Nur bestimmte Manual-Sektionen durchsuchen |
+| **-S LISTE** | Alternative Syntax für Sektionen |
+| **-m SYSTEM** | Nur bestimmtes Manual-System durchsuchen |
+| **-M PFAD** | Manual-Pfad explizit setzen |
+
+**Format-Optionen:**
+^ Option ^ Beschreibung ^
+| **-C DATEI** | Alternative Konfigurationsdatei verwenden |
+| **-d** | Debug-Informationen anzeigen |
+| **-v** | Verbose-Modus (detaillierte Ausgabe) |
+
+===== Beispiele =====
+
+**Grundlegende Suche:**
+<code>
+apropos copy                    # Alle Befehle mit "copy" in Beschreibung
+apropos network                 # Netzwerk-bezogene Befehle
+apropos "file system"           # Phrasen-Suche
+apropos compress archive        # Mehrere Stichwörter (OR-Verknüpfung)
+</code>
+
+**Erweiterte Suche:**
+<code>
+apropos -a copy file            # Befehle mit SOWOHL "copy" ALS AUCH "file"
+apropos -e "^cp"                # Befehle die mit "cp" beginnen
+apropos -w "*compress*"         # Wildcard-Suche
+apropos -r "network.*config"    # Regex-Suche
+</code>
+
+**Sektions-spezifische Suche:**
+<code>
+apropos -s 1 editor             # Nur in Sektion 1 (Benutzer-Befehle)
+apropos -s 5 config             # Nur in Sektion 5 (Konfigurationsdateien)
+apropos -s 8 mount              # Nur in Sektion 8 (Admin-Befehle)
+apropos -s 1,8 network          # In Sektionen 1 und 8
+</code>
+
+**Locale-spezifische Suche:**
+<code>
+apropos -l network              # Nur in aktueller Sprache suchen
+LANG=C apropos network          # Englische Beschreibungen
+</code>
+
+===== Praktische Anwendungsfälle =====
+
+**Befehle für bestimmte Aufgaben finden:**
+<code>
+apropos "copy files"            # Dateien kopieren
+apropos "text editor"           # Text-Editoren finden
+apropos "process monitor"       # Prozess-Monitoring-Tools
+apropos "compress" | grep -i zip # Zip-bezogene Befehle
+</code>
+
+**Systemadministration:**
+<code>
+apropos -s 8 user               # Benutzer-Management (Admin-Befehle)
+apropos -s 8 mount              # Mount-bezogene Admin-Befehle
+apropos -s 5 -e ".*\.conf"      # Konfigurationsdateien
+apropos firewall iptables       # Firewall-Befehle
+</code>
+
+**Entwicklung und Programmierung:**
+<code>
+apropos -s 2 file               # Datei-Systemaufrufe
+apropos -s 3 string             # String-Bibliotheksfunktionen
+apropos -s 3 memory             # Speicher-Management-Funktionen
+apropos compiler                # Compiler-Tools
+</code>
+
+**Netzwerk-Tools finden:**
+<code>
+apropos network interface       # Netzwerk-Interface-Tools
+apropos tcp udp                 # TCP/UDP-Tools
+apropos dns                     # DNS-bezogene Befehle
+apropos ssh                     # SSH-Tools und -Konfiguration
+</code>
+
+===== Ausgabe verstehen =====
+
+**Ausgabe-Format:**
+<code>
+befehl (sektion) - beschreibung
+</code>
+
+**Beispiel-Ausgabe:**
+<code>
+$ apropos copy
+cp (1)                   - copy files or directories
+rsync (1)               - a fast, versatile, remote (and local) file-copying tool
+scp (1)                 - secure copy (remote file copy program)
+</code>
+
+**Sektions-Bedeutungen:**
+<code>
+(1) - Benutzer-Befehle
+(2) - Systemaufrufe
+(3) - Bibliotheksfunktionen
+(5) - Konfigurationsdateien
+(8) - Systemadministration
+</code>
+
+===== Erweiterte Techniken =====
+
+**Kombinationen mit anderen Befehlen:**
+<code>
+apropos network | grep config   # Nur Netzwerk-Konfiguration
+apropos -s 1 editor | head -5   # Erste 5 Editor-Befehle
+apropos copy | sort              # Alphabetisch sortiert
+apropos -a file system | wc -l  # Anzahl der Treffer
+</code>
+
+**Mit Pipes für weitere Filterung:**
+<code>
+apropos compress | grep -v "un"  # Komprimierungs-Tools ohne "uncompress"
+apropos network | awk '{print $1}' | sort -u  # Nur Befehlsnamen, eindeutig
+apropos -s 8 | grep -i backup   # Admin-Backup-Tools
+</code>
+
+**Reguläre Ausdrücke:**
+<code>
+apropos -e "^find"              # Befehle die mit "find" beginnen
+apropos -e "config$"            # Befehle die mit "config" enden
+apropos -e "\bzip\b"            # Exakte "zip" Wortsuche
+apropos -e "(copy|move)"        # Copy ODER move
+</code>
+
+===== Fehlerbehandlung =====
+
+**Häufige Probleme:**
+<code>
+# "nothing appropriate" Fehlermeldung:
+sudo mandb                      # Manual-Datenbank neu aufbauen
+sudo updatedb                   # locate-Datenbank aktualisieren
+
+# Keine Ergebnisse trotz existierender Befehle:
+apropos -d copy                 # Debug-Informationen
+man -k copy                     # Alternative (identisch)
+
+# Encoding-Probleme:
+LANG=C apropos network          # ASCII-Ausgabe erzwingen
+</code>
+
+**Datenbank-Probleme:**
+<code>
+sudo mandb -c                   # Datenbank komplett neu erstellen
+sudo mandb -f                   # Force-Update der Datenbank
+ls -la /var/cache/man/          # Cache-Verzeichnis prüfen
+</code>
+
+===== Konfiguration =====
+
+**Umgebungsvariablen:**
+<code>
+export MANPATH="/usr/local/man:/usr/share/man"  # Manual-Pfade
+export LANG=de_DE.UTF-8         # Sprache für Suche
+</code>
+
+**Konfigurationsdateien:**
+<code>
+/etc/manpath.config             # System-weite Manual-Konfiguration
+~/.manpath                      # Benutzer-spezifische Pfade
+</code>
+
+===== Vergleich mit ähnlichen Befehlen =====
+
+**apropos vs. man -k:**
+<code>
+apropos network                 # Identisch mit:
+man -k network                  # Exakt dieselbe Funktionalität
+</code>
+
+**apropos vs. whatis:**
+<code>
+apropos ls                      # Sucht in Beschreibungen
+whatis ls                       # Nur exakte Befehlsnamen
+</code>
+
+**apropos vs. locate:**
+<code>
+apropos editor                  # Sucht in Manual-Beschreibungen
+locate editor                   # Sucht Dateinamen im System
+</code>
+
+===== Performance-Tipps =====
+
+**Effiziente Suche:**
+<code>
+apropos -s 1 network            # Nur Benutzer-Befehle (schneller)
+apropos -a copy file            # AND-Verknüpfung (spezifischer)
+apropos -e "^ssh"               # Regex am Anfang (schneller)
+</code>
+
+**Cache nutzen:**
+<code>
+# apropos nutzt whatis-Datenbank, die gecacht wird
+# Erste Suche kann langsam sein, weitere sind schnell
+</code>
+
+===== Scripting mit apropos =====
+
+**In Shell-Skripten:**
+<code>
+#!/bin/bash
+# Befehle für bestimmte Aufgabe finden
+find_commands() {
+    local task="$1"
+    echo "Befehle für '$task':"
+    apropos "$task" | head -10
+}
+
+find_commands "network"
+</code>
+
+**Automatisierte Suche:**
+<code>
+#!/bin/bash
+# Alle Editor-Befehle auflisten
+apropos -s 1 editor | awk '{print $1}' | while read cmd; do
+    if command -v "$cmd" >/dev/null 2>&1; then
+        echo "$cmd: installiert"
+    fi
+done
+</code>
+
+===== Verwandte Befehle =====
+
+  * **man** - Manual-Seiten anzeigen
+  * **whatis** - Kurze Beschreibung von Befehlen
+  * **man -k** - Identisch mit apropos
+  * **info** - GNU Info-System
+  * **which** - Pfad zu Befehlen finden
+  * **whereis** - Binärdateien, Quellen und Manual-Seiten finden
+  * **locate** - Dateien im System finden
+  * **find** - Dateien nach Kriterien suchen
+
+===== Siehe auch =====
+
+  * **man apropos** - Ausführliche Dokumentation
+  * **man whatis** - Verwandter Befehl
+  * **man mandb** - Manual-Datenbank-Management
+  * **man man** - Manual-System Überblick

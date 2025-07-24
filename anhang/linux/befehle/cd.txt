@@ -1,0 +1,66 @@
+====== cd ======
+
+**cd** (change directory) - Wechselt das aktuelle Arbeitsverzeichnis.
+
+===== Syntax =====
+
+<code>
+cd [verzeichnis]
+</code>
+
+===== Beschreibung =====
+
+Der **cd**-Befehl wechselt das aktuelle Arbeitsverzeichnis zu dem angegebenen Verzeichnis. Ohne Argument wechselt cd zum Home-Verzeichnis des Benutzers.
+
+===== Optionen =====
+
+cd hat keine speziellen Optionen, da es ein eingebauter Shell-Befehl (builtin) ist.
+
+===== Beispiele =====
+
+**Grundlegende Verwendung:**
+<code>
+cd /home/user                  # Wechselt zu /home/user
+cd ..                          # Wechselt zum übergeordneten Verzeichnis
+cd ~                           # Wechselt zum Home-Verzeichnis
+cd                             # Wechselt zum Home-Verzeichnis (wie cd ~)
+cd -                           # Wechselt zum vorherigen Verzeichnis
+</code>
+
+**Relative und absolute Pfade:**
+<code>
+cd /etc                        # Absoluter Pfad
+cd ../Documents                # Relativer Pfad (ein Verzeichnis hoch, dann Documents)
+cd ~/Desktop                   # Home-Verzeichnis + Desktop
+cd /                           # Wechselt zum Root-Verzeichnis
+</code>
+
+**Spezielle Verzeichnisse:**
+<code>
+cd .                           # Bleibt im aktuellen Verzeichnis
+cd ..                          # Ein Verzeichnis nach oben
+cd ../..                       # Zwei Verzeichnisse nach oben
+cd /tmp                        # Temporäres Verzeichnis
+cd /var/log                    # Log-Verzeichnis
+</code>
+
+===== Hinweise =====
+
+  * **cd** ist ein Shell-builtin, kein externes Programm
+  * Der Befehl **pwd** zeigt das aktuelle Verzeichnis an
+  * Tabulatortaste vervollständigt Verzeichnisnamen automatisch
+  * Verzeichnisnamen mit Leerzeichen müssen in Anführungszeichen gesetzt werden: cd "Mein Verzeichnis"
+  * **$OLDPWD** speichert das vorherige Verzeichnis (für cd -)
+  * **$PWD** speichert das aktuelle Verzeichnis
+
+===== Verwandte Befehle =====
+
+  * **pwd** - Zeigt aktuelles Verzeichnis an
+  * **ls** - Listet Verzeichnisinhalte auf
+  * **dirs** - Zeigt Verzeichnis-Stack an
+  * **pushd/popd** - Verzeichnis-Stack-Verwaltung
+
+===== Siehe auch =====
+
+  * **man bash** - Bash-Manual für weitere builtin-Befehle
+  * **help cd** - Eingebaute Hilfe für cd

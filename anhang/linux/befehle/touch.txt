@@ -1,0 +1,106 @@
+====== touch ======
+
+**touch** - Erstellt leere Dateien oder ändert Zeitstempel von existierenden Dateien.
+
+===== Syntax =====
+
+<code>
+touch [OPTIONEN] DATEI...
+</code>
+
+===== Beschreibung =====
+
+Der **touch**-Befehl hat zwei Hauptfunktionen:
+1. Erstellt neue, leere Dateien wenn sie nicht existieren
+2. Aktualisiert die Zugriffs- und Änderungszeiten von existierenden Dateien
+
+===== Optionen =====
+
+^ Option ^ Beschreibung ^
+| **-a** | Ändert nur die Zugriffszeit (access time) |
+| **-m** | Ändert nur die Änderungszeit (modification time) |
+| **-c** | Erstellt keine neuen Dateien (--no-create) |
+| **-d STRING** | Verwendet STRING als Zeit statt aktuelle Zeit |
+| **-t STAMP** | Verwendet [[CC]YY]MMDDhhmm[.ss] Format |
+| **-r DATEI** | Verwendet Zeitstempel von DATEI als Referenz |
+| **--help** | Zeigt Hilfeinformationen an |
+| **--version** | Zeigt Versionsinformationen an |
+
+===== Beispiele =====
+
+**Dateien erstellen:**
+<code>
+touch datei.txt                # Erstellt leere Datei
+touch file1.txt file2.txt file3.txt  # Mehrere Dateien erstellen
+touch "datei mit leerzeichen.txt"    # Datei mit Leerzeichen
+touch /tmp/neue_datei.log             # Mit vollständigem Pfad
+</code>
+
+**Zeitstempel ändern:**
+<code>
+touch existierende_datei.txt   # Aktualisiert auf aktuelle Zeit
+touch -a datei.txt             # Nur Zugriffszeit ändern
+touch -m datei.txt             # Nur Änderungszeit ändern
+</code>
+
+**Spezifische Zeiten setzen:**
+<code>
+touch -t 202401011200 datei.txt       # 1. Januar 2024, 12:00
+touch -d "2024-01-01 12:00:00" datei.txt  # Lesbare Zeitangabe
+touch -d "yesterday" datei.txt         # Gestern
+touch -d "next week" datei.txt         # Nächste Woche
+touch -d "2 hours ago" datei.txt       # Vor 2 Stunden
+</code>
+
+**Referenz-Zeitstempel:**
+<code>
+touch -r vorlage.txt neue_datei.txt   # Zeitstempel von vorlage.txt kopieren
+</code>
+
+**Praktische Anwendungen:**
+<code>
+# Leere Log-Dateien erstellen
+touch /var/log/myapp.log
+
+# Mehrere Dateien für ein Projekt erstellen
+touch {README,LICENSE,CHANGELOG}.txt
+
+# Backup-Markierung
+touch backup_$(date +%Y%m%d).marker
+
+# Temporäre Dateien erstellen
+touch /tmp/lock_file_$$         # Mit Prozess-ID
+</code>
+
+===== Zeitstempel verstehen =====
+
+**Drei wichtige Zeitstempel:**
+<code>
+stat datei.txt                 # Zeigt alle Zeitstempel
+# Access time (atime): Letzter Zugriff
+# Modify time (mtime): Letzte Inhaltsänderung  
+# Change time (ctime): Letzte Metadaten-Änderung
+</code>
+
+===== Hinweise =====
+
+  * **touch** erstellt nur leere Dateien (0 Bytes)
+  * Existierende Dateien werden nicht überschrieben, nur Zeitstempel geändert
+  * Verzeichnisse müssen existieren (touch erstellt sie nicht)
+  * Mit **-c** Option werden keine neuen Dateien erstellt
+  * Zeitangaben können sehr flexibel sein (GNU date Syntax)
+  * **touch** respektiert umask für neue Dateien
+
+===== Verwandte Befehle =====
+
+  * **stat** - Zeigt Datei-Zeitstempel und -Informationen
+  * **ls -l** - Zeigt Änderungszeit in Dateiliste
+  * **find** - Sucht Dateien nach Zeitkriterien
+  * **date** - Zeigt/setzt Systemzeit
+  * **utime** - Programmatisches Setzen von Zeitstempeln
+
+===== Siehe auch =====
+
+  * **man touch** - Ausführliche Dokumentation
+  * **man utime** - Systemaufruf für Zeitstempel
+  * **man stat** - Datei-Status-Informationen
