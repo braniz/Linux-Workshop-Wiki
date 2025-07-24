@@ -1,26 +1,302 @@
 ====== 11 - Grundlage Netzwerke ======
 
+Netzwerk-Grundlagen und -Verwaltung in Linux umfassen die Konfiguration von Netzwerkschnittstellen, das Routing, Firewalls und Netzwerk-Diagnose-Tools.
+
 ===== Syntax =====
+
+**Netzwerk-Interface Konfiguration:**
+<code>
+# ip-Befehle (moderne Syntax)
+ip addr show                    # Alle Interfaces anzeigen
+ip addr add 192.168.1.10/24 dev eth0    # IP-Adresse zuweisen
+ip link set eth0 up            # Interface aktivieren
+ip route show                  # Routing-Tabelle anzeigen
+ip route add default via 192.168.1.1    # Default-Gateway setzen
+
+# Legacy ifconfig (veraltet, aber noch verwendet)
+ifconfig eth0 192.168.1.10 netmask 255.255.255.0
+ifconfig eth0 up
+route add default gw 192.168.1.1
+</code>
+
+**Netzwerk-Services:**
+<code>
+systemctl status networking      # Netzwerk-Service Status
+systemctl restart networking    # Netzwerk neu starten
+systemctl status NetworkManager # NetworkManager Status
+nmcli device show              # NetworkManager Geräte anzeigen
+</code>
+
+**DNS Konfiguration:**
+<code>
+# /etc/resolv.conf editieren
+echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+echo "nameserver 1.1.1.1" >> /etc/resolv.conf
+
+# systemd-resolved
+systemd-resolve --status
+resolvectl status
+</code>
 
 ----
 
 ===== Wichtige Optionen =====
 
+**ip-Befehl Optionen:**
+  * **addr**: IP-Adressen verwalten
+  * **link**: Netzwerk-Interfaces verwalten
+  * **route**: Routing-Tabelle verwalten
+  * **neigh**: ARP-Tabelle verwalten
+  * **rule**: Routing-Regeln verwalten
+  * **-4**: Nur IPv4 anzeigen
+  * **-6**: Nur IPv6 anzeigen
+  * **-s**: Statistiken anzeigen
+
+**NetworkManager (nmcli) Optionen:**
+  * **device**: Netzwerk-Geräte verwalten
+  * **connection**: Verbindungen verwalten
+  * **wifi**: WLAN-Netzwerke verwalten
+  * **radio**: Funk-Interfaces aktivieren/deaktivieren
+  * **--show-secrets**: Passwörter anzeigen
+  * **--ask**: Nach Passwörtern fragen
+
+**Netzwerk-Diagnose Tools:**
+  * **ping**: Erreichbarkeit testen
+  * **traceroute**: Route zu einem Ziel verfolgen
+  * **nslookup/dig**: DNS-Abfragen
+  * **netstat**: Netzwerk-Verbindungen anzeigen
+  * **ss**: Moderne Alternative zu netstat
+  * **tcpdump**: Netzwerk-Traffic analysieren
+  * **wireshark**: Grafischer Netzwerk-Analyzer
+
 ----
 
 ===== Beispiele =====
+
+**Statische IP-Konfiguration (mit ip):**
+<code>
+# Interface konfigurieren
+ip addr add 192.168.1.100/24 dev enp0s3
+ip link set enp0s3 up
+ip route add default via 192.168.1.1
+
+# DNS konfigurieren
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
+echo "nameserver 1.1.1.1" >> /etc/resolv.conf
+</code>
+
+**NetworkManager Konfiguration:**
+<code>
+# WLAN-Netzwerke anzeigen
+nmcli device wifi list
+
+# WLAN-Verbindung erstellen
+nmcli device wifi connect "SSID" password "passwort"
+
+# Ethernet-Verbindung mit statischer IP
+nmcli connection add type ethernet con-name "static-eth" ifname enp0s3 \
+  ip4 192.168.1.100/24 gw4 192.168.1.1
+
+# Verbindung aktivieren
+nmcli connection up "static-eth"
+
+# Verbindungen anzeigen
+nmcli connection show
+</code>
+
+**Netzwerk-Diagnose:**
+<code>
+# Grundlegende Konnektivität
+ping google.com
+ping -c 4 8.8.8.8
+
+# Route verfolgen
+traceroute google.com
+mtr google.com          # Kombination aus ping und traceroute
+
+# DNS-Abfragen
+nslookup google.com
+dig google.com
+dig @8.8.8.8 google.com MX
+
+# Offene Ports anzeigen
+netstat -tuln
+ss -tuln
+ss -tulpn               # Mit Prozess-Informationen
+
+# Netzwerk-Schnittstellen
+ip addr show
+ip link show
+cat /proc/net/dev       # Netzwerk-Statistiken
+</code>
+
+**Firewall (iptables/ufw):**
+<code>
+# UFW (Ubuntu Firewall)
+ufw enable
+ufw status
+ufw allow 22/tcp        # SSH erlauben
+ufw allow from 192.168.1.0/24  # Subnet erlauben
+ufw deny 80/tcp         # HTTP blockieren
+
+# iptables (direkter Zugriff)
+iptables -L             # Regeln anzeigen
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -P INPUT DROP  # Standard: alles blockieren
+</code>
 
 ----
 
 ===== Hinweis =====
 
+**Wichtige Konzepte:**
+  * **DHCP vs. Statische IP**: Automatische vs. manuelle IP-Zuweisung
+  * **Subnetting**: Netzwerk in kleinere Bereiche unterteilen
+  * **VLAN**: Virtuelle LANs für Netzwerk-Segmentierung
+  * **NAT**: Network Address Translation für Internet-Zugang
+  * **Port Forwarding**: Dienste von innen nach außen verfügbar machen
+
+**Konfigurationsdateien:**
+  * **/etc/network/interfaces**: Debian/Ubuntu Netzwerk-Konfiguration
+  * **/etc/netplan/**: Ubuntu Netplan Konfiguration (YAML)
+  * **/etc/sysconfig/network-scripts/**: Red Hat/CentOS Interface-Konfiguration
+  * **/etc/resolv.conf**: DNS-Konfiguration
+  * **/etc/hosts**: Lokale Host-Name Auflösung
+  * **/etc/nsswitch.conf**: Name Service Switch Konfiguration
+
+**Netplan Beispiel (Ubuntu 18.04+):**
+<code>
+# /etc/netplan/01-netcfg.yaml
+network:
+  version: 2
+  ethernets:
+    enp0s3:
+      dhcp4: no
+      addresses: [192.168.1.100/24]
+      gateway4: 192.168.1.1
+      nameservers:
+        addresses: [8.8.8.8, 1.1.1.1]
+
+# Konfiguration anwenden
+sudo netplan apply
+</code>
+
+**Troubleshooting-Schritte:**
+<code>
+# 1. Interface-Status prüfen
+ip link show
+
+# 2. IP-Konfiguration prüfen
+ip addr show
+
+# 3. Routing prüfen
+ip route show
+
+# 4. DNS prüfen
+nslookup google.com
+
+# 5. Konnektivität testen
+ping gateway_ip
+ping 8.8.8.8
+ping google.com
+
+# 6. Service-Status prüfen
+systemctl status NetworkManager
+systemctl status networking
+</code>
+
+**Sicherheitshinweise:**
+  * **Firewall immer aktivieren** und konfigurieren
+  * **Nur notwendige Ports öffnen**
+  * **Regelmäßige Updates** der Netzwerk-Software
+  * **Monitoring** von Netzwerk-Traffic
+  * **VPN verwenden** für sichere Fernverbindungen
+
 ----
 
 ===== Alternativen =====
 
+**Netzwerk-Management Tools:**
+  * **NetworkManager**: Standard in Desktop-Distributionen
+  * **systemd-networkd**: Systemd-basierte Netzwerk-Verwaltung
+  * **ifupdown**: Traditionelle Debian/Ubuntu Netzwerk-Verwaltung
+  * **netctl**: Arch Linux Netzwerk-Profil-Manager
+  * **ConnMan**: Intel's Connection Manager
+  * **wicd**: Lightweight Netzwerk-Manager
+
+**Erweiterte Tools:**
+  * **iproute2**: Moderne Netzwerk-Konfiguration (ip-Befehl)
+  * **net-tools**: Legacy Tools (ifconfig, route, netstat)
+  * **wireless-tools**: WLAN-Konfiguration (iwconfig, iwlist)
+  * **wpa_supplicant**: WPA/WPA2 WLAN-Authentifizierung
+
+**Monitoring und Diagnose:**
+  * **iftop**: Bandwidth-Monitor per Interface
+  * **nethogs**: Netzwerk-Traffic per Prozess
+  * **bandwhich**: Moderne Alternative zu nethogs
+  * **nload**: Netzwerk-Traffic in Echtzeit
+  * **vnstat**: Netzwerk-Statistiken über Zeit
+  * **tcptrack**: TCP-Verbindungen verfolgen
+
+**Firewall-Alternativen:**
+  * **ufw**: Uncomplicated Firewall (Ubuntu)
+  * **firewalld**: Dynamische Firewall (Red Hat/CentOS)
+  * **shorewall**: High-Level Firewall-Konfiguration
+  * **pf**: OpenBSD Packet Filter (auch unter Linux verfügbar)
+  * **ipset**: Erweiterte IP-Set-Verwaltung
+
 ----
 
 ===== Weitere Informationen =====
+
+**Manual Pages:**
+<code>
+man ip                  # iproute2 Hauptbefehl
+man nmcli               # NetworkManager CLI
+man netplan             # Ubuntu Netplan
+man iptables            # Firewall-Konfiguration
+man systemd-networkd    # systemd Netzwerk-Service
+man interfaces         # Debian/Ubuntu Interface-Konfiguration
+man resolv.conf         # DNS-Konfiguration
+man hosts               # Host-Name Auflösung
+</code>
+
+**Wichtige Log-Dateien:**
+  * **/var/log/syslog**: Allgemeine System-Logs
+  * **/var/log/messages**: System-Messages (Red Hat/CentOS)
+  * **/var/log/NetworkManager.log**: NetworkManager-spezifische Logs
+  * **journalctl -u NetworkManager**: Systemd Journal für NetworkManager
+  * **journalctl -u systemd-networkd**: systemd-networkd Logs
+
+**Online-Ressourcen:**
+  * [[https://wiki.archlinux.org/title/Network_configuration|Arch Linux Network Guide]]
+  * [[https://netplan.io/|Ubuntu Netplan Documentation]]
+  * [[https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/index|Red Hat Networking Guide]]
+  * [[https://www.debian.org/doc/manuals/debian-reference/ch05.en.html|Debian Network Setup]]
+
+**Weiterführende Themen:**
+  * IPv6-Konfiguration und Dual-Stack
+  * VLAN-Konfiguration und Trunking
+  * Bonding und Team-Interfaces
+  * VPN-Setup (OpenVPN, WireGuard, IPSec)
+  * Network Namespaces
+  * Software Defined Networking (SDN)
+  * Container-Netzwerke (Docker, Kubernetes)
+  * Netzwerk-Performance Tuning
+
+**Zertifizierungen und Kurse:**
+  * CompTIA Network+
+  * Cisco CCNA
+  * Linux Professional Institute (LPI)
+  * Red Hat Certified System Administrator (RHCSA)
+
+**Praktische Übungen:**
+  * Einrichtung eines kleinen Heimnetzwerks
+  * DHCP-Server Konfiguration
+  * DNS-Server Setup (BIND, dnsmasq)
+  * Firewall-Regel-Entwicklung
+  * Netzwerk-Troubleshooting Szenarien
 
 
 

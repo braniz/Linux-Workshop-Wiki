@@ -1,26 +1,293 @@
 ====== 06 - Dateisysteme ======
 
+Dateisysteme verwalten, wie Daten auf Speichergeräten organisiert und gespeichert werden. Linux unterstützt verschiedene Dateisystem-Typen, jeder mit spezifischen Eigenschaften und Anwendungsbereichen.
+
 ===== Syntax =====
+
+**Dateisystem erstellen (formatieren):**
+<code>
+mkfs.ext4 /dev/sdX1                 # ext4 Dateisystem erstellen
+mkfs.xfs /dev/sdX1                  # XFS Dateisystem erstellen
+mkfs.btrfs /dev/sdX1                # Btrfs Dateisystem erstellen
+mkfs.ntfs /dev/sdX1                 # NTFS Dateisystem erstellen
+mkfs.vfat /dev/sdX1                 # FAT32 Dateisystem erstellen
+
+# Mit zusätzlichen Optionen
+mkfs.ext4 -L "DataDisk" /dev/sdX1   # Mit Label
+mkfs.ext4 -b 4096 /dev/sdX1         # Mit spezifischer Blockgröße
+</code>
+
+**Dateisystem mounten/unmounten:**
+<code>
+mount /dev/sdX1 /mnt/data           # Dateisystem mounten
+mount -t ext4 /dev/sdX1 /mnt/data   # Mit spezifischem Typ
+umount /mnt/data                    # Dateisystem unmounten
+umount /dev/sdX1                    # Alternative Syntax
+
+# Mount-Optionen
+mount -o ro /dev/sdX1 /mnt/data     # Read-only mounten
+mount -o rw,noatime /dev/sdX1 /mnt/data  # Read-write ohne Access-Time
+</code>
+
+**Dateisystem-Information:**
+<code>
+df -h                               # Speicherplatz anzeigen
+df -i                               # Inode-Nutzung anzeigen
+du -sh /path/to/directory          # Verzeichnisgröße anzeigen
+lsblk                              # Block-Geräte anzeigen
+blkid                              # UUID und Labels anzeigen
+findmnt                            # Gemountete Dateisysteme
+</code>
 
 ----
 
 ===== Wichtige Optionen =====
 
+**mkfs Optionen:**
+  * **-L**: Label für Dateisystem setzen
+  * **-b**: Blockgröße festlegen (1024, 2048, 4096)
+  * **-i**: Bytes pro Inode festlegen
+  * **-m**: Reservierten Speicherplatz für root festlegen
+  * **-F**: Force - auch wenn Dateisystem bereits existiert
+  * **-v**: Verbose Ausgabe
+
+**mount Optionen:**
+  * **-t**: Dateisystem-Typ spezifizieren
+  * **-o**: Mount-Optionen setzen
+  * **ro/rw**: Read-only / Read-write
+  * **noatime**: Access-Zeit nicht aktualisieren (Performance)
+  * **noexec**: Keine ausführbaren Dateien erlauben
+  * **nosuid**: SUID-Bits ignorieren
+  * **nodev**: Device-Dateien ignorieren
+  * **loop**: Loop-Device verwenden (für ISO-Images)
+
+**Dateisystem-Typen:**
+  * **ext4**: Standard Linux-Dateisystem
+  * **xfs**: High-Performance Dateisystem
+  * **btrfs**: Copy-on-Write Dateisystem mit Snapshots
+  * **zfs**: Erweiterte Features, nicht im Kernel
+  * **ntfs**: Windows-Dateisystem
+  * **vfat/fat32**: Kompatibel mit Windows/Mac
+  * **exfat**: Für große Dateien auf USB-Sticks
+
 ----
 
 ===== Beispiele =====
+
+**USB-Stick formatieren und mounten:**
+<code>
+# USB-Stick finden
+lsblk
+fdisk -l
+
+# Partitionieren (falls nötig)
+fdisk /dev/sdb
+# n (neue Partition), p (primär), 1 (erste Partition), Enter, Enter, w (schreiben)
+
+# Formatieren
+mkfs.vfat /dev/sdb1                 # FAT32 für Kompatibilität
+mkfs.ext4 -L "MyUSB" /dev/sdb1      # ext4 mit Label
+
+# Mounten
+mkdir /mnt/usb
+mount /dev/sdb1 /mnt/usb
+
+# Automatisches Mounten in /etc/fstab
+echo "/dev/sdb1 /mnt/usb vfat defaults,user,noauto 0 0" >> /etc/fstab
+</code>
+
+**Dateisystem-Überprüfung und Reparatur:**
+<code>
+# Dateisystem prüfen (unmounted!)
+fsck /dev/sdX1
+fsck.ext4 /dev/sdX1
+fsck.xfs /dev/sdX1
+
+# Reparatur erzwingen
+fsck -f /dev/sdX1
+fsck -y /dev/sdX1                   # Automatisch ja zu allen Fragen
+
+# Read-only Check (für gemountete Systeme)
+fsck -n /dev/sdX1
+</code>
+
+**Swap-Dateisystem:**
+<code>
+# Swap-Partition erstellen
+mkswap /dev/sdX2
+swapon /dev/sdX2                    # Aktivieren
+swapoff /dev/sdX2                   # Deaktivieren
+
+# Swap-Datei erstellen
+dd if=/dev/zero of=/swapfile bs=1M count=2048  # 2GB Swap-Datei
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+
+# Swap-Status anzeigen
+swapon --show
+cat /proc/swaps
+free -h
+</code>
+
+**ISO-Image mounten:**
+<code>
+# ISO als Loop-Device mounten
+mkdir /mnt/iso
+mount -o loop /path/to/image.iso /mnt/iso
+
+# Automatisch unmounten nach Gebrauch
+umount /mnt/iso
+</code>
+
+**Netzwerk-Dateisysteme:**
+<code>
+# NFS mounten
+mount -t nfs server:/path/to/share /mnt/nfs
+
+# CIFS/SMB mounten
+mount -t cifs //server/share /mnt/smb -o username=user,password=pass
+
+# SSHFS mounten
+sshfs user@server:/path /mnt/ssh
+</code>
 
 ----
 
 ===== Hinweis =====
 
+**Wichtige Konzepte:**
+  * **Inodes**: Datenstrukturen die Datei-Metadaten speichern
+  * **Journaling**: Schutz vor Datenverlust bei Systemabstürzen
+  * **Copy-on-Write**: Effiziente Speicherung bei Btrfs/ZFS
+  * **Fragmentierung**: Kann Performance beeinträchtigen
+  * **Labels vs. UUIDs**: Eindeutige Identifikation von Dateisystemen
+
+**/etc/fstab Konfiguration:**
+<code>
+# Format: device mountpoint fstype options dump pass
+UUID=12345678-1234-1234-1234-123456789abc /home ext4 defaults 0 2
+/dev/sdb1 /mnt/data xfs defaults,noatime 0 0
+//server/share /mnt/smb cifs username=user,noauto 0 0
+tmpfs /tmp tmpfs defaults,size=1G 0 0
+</code>
+
+**Mount-Optionen Erklärung:**
+  * **defaults**: Standard-Optionen (rw, suid, dev, exec, auto, nouser, async)
+  * **noatime**: Verhindert Access-Time Updates (bessere Performance)
+  * **noauto**: Nicht automatisch beim Boot mounten
+  * **user**: Normale Benutzer dürfen mounten
+  * **dump**: Backup mit dump-Programm (0=nein, 1=ja)
+  * **pass**: fsck Reihenfolge (0=nie, 1=root, 2=andere)
+
+**Performance-Tipps:**
+  * **noatime** für bessere Performance verwenden
+  * **Blockgröße** an Anwendung anpassen
+  * **XFS** für große Dateien und hohe Performance
+  * **ext4** für allgemeine Verwendung
+  * **Btrfs** für erweiterte Features wie Snapshots
+
+**Sicherheitshinweise:**
+  * **Regelmäßige fsck-Überprüfungen** durchführen
+  * **Backups** vor Dateisystem-Operationen erstellen
+  * **Unmount** vor dem Entfernen von Geräten
+  * **Appropriate Berechtigungen** für Mount-Punkte setzen
+  * **noexec, nosuid** für unsichere Mount-Punkte verwenden
+
 ----
 
 ===== Alternativen =====
 
+**Erweiterte Dateisysteme:**
+  * **ZFS**: Integrierte Volume-Verwaltung, Snapshots, Kompression
+  * **Btrfs**: Copy-on-Write, Snapshots, RAID-Unterstützung
+  * **F2FS**: Flash-Friendly File System für SSDs
+  * **NILFS2**: Log-strukturiertes Dateisystem
+  * **ReiserFS**: Effizient für kleine Dateien (deprecated)
+
+**Spezielle Dateisysteme:**
+  * **tmpfs**: RAM-basiertes Dateisystem
+  * **ramfs**: Unkonfiguriertes RAM-Dateisystem
+  * **overlayfs**: Union-Dateisystem für Container
+  * **squashfs**: Komprimiertes Read-only Dateisystem
+  * **cramfs**: Komprimiertes ROM-Dateisystem
+
+**Netzwerk-Dateisysteme:**
+  * **NFS**: Network File System (Unix/Linux)
+  * **CIFS/SMB**: Common Internet File System (Windows)
+  * **SSHFS**: SSH File System
+  * **GlusterFS**: Verteiltes Dateisystem
+  * **Ceph**: Objekt-basiertes verteiltes Dateisystem
+
+**Verschlüsselte Dateisysteme:**
+  * **LUKS**: Linux Unified Key Setup
+  * **eCryptfs**: Enterprise Cryptographic Filesystem
+  * **EncFS**: Userspace Verschlüsselung
+  * **gocryptfs**: Moderne Alternative zu EncFS
+
+**Tools und Utilities:**
+  * **gparted**: Grafischer Partitions-Editor
+  * **parted**: Kommandozeilen Partitions-Tool
+  * **gdisk**: GPT-Partitions-Editor
+  * **testdisk**: Datenrettung und Partitions-Reparatur
+
 ----
 
 ===== Weitere Informationen =====
+
+**Manual Pages:**
+<code>
+man mkfs                # Dateisystem erstellen
+man mount               # Dateisystem mounten
+man fstab               # /etc/fstab Konfiguration
+man fsck                # Dateisystem überprüfen
+man df                  # Speicherplatz anzeigen
+man du                  # Verzeichnisgrößen
+man lsblk               # Block-Geräte auflisten
+man blkid               # Block-Device Informationen
+</code>
+
+**Wichtige Dateien:**
+  * **/etc/fstab**: Dateisystem-Mount-Konfiguration
+  * **/proc/mounts**: Aktuell gemountete Dateisysteme
+  * **/proc/filesystems**: Unterstützte Dateisystem-Typen
+  * **/etc/mtab**: Mount-Tabelle (oft Link zu /proc/mounts)
+  * **/dev/disk/**: Symlinks zu Block-Geräten (by-uuid, by-label)
+
+**Log-Dateien:**
+  * **/var/log/messages**: Allgemeine System-Messages
+  * **/var/log/syslog**: System-Log mit Dateisystem-Events
+  * **dmesg**: Kernel-Ring-Buffer für Hardware-Events
+  * **journalctl**: Systemd Journal für Mount/Unmount Events
+
+**Online-Ressourcen:**
+  * [[https://wiki.archlinux.org/title/File_systems|Arch Linux File Systems]]
+  * [[https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/managing_file_systems/index|Red Hat File Systems Guide]]
+  * [[https://www.kernel.org/doc/Documentation/filesystems/|Linux Kernel Filesystems Documentation]]
+  * [[https://btrfs.wiki.kernel.org/|Btrfs Wiki]]
+
+**Weiterführende Themen:**
+  * RAID-Konfiguration mit verschiedenen Dateisystemen
+  * LVM (Logical Volume Management)
+  * Dateisystem-Performance-Tuning
+  * Backup-Strategien für verschiedene Dateisysteme
+  * Dateisystem-Verschlüsselung
+  * Container-Storage (Docker, Kubernetes)
+  * Cluster-Dateisysteme für Hochverfügbarkeit
+
+**Troubleshooting:**
+  * Dateisystem-Reparatur nach Systemabstürzen
+  * Datenrettung bei beschädigten Dateisystemen
+  * Performance-Probleme diagnostizieren
+  * Mount-Probleme lösen
+  * Speicherplatz-Management
+
+**Best Practices:**
+  * Regelmäßige Backups vor kritischen Operationen
+  * Monitoring von Speicherplatz und Inode-Nutzung
+  * Verwendung von UUIDs statt Device-Namen
+  * Angemessene Mount-Optionen für Sicherheit
+  * Dokumentation aller Dateisystem-Konfigurationen
 
 
 
