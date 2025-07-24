@@ -1,26 +1,194 @@
 ====== 01 - Linux Kommandozeile ======
 
+Die Linux Kommandozeile (Terminal/Shell) ist eine textbasierte Schnittstelle zum Betriebssystem. Sie ermöglicht es, Befehle direkt einzugeben und mit dem System zu interagieren.
+
 ===== Syntax =====
+
+<code>
+befehl [optionen] [parameter] [argumente]
+</code>
+
+**Grundlegende Struktur:**
+  * **befehl**: Der auszuführende Befehl (z.B. ls, cp, mkdir)
+  * **optionen**: Modifikatoren die das Verhalten des Befehls ändern (beginnen meist mit - oder --)
+  * **parameter**: Zusätzliche Einstellungen für den Befehl
+  * **argumente**: Dateien, Verzeichnisse oder andere Werte auf die der Befehl angewendet wird
+
+**Beispiel:**
+<code>
+ls -la /home/user
+</code>
+  * **ls**: Befehl zum Auflisten von Dateien
+  * **-la**: Optionen für lange Ausgabe (-l) und alle Dateien (-a)
+  * **/home/user**: Argument (Verzeichnis das aufgelistet werden soll)
 
 ----
 
 ===== Wichtige Optionen =====
 
+**Kurze Optionen (ein Zeichen):**
+  * **-h**: Hilfe anzeigen
+  * **-v**: Verbose/ausführliche Ausgabe
+  * **-f**: Force/erzwingen
+  * **-r**: Rekursiv (in Unterverzeichnisse)
+  * **-i**: Interaktiv (nachfragen)
+  * **-l**: Lange/detaillierte Ausgabe
+  * **-a**: Alle Dateien (auch versteckte)
+
+**Lange Optionen (Wörter):**
+  * **--help**: Hilfe anzeigen
+  * **--version**: Version anzeigen
+  * **--verbose**: Ausführliche Ausgabe
+  * **--force**: Aktion erzwingen
+  * **--recursive**: Rekursiv arbeiten
+
+**Kombinieren von Optionen:**
+<code>
+ls -la        # Separate Optionen
+ls -l -a      # Gleicher Effekt
+ls --long --all  # Lange Optionen
+</code>
+
 ----
 
 ===== Beispiele =====
+
+**Navigation:**
+<code>
+pwd                    # Aktuelles Verzeichnis anzeigen
+cd /home/user         # In Verzeichnis wechseln
+cd ..                 # Ein Verzeichnis zurück
+cd ~                  # Ins Home-Verzeichnis
+cd -                  # Zum vorherigen Verzeichnis
+</code>
+
+**Dateien und Verzeichnisse:**
+<code>
+ls                    # Verzeichnisinhalt auflisten
+ls -la               # Detaillierte Auflistung aller Dateien
+mkdir ordner         # Verzeichnis erstellen
+rmdir ordner         # Leeres Verzeichnis löschen
+rm datei.txt         # Datei löschen
+rm -rf ordner        # Verzeichnis rekursiv löschen
+cp datei.txt kopie.txt  # Datei kopieren
+mv datei.txt neuer_name.txt  # Datei umbenennen/verschieben
+</code>
+
+**Inhalt anzeigen:**
+<code>
+cat datei.txt        # Dateiinhalt anzeigen
+less datei.txt       # Datei seitenweise anzeigen
+head datei.txt       # Erste 10 Zeilen anzeigen
+tail datei.txt       # Letzte 10 Zeilen anzeigen
+grep "text" datei.txt  # Nach Text in Datei suchen
+</code>
+
+**Berechtigungen:**
+<code>
+chmod 755 datei.txt  # Berechtigungen setzen
+chown user:group datei.txt  # Besitzer ändern
+sudo befehl          # Befehl als Administrator ausführen
+</code>
+
+**Prozesse:**
+<code>
+ps aux               # Laufende Prozesse anzeigen
+top                  # Prozesse live anzeigen
+htop                 # Erweiterte Prozessanzeige
+kill 1234           # Prozess mit PID 1234 beenden
+killall firefox     # Alle Firefox-Prozesse beenden
+</code>
 
 ----
 
 ===== Hinweis =====
 
+**Wichtige Tipps:**
+  * **Tab-Vervollständigung**: Drücken Sie Tab um Befehle und Dateinamen automatisch zu vervollständigen
+  * **Befehlshistorie**: Verwenden Sie die Pfeiltasten ↑ ↓ um vorherige Befehle zu durchsuchen
+  * **Ctrl+C**: Aktuellen Befehl abbrechen
+  * **Ctrl+Z**: Prozess pausieren (mit `fg` fortsetzen)
+  * **Ctrl+L**: Terminal-Bildschirm löschen (oder `clear`)
+  * **Ctrl+A**: An den Zeilenanfang springen
+  * **Ctrl+E**: An das Zeilenende springen
+
+**Sonderzeichen:**
+  * **~**: Home-Verzeichnis des aktuellen Benutzers
+  * **.**: Aktuelles Verzeichnis
+  * **..**: Übergeordnetes Verzeichnis
+  * **\***: Platzhalter für beliebige Zeichen
+  * **?**: Platzhalter für ein einzelnes Zeichen
+  * **|**: Pipe - Ausgabe an nächsten Befehl weiterleiten
+  * **>**: Ausgabe in Datei umleiten (überschreiben)
+  * **>>**: Ausgabe an Datei anhängen
+
+**Beispiele für Platzhalter:**
+<code>
+ls *.txt             # Alle .txt Dateien
+ls test?.*           # test1.txt, test2.pdf, etc.
+rm *.log             # Alle .log Dateien löschen
+</code>
+
 ----
 
 ===== Alternativen =====
 
+**Verschiedene Shell-Umgebungen:**
+  * **Bash**: Standard-Shell in den meisten Linux-Distributionen
+  * **Zsh**: Erweiterte Shell mit zusätzlichen Features
+  * **Fish**: Benutzerfreundliche Shell mit Auto-Vervollständigung
+  * **Dash**: Minimalistische, schnelle Shell
+
+**Grafische Terminal-Emulatoren:**
+  * **GNOME Terminal**: Standard-Terminal in GNOME
+  * **Konsole**: KDE Terminal
+  * **Terminator**: Terminal mit Split-Screen Funktionen
+  * **Tilix**: Moderner Terminal mit Kachel-Layout
+  * **Alacritty**: GPU-beschleunigter Terminal
+
+**Kommandozeilen-Verbesserungen:**
+  * **oh-my-zsh**: Framework für Zsh mit Themes und Plugins
+  * **powerline**: Statuszeile für verschiedene Anwendungen
+  * **tmux**: Terminal-Multiplexer für mehrere Sessions
+  * **screen**: Älterer Terminal-Multiplexer
+
 ----
 
 ===== Weitere Informationen =====
+
+**Manual Pages (Handbuch):**
+<code>
+man befehl           # Handbuchseite für einen Befehl anzeigen
+man ls               # Handbuch für den ls-Befehl
+man -k suchwort      # Nach Befehlen suchen
+info befehl          # Info-Dokumentation anzeigen
+</code>
+
+**Hilfe-Optionen:**
+<code>
+befehl --help        # Kurze Hilfe anzeigen
+befehl -h            # Kurze Hilfe (alternative)
+which befehl         # Pfad zum Befehl anzeigen
+type befehl          # Art des Befehls anzeigen
+</code>
+
+**Online-Ressourcen:**
+  * [[https://www.gnu.org/software/bash/manual/|Bash Manual]]
+  * [[https://wiki.ubuntuusers.de/|Ubuntu Users Wiki]]
+  * [[https://wiki.archlinux.org/|Arch Linux Wiki]]
+  * [[https://ss64.com/bash/|SS64 Bash Referenz]]
+
+**Weiterführende Themen:**
+  * Shell-Skripte schreiben
+  * Erweiterte Text-Verarbeitung mit sed, awk, grep
+  * Systemadministration über die Kommandozeile
+  * Automatisierung mit Cron-Jobs
+  * Netzwerk-Tools (ssh, scp, rsync)
+
+**Übungsmöglichkeiten:**
+  * [[https://www.learnenough.com/command-line-tutorial|Learn Enough Command Line]]
+  * [[https://overthewire.org/wargames/bandit/|OverTheWire Bandit]]
+  * [[https://cmdchallenge.com/|Command Line Challenge]]
 
 
 
