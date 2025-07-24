@@ -1,4 +1,4 @@
-====== 07 - LVM & RAID ======
+====== 07 - LVM RAID ======
 
 **LVM (Logical Volume Manager)** und **RAID (Redundant Array of Independent Disks)** sind wichtige Technologien für die Festplattenverwaltung und Datensicherheit in Linux-Systemen.
 
@@ -7,7 +7,7 @@
 **LVM Befehle:**
 <code>
 # Physical Volume (PV) Verwaltung
-pvcreate /dev/sdX        # Physical Volume erstellen
+pvcreate /dev/sdX       # Physical Volume erstellen
 pvdisplay               # Physical Volumes anzeigen
 pvremove /dev/sdX       # Physical Volume entfernen
 
