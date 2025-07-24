@@ -1,0 +1,70 @@
+====== ps - Prozessstatus ======
+(2025)
+
+Das Kommando **ps** wird verwendet, um Informationen über die aktuell laufenden Prozesse auf einem Linux-System anzuzeigen. Es bietet eine Vielzahl von Optionen, mit denen die angezeigten Informationen angepasst werden können, z. B. welche Prozesse angezeigt werden und in welchem Format.
+
+===== Syntax =====
+<code>
+ps [OPTIONEN]
+</code>
+
+----
+
+===== Wichtige Optionen =====
+Die häufig verwendeten Optionen für das Kommando **ps** sind:
+
+^ Option           ^ Beschreibung                                                                                                                                            ^
+| -e, --everyone  | Zeigt alle laufenden Prozesse im System an, nicht nur die des aktuellen Benutzers.                                                                      |
+| -f, --forest    | Zeigt die Prozesse in einer Baumstruktur, um die Hierarchie der Prozesse darzustellen.                                                                  |
+| -u <Benutzer>   | Zeigt die Prozesse eines bestimmten Benutzers an.                                                                                                       |
+| -x              | Zeigt alle Prozesse, auch die ohne Terminal, an (z.B. Hintergrundprozesse).                                                                             |
+| -l, --long      | Zeigt eine detaillierte Liste von Prozessen an, einschließlich zusätzlicher Informationen wie Status und Priorität.                                     |
+| -p <PID>        | Zeigt nur den Prozess mit der angegebenen PID (Prozess-ID) an.                                                                                          |
+| -aux            | Eine sehr häufig verwendete Option, um alle Prozesse im System anzuzeigen, inklusive solcher ohne Terminal und auch im Hintergrund laufender Prozesse.  |
+
+----
+
+===== Beispiele =====
+Einige Beispiele für die Verwendung von **ps**:
+
+  *  Zeigt alle laufenden Prozesse des aktuellen Benutzers:
+<code>
+ps
+</code>
+
+  *  Zeigt alle Prozesse des Systems an:
+<code>
+ps -e
+</code>
+
+  *  Zeigt Prozesse in einer Baumstruktur:
+<code>
+ps -f
+</code>
+
+  *  Zeigt alle Prozesse eines bestimmten Benutzers an (z.B. "user1"):
+<code>
+ps -u user1
+</code>
+
+  *  Zeigt alle Prozesse im System, auch ohne Terminal und Hintergrundprozesse:
+<code>
+ps -aux
+</code>
+
+----
+
+===== Hinweis =====
+  *  **ps** zeigt nur Prozesse an, die zum Zeitpunkt der Ausführung des Befehls laufen. Wenn neue Prozesse gestartet werden, müssen Sie **ps** erneut ausführen, um diese anzuzeigen.
+  *  Einige Optionen, wie z.B. `-u`, benötigen möglicherweise Administratorrechte, um alle Benutzerprozesse anzuzeigen.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **ps** und die zugehörigen Optionen:
+<code>
+man ps
+</code>
+
+Weitere Informationen und Dokumentation zu Prozessen finden Sie unter: [[https://man7.org/linux/man-pages/man1/ps.1.html|ps Man-Page]]
+

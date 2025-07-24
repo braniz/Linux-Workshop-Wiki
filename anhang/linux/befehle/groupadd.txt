@@ -1,0 +1,60 @@
+====== groupadd - Gruppe erstellen ======
+(2025)
+
+Der Befehl **groupadd** wird verwendet, um eine neue Gruppe auf einem Linux-System zu erstellen. Eine Gruppe kann mehrere Benutzer zusammenfassen und wird oft verwendet, um Berechtigungen für Benutzer zu verwalten.
+
+===== Syntax =====
+<code>
+groupadd [OPTIONEN] <GRUPPENNAME>
+</code>
+
+----
+
+===== Wichtige Optionen =====
+Die wichtigsten Optionen für den **groupadd**-Befehl sind:
+
+^ Option ^ Beschreibung ^
+| `-g` <GID>                 | Setzt die Gruppen-ID (GID) auf den angegebenen Wert. |
+| `-r`                        | Erstellt eine Systemgruppe (mit einer GID im reservierten Bereich für Systemgruppen). |
+| `-f`                        | Erzwingt das Erstellen der Gruppe, auch wenn sie bereits existiert. |
+| `-o`                        | Erlaubt die Erstellung einer Gruppe mit einer nicht eindeutigen GID. |
+
+----
+
+===== Beispiele =====
+Hier sind einige Beispiele für die Verwendung von **groupadd**:
+
+  *  Eine neue Gruppe namens `developers` erstellen:
+<code>
+groupadd developers
+</code>
+
+  *  Eine neue Gruppe mit einer spezifischen GID erstellen:
+<code>
+groupadd -g 1001 developers
+</code>
+
+  *  Eine neue Systemgruppe erstellen:
+<code>
+groupadd -r sysadmins
+</code>
+
+  *  Eine Gruppe erstellen, auch wenn sie bereits existiert:
+<code>
+groupadd -f developers
+</code>
+
+----
+
+===== Hinweis =====
+  *  Der Befehl **groupadd** ist nützlich, um Gruppen für Benutzer zu erstellen, damit du Berechtigungen zentral verwalten kannst.
+  *  Wenn du eine Gruppe erstellst, wird sie automatisch mit einer einzigartigen GID (Gruppen-ID) versehen, es sei denn, du gibst eine bestimmte GID mit der Option `-g` an.
+  *  Für das Hinzufügen von Benutzern zu einer Gruppe wird ein separater Befehl wie `usermod` verwendet.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **groupadd**:
+<code>
+man groupadd
+</code>

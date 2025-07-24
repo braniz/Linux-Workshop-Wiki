@@ -1,0 +1,24 @@
+===== Netzwerk-Debugging mit Linux =====
+(2025.02)
+
+Die Analyse und Fehlerbehebung von Netzwerkproblemen ist ein wichtiger Bestandteil der Systemadministration.  
+Linux bietet eine Vielzahl von Werkzeugen, um Verbindungen zu überprüfen, Netzwerkpakete zu analysieren und Routing-Probleme zu identifizieren.  
+Diese Seite gibt einen Überblick über einige der wichtigsten Befehle zur Netzwerkanalyse unter Linux.
+
+==== Wichtige Befehle ====
+
+^ Befehl ^ Beschreibung^  
+| ip a | Zeigt die aktuellen Netzwerkschnittstellen und deren IP-Adressen |  
+| ip r | Zeigt die aktuelle Routing-Tabelle |  
+| ping <ziel> | Sendet ICMP-Pakete zur Überprüfung der Erreichbarkeit eines Hosts |  
+| traceroute <ziel> | Zeigt den Weg der Pakete zum Zielhost an |  
+| netstat -tulnp | Listet alle offenen Ports und zugehörige Prozesse auf |  
+| ss -tulnp | Alternative zu netstat mit detaillierteren Informationen |  
+| tcpdump -i <interface> | Erfasst Netzwerkverkehr auf einer bestimmten Schnittstelle |  
+| dig <domain> | Führt eine DNS-Abfrage für eine bestimmte Domain durch |  
+| nslookup <domain> | Ein weiteres Tool zur Überprüfung von DNS-Einträgen |  
+| arp -a | Zeigt den aktuellen ARP-Cache |  
+| ethtool <interface> | Zeigt detaillierte Informationen zu einer Netzwerkschnittstelle |  
+| nc -zv <host> <port> | Überprüft, ob ein bestimmter Port auf einem Host erreichbar ist |
+| nmap <host> | Führt einen Portscan auf dem angegebenen Host durch |  
+

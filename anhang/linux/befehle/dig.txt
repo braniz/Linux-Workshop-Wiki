@@ -1,0 +1,78 @@
+====== dig - DNS-Abfragen durchführen ======
+(2025)
+
+Das Kommando **dig** (Domain Information Groper) ist ein leistungsfähiges Tool zum Abfragen von DNS-Servern. Es wird häufig verwendet, um DNS-Informationen wie A-Records, MX-Records und andere Ressourceneinträge abzurufen. Es bietet eine detaillierte Ausgabe, die sowohl für die Fehlerbehebung als auch für die Analyse von DNS-Antworten nützlich ist.
+
+===== Syntax =====
+<code>
+dig [OPTIONEN] <ZIEL> [TYP]
+</code>
+
+----
+
+===== Wichtige Optionen =====
+Die wichtigsten Optionen und Argumente für **dig** sind:
+
+^ Option ^ Beschreibung ^
+| `@<SERVER>`         | Gibt den DNS-Server an, der abgefragt werden soll. |
+| `<TYP>`             | Der Typ des gewünschten DNS-Eintrags (z.B. `A`, `MX`, `CNAME`). |
+| `+short`            | Gibt nur die Antwort in vereinfachter Form aus, ohne zusätzliche Details. |
+| `+trace`            | Verfolgt die DNS-Abfrage über alle DNS-Server hinweg, beginnend mit den Root-Servern. |
+| `+noall`            | Verhindert die Anzeige von Standardinformationen in der Ausgabe. |
+| `+answer`           | Zeigt nur die Antwort auf die DNS-Abfrage an. |
+| `+authority`        | Zeigt die Authoritative DNS-Server an. |
+| `+additional`       | Zeigt zusätzliche Informationen an, die mit der Antwort verbunden sind. |
+
+----
+
+===== Beispiele =====
+Hier sind einige Beispiele für die Verwendung von **dig**:
+
+  *  Abfrage des A-Records für eine Domain:
+<code>
+dig example.com A
+</code>
+
+  *  Abfrage des MX-Records für eine Domain:
+<code>
+dig example.com MX
+</code>
+
+  *  Abfrage der DNS-Server für eine Domain:
+<code>
+dig example.com NS
+</code>
+
+  *  Verwendung eines bestimmten DNS-Servers (z.B. Google DNS):
+<code>
+dig @8.8.8.8 example.com
+</code>
+
+  *  Ausgabe der Antwort im kurzen Format:
+<code>
+dig example.com +short
+</code>
+
+  *  Verfolgt die DNS-Abfrage über alle DNS-Server hinweg:
+<code>
+dig example.com +trace
+</code>
+
+  *  Abfrage des A-Records für eine Domain und Anzeige nur der Antwort:
+<code>
+dig example.com A +noall +answer
+</code>
+
+----
+
+===== Hinweis =====
+  *  **dig** kann auch zur Fehlersuche bei DNS-Problemen verwendet werden, z.B. um zu überprüfen, ob DNS-Einträge korrekt propagiert werden.
+  *  Die Verwendung von `+trace` kann helfen, Probleme in der DNS-Auflösung zu identifizieren, insbesondere wenn eine Domain nicht korrekt aufgelöst wird.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **dig**:
+<code>
+man dig
+</code>

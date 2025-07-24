@@ -1,0 +1,69 @@
+====== systemd - Wichtige Pfade ======
+(2025)
+
+**systemd** verwendet eine Vielzahl von Verzeichnissen für Konfigurationsdateien, Unit-Dateien, Logs und temporäre Daten. Diese Pfade sind entscheidend für die Verwaltung und Anpassung von systemd-Diensten und -Einstellungen.
+
+===== Verzeichnisse und ihre Bedeutung =====
+
+Die folgende Tabelle zeigt die wichtigsten systemd-Verzeichnisse und ihre Funktionen:
+
+^ Pfad                           ^ Beschreibung                                          ^
+| /etc/systemd/                  | Hauptverzeichnis für benutzerdefinierte systemd-Konfigurationen. |
+| /etc/systemd/system/           | Enthält benutzerdefinierte und überschreibbare Unit-Dateien. |
+| /usr/lib/systemd/              | Standard-Systemd-Verzeichnisse mit den von der Distribution bereitgestellten Unit-Dateien. |
+| /usr/lib/systemd/system/       | Systemweite Unit-Dateien, die nicht direkt bearbeitet werden sollten. |
+| /run/systemd/                  | Enthält temporäre systemd-Daten, z. B. Laufzeit-Units. |
+| /var/lib/systemd/              | Enthält persistente Statusinformationen, z. B. für `systemd-tmpfiles`. |
+| /usr/lib/systemd/user/         | Standard-Unit-Dateien für Benutzer-spezifische systemd-Instanzen. |
+| /etc/systemd/user/             | Benutzerdefinierte Konfigurationen für systemd-Instanzen von Benutzern. |
+| /var/log/journal/              | Speicherort für systemd-Journal-Logs (wenn persistent gespeichert). |
+| /run/log/journal/              | Speicherort für temporäre systemd-Journal-Logs. |
+
+----
+
+===== Wichtige Unit-Pfade =====
+
+Die folgende Tabelle zeigt, wo systemd nach Unit-Dateien sucht:
+
+^ Pfad                          ^ Beschreibung                                           ^
+| /etc/systemd/system/          | Benutzerdefinierte Units mit Vorrang vor systemweiten Units. |
+| /usr/lib/systemd/system/      | Standard-Units, die von der Distribution bereitgestellt werden. |
+| /run/systemd/system/          | Temporäre Units, die zur Laufzeit generiert wurden. |
+
+Systemd verarbeitet die Dateien in dieser Reihenfolge. Falls eine Unit in mehreren Verzeichnissen existiert, wird die Datei mit der höchsten Priorität verwendet.
+
+----
+
+===== Beispiel: Überschreiben einer Unit-Datei =====
+
+Falls eine systemd-Unit aus `/usr/lib/systemd/system/` überschrieben werden soll, sollte sie nach `/etc/systemd/system/` kopiert und dort modifiziert werden:
+
+<code bash>
+cp /usr/lib/systemd/system/nginx.service /etc/systemd/system/
+nano /etc/systemd/system/nginx.service
+systemctl daemon-reload
+</code>
+
+Dies stellt sicher, dass die Änderungen nicht durch ein System-Update überschrieben werden.
+
+----
+
+===== Hinweis =====
+  * **Änderungen an `/usr/lib/systemd/system/` sollten vermieden werden**, da sie durch Updates überschrieben werden können.
+  * **Benutzerdefinierte Units sollten in `/etc/systemd/system/` abgelegt werden**.
+  * Temporäre Units befinden sich in `/run/systemd/system/` und werden beim Neustart entfernt.
+
+----
+
+===== Alternativen =====
+Für alternative Init-Systeme wie OpenRC oder runit sind die Verzeichnisse unterschiedlich organisiert. Beispielsweise nutzt OpenRC `/etc/init.d/` für Skripte.
+
+----
+
+===== Weitere Informationen =====
+Mehr Details zu systemd-Pfaden finden sich in den Man-Pages:
+<code bash>
+man systemd.unit
+man systemd.directives
+</code>
+

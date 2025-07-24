@@ -1,0 +1,107 @@
+====== top - Systemmonitor für Prozesse ======
+(2025)
+
+Der Befehl **top** zeigt eine dynamische Übersicht über die aktuellen Systemressourcen, laufende Prozesse und deren Ressourcennutzung an. Mit **top** können Benutzer in Echtzeit sehen, welche Prozesse wie viel CPU, RAM und andere Systemressourcen verbrauchen.
+
+===== Syntax =====
+<code>
+top
+</code>
+
+-----
+
+===== Wichtige Optionen =====
+Der Befehl **top** bietet eine Vielzahl von Optionen, um die Anzeige anzupassen und zusätzliche Informationen zu liefern:
+
+^ Option ^ Beschreibung ^
+| `-d <Sekunden>`      | Legt das Intervall in Sekunden fest, in dem die Anzeige aktualisiert wird. |
+| `-p <PID>`           | Zeigt nur den Prozess mit der angegebenen PID an. |
+| `-u <Benutzer>`      | Filtert die Anzeige, um nur Prozesse eines bestimmten Benutzers anzuzeigen. |
+| `-n <Anzahl>`        | Begrenzt die Anzahl der Updates, die durchgeführt werden, bevor **top** beendet wird. |
+| `-b`                 | Startet **top** im Batch-Modus, um die Ausgabe in eine Datei zu schreiben oder zu speichern. |
+
+-----
+
+===== Beispiele =====
+Hier sind einige praktische Beispiele zur Verwendung von `top`:
+
+  *  **Starten von top**:
+<code>
+top
+</code>
+Dieser Befehl zeigt die aktuelle Liste der Prozesse, ihre Ressourcennutzung und andere Systemstatistiken in Echtzeit an.
+
+  *  **Anzeige mit benutzerdefiniertem Intervall**:
+<code>
+top -d 2
+</code>
+Dieser Befehl zeigt die Systemressourcen und Prozesse an und aktualisiert die Anzeige alle 2 Sekunden.
+
+  *  **Anzeige von Prozessen eines bestimmten Benutzers**:
+<code>
+top -u username
+</code>
+Dieser Befehl zeigt nur die Prozesse des angegebenen Benutzers `username` an.
+
+  *  **Anzeige von nur einem bestimmten Prozess (mit PID)**:
+<code>
+top -p 1234
+</code>
+Dieser Befehl zeigt nur den Prozess mit der angegebenen PID (in diesem Fall `1234`) an.
+
+  *  **Starten von top im Batch-Modus**:
+<code>
+top -b -n 1 > top_output.txt
+</code>
+Dieser Befehl startet **top** im Batch-Modus und schreibt die Ausgabe in die Datei `top_output.txt`. Die Option `-n 1` bedeutet, dass nur ein Update durchgeführt wird.
+
+-----
+
+===== Beispiel-Ausgabe =====
+Ein typischer **top**-Befehl könnte eine Ausgabe wie folgt haben:
+<code>
+top - 15:34:02 up 3 days,  5:12,  2 users,  load average: 0.07, 0.12, 0.09
+Tasks: 182 total,   1 running, 181 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  2.5 us,  1.1 sy,  0.0 ni, 96.1 id,  0.2 wa,  0.0 hi,  0.0 si,  0.0 st
+MiB Mem :   3895.9 total,    542.2 free,   1289.0 used,   2064.7 buff/cache
+MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   2429.1 avail Mem
+PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND
+1234 root      20   0  168560  13240   8832 S  0.7  0.3   0:03.54 nginx
+5678 user      20   0  110012   9764   6348 S  0.3  0.2   0:01.23 bash
+9101 user      20   0   23360   1024   1024 S  0.1  0.0   0:00.45 top
+</code>
+
+Die Ausgabe von **top** besteht aus mehreren Bereichen. Hier ist eine Erklärung der wichtigsten Spalten:
+
+^ Spalte ^ Bedeutung ^
+| `PID`        | Die Prozess-ID des laufenden Prozesses. |
+| `USER`       | Der Benutzer, der den Prozess gestartet hat. |
+| `PR`         | Die Priorität des Prozesses. Ein niedriger Wert bedeutet höhere Priorität. |
+| `NI`         | Der Nice-Wert des Prozesses, der die Priorität beeinflusst. |
+| `VIRT`       | Der virtuelle Speicher, der vom Prozess verwendet wird (einschließlich reserviertem Speicher). |
+| `RES`        | Der physische Speicher, der aktuell vom Prozess verwendet wird (Resident Set Size). |
+| `SHR`        | Der gemeinsam genutzte Speicher des Prozesses. |
+| `S`          | Der Status des Prozesses. Mögliche Werte sind: `S` (schlafend), `R` (laufend), `Z` (Zombie), etc. |
+| `%CPU`       | Der Prozentsatz der CPU, den der Prozess derzeit nutzt. |
+| `%MEM`       | Der Prozentsatz des RAMs, den der Prozess derzeit verwendet. |
+| `TIME+`      | Die gesamte CPU-Zeit, die der Prozess seit seiner Ausführung verbraucht hat. |
+| `COMMAND`    | Der Name des Prozesses oder das ausgeführte Kommando. |
+
+-----
+
+===== Hinweis =====
+  *  **top** bietet eine Vielzahl von Tastenkombinationen innerhalb der Anwendung, mit denen du zwischen verschiedenen Ansichten wechseln, Prozesse sortieren und die Anzeige anpassen kannst. Einige wichtige Tastenkombinationen sind:
+     *  `P`: Sortieren nach CPU-Auslastung
+     *  `M`: Sortieren nach Speicherverbrauch
+     *  `q`: Beenden von top
+  *  Im Batch-Modus kann die Ausgabe von **top** für Skripte oder automatisierte Systemüberwachungen genutzt werden.
+
+-----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über den Befehl **top** und alle verfügbaren Optionen:
+<code>
+man top
+</code>
+
+Weitere Informationen zu Systemüberwachungsbefehlen findest du in der [[https://man7.org/linux/man-pages/|Linux Man-Pages]].

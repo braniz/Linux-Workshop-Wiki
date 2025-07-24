@@ -1,0 +1,70 @@
+====== ssh-keygen - SSH-Schlüsselpaare erstellen ======
+(2025.02)
+
+**ssh-keygen** ist ein Tool zum Erzeugen von SSH-Schlüsselpaaren. Es wird häufig verwendet, um sichere, passwortlose Authentifizierung zwischen einem Client und einem Server zu ermöglichen. SSH-Schlüsselpaare bestehen aus einem privaten Schlüssel, der sicher auf dem Client gespeichert wird, und einem öffentlichen Schlüssel, der auf dem Server hinterlegt wird.
+
+Mit **ssh-keygen** können verschiedene Arten von Schlüsseln (RSA, DSA, ECDSA, Ed25519) erstellt werden, um eine sichere Kommunikation zwischen Computern über das SSH-Protokoll zu ermöglichen.
+
+===== Syntax =====
+<code bash>
+ssh-keygen [Optionen]
+</code>
+
+===== Wichtige Optionen =====
+^ Option               ^ Beschreibung                                                    ^
+| `-t`                  | Gibt den Schlüsselt-Typ an (z.B. rsa, ecdsa, ed25519).            |
+| `-b`                  | Gibt die Schlüssellänge an (z.B. 2048 für RSA).                  |
+| `-f`                  | Legt den Dateinamen für den Schlüssel fest (Standard: `~/.ssh/id_rsa`).|
+| `-C`                  | Fügt einen Kommentar (z.B. eine E-Mail-Adresse) zum Schlüssel hinzu.|
+| `-N`                  | Setzt ein Passwort für den privaten Schlüssel (optional).         |
+| `-q`                  | Stellt das Tool auf eine "quiet"-Ausgabe (keine Rückmeldungen).   |
+| `-y`                  | Gibt den öffentlichen Schlüssel aus, wenn der private Schlüssel bereitgestellt wird.|
+| `-e`                  | Exportiert den öffentlichen Schlüssel in verschiedenen Formaten. |
+
+===== Beispiele =====
+**Ein RSA-Schlüsselpaar mit einer Schlüssellänge von 2048 Bit erstellen:**
+<code bash>
+ssh-keygen -t rsa -b 2048
+</code>
+Erstellt ein RSA-Schlüsselpaar mit einer Länge von 2048 Bit. Der private Schlüssel wird in der Datei `~/.ssh/id_rsa` und der öffentliche Schlüssel in `~/.ssh/id_rsa.pub` gespeichert.
+
+**Ein ED25519-Schlüsselpaar erstellen:**
+<code bash>
+ssh-keygen -t ed25519
+</code>
+Erstellt ein ED25519-Schlüsselpaar, das als sicherer als RSA und DSA gilt und standardmäßig eine längere Schlüssellänge verwendet.
+
+**Schlüsselpaar mit einem benutzerdefinierten Dateinamen erstellen:**
+<code bash>
+ssh-keygen -t rsa -b 2048 -f ~/.ssh/my_custom_key
+</code>
+Erstellt ein RSA-Schlüsselpaar und speichert es unter dem benutzerdefinierten Dateinamen `my_custom_key` anstelle der Standarddatei.
+
+**Schlüsselpaar mit einem Kommentar versehen (z.B. E-Mail-Adresse):**
+<code bash>
+ssh-keygen -t rsa -b 2048 -C "myemail@example.com"
+</code>
+Erstellt ein RSA-Schlüsselpaar mit dem Kommentar "myemail@example.com".
+
+**Privaten Schlüssel aus dem öffentlichen Schlüssel extrahieren:**
+<code bash>
+ssh-keygen -y -f ~/.ssh/my_custom_key > ~/.ssh/my_custom_key.pub
+</code>
+Extrahiert den öffentlichen Schlüssel aus dem privaten Schlüssel und speichert ihn in der Datei `my_custom_key.pub`.
+
+**Ein Passwort für den privaten Schlüssel setzen (optional):**
+<code bash>
+ssh-keygen -t rsa -b 2048 -f ~/.ssh/id_rsa -N "meinPasswort"
+</code>
+Setzt ein Passwort für den privaten Schlüssel. Dies erhöht die Sicherheit, da der private Schlüssel nur mit dem richtigen Passwort verwendet werden kann.
+
+===== Hinweise =====
+- Wenn du **ssh-keygen** ohne Optionen aufrufst, wird das Programm mit den Standardwerten fortfahren und ein RSA-Schlüsselpaar mit einer Länge von 2048 Bit erstellen. Der private Schlüssel wird im Verzeichnis `~/.ssh/id_rsa` gespeichert, und der öffentliche Schlüssel wird unter `~/.ssh/id_rsa.pub` abgelegt.
+- Beim Erstellen von Schlüsselpaaren für SSH-Authentifizierung ist es wichtig, dass du den privaten Schlüssel sicher aufbewahrst und niemals weitergibst. Der öffentliche Schlüssel kann frei verbreitet und auf Servern hinterlegt werden, bei denen du dich authentifizieren möchtest.
+- Wenn du **ssh-keygen** zum ersten Mal verwendest, wird das Tool möglicherweise nach einem Passwort für den privaten Schlüssel fragen. Dies erhöht die Sicherheit des Schlüssels, ist jedoch optional.
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen zu allen Optionen und der Verwendung von **ssh-keygen**:
+<code bash>
+man ssh-keygen
+</code>

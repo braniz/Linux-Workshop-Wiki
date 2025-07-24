@@ -1,0 +1,56 @@
+====== vgextend – Erweiterung einer Volume Group ======
+(2025)
+
+Der Befehl **vgextend** wird verwendet, um eine bestehende **Volume Group (VG)** mit zusätzlichen **Physical Volumes (PVs)** zu erweitern. Dies ist nützlich, wenn mehr Speicherplatz benötigt wird, ohne die bestehende Volume Group zu löschen oder neu zu erstellen.
+
+===== Syntax =====
+<code>
+vgextend [Optionen] <Volume-Group-Name> <Physical-Volume>...
+</code>
+
+**Wichtige Optionen:**  
+
+^ Option ^ Beschreibung ^
+| **-v**, **--verbose**              | Zeigt detaillierte Informationen während der Ausführung des Befehls an. |
+| **-f**, **--force**                | Erzwingt das Hinzufügen des Physical Volume, auch wenn es nicht vollständig initialisiert oder korrekt ist. |
+
+-----
+
+===== Beispiele =====
+
+  *  **Erweiterung einer Volume Group mit einem Physical Volume**  
+<code>
+sudo vgextend vg01 /dev/sdc
+</code>
+
+  *  **Erweiterung einer Volume Group mit mehreren Physical Volumes**  
+<code>
+sudo vgextend vg01 /dev/sdc /dev/sdd
+</code>
+
+  *  **Erweiterung einer Volume Group mit detaillierten Ausgaben**  
+<code>
+sudo vgextend -v vg01 /dev/sdc
+</code>
+
+-----
+
+===== Hinweis =====
+  *  Der Befehl `vgextend` kann nur auf eine Volume Group angewendet werden, die noch freie Erweiterungsmöglichkeiten besitzt.
+  *  Nach der Erweiterung der Volume Group kann der zusätzliche Speicherplatz verwendet werden, um Logical Volumes zu vergrößern oder neue Logical Volumes zu erstellen.
+
+-----
+
+===== Alternativen =====
+  *  `vgcreate` – Erstellt eine neue Volume Group.  
+  *  `vgreduce` – Entfernt ein Physical Volume aus einer Volume Group.  
+
+-----
+
+===== Weitere Informationen =====
+Für detaillierte Informationen siehe die Man-Page:  
+<code>
+man vgextend
+</code>
+
+Weitere Dokumentation findest du unter [[https://man7.org/linux/man-pages/man8/vgextend.8.html|vgextend Man-Page]].

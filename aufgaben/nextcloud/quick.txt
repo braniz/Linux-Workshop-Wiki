@@ -1,0 +1,210 @@
+====== 00 - Nextcloud Quick Install ======
+(2025.02)
+
+===== Einführung =====
+
+Diese Anleitung ist für Demo und Übungszwecke erstellt worden und nicht für den Einsatz auf einem Internetfähigen Webserver gedacht.
+
+Als Linux OS wurde Ubuntu 24.04 LTS\\
+Die Nextcloud Version 30.x.x.
+
+Abweichungen bei der Systemanforderung und den Anpassungen an den Konfigurations Dateien können auftreten.
+
+===== Verwendte Befehle ======
+
+**OS Update**
+<code>
+apt update && apt -y upgrade
+
+apt install -y apache2 mariadb-server openssl php wget curl zip unzip php-mysql php-zip libapache2-mod-php php-xml php-mbstring php-gd php-curl redis-server php-redis php-apcu php-intl php-bcmath php-gmp php-imagick libmagickcore-6.q16-6-extra</code>
+
+<hidden>
+
+^ Paketname                 ^ Beschreibung                          ^ Funktion                                                       ^
+| apache2                  | Webserver                             | Bereitstellung eines HTTP-Webservers.                           |
+| mariadb-server           | Datenbankserver                       | Open-Source-MySQL-Alternative für Datenbankmanagement.          |
+| openssl                  | Kryptografiebibliothek                | Verschlüsselung und Zertifikatsverwaltung.                      |
+| php                      | Skriptsprache                         | Serverseitige Skripterstellung für dynamische Webseiten.         |
+| wget                     | Datei-Downloader                      | Herunterladen von Dateien über HTTP, HTTPS und FTP.             |
+| curl                     | Datei-Downloader                      | Datenübertragung von oder zu einem Server über verschiedene Protokolle. |
+| zip                      | Archivierungstool                     | Erstellung von ZIP-Archiven.                                    |
+| unzip                    | Entpackungstool                       | Extrahiert ZIP-Archive.                                         |
+| php-mysql                | PHP-Modul                             | Interaktion zwischen PHP und MySQL-Datenbanken.                 |
+| php-zip                  | PHP-Modul                             | ZIP-Unterstützung in PHP-Skripten.                              |
+| libapache2-mod-php       | Apache-Modul                          | Integration von PHP in den Apache-Webserver.                    |
+| php-xml                  | PHP-Modul                             | Verarbeitung von XML-Daten in PHP.                              |
+| php-mbstring             | PHP-Modul                             | Multibyte-String-Unterstützung in PHP.                          |
+| php-gd                   | PHP-Modul                             | Bildverarbeitung in PHP.                                        |
+| php-curl                 | PHP-Modul                             | Datenübertragung mit cURL innerhalb von PHP-Skripten.           |
+| redis-server             | Datenbankserver                       | In-Memory-Datenbank und Cache für schnelle Datenzugriffe.       |
+| php-redis                | PHP-Modul                             | Interaktion zwischen PHP und Redis.                             |
+| php-apcu                 | PHP-Modul                             | Zwischenspeicher (Cache) für PHP.                               |
+| php-intl                 | PHP-Modul                             | Unterstützung internationalisierter Funktionen (z. B. Datum, Währung). |
+| php-bcmath               | PHP-Modul                             | Erweiterung für mathematische Berechnungen mit großen Zahlen.   |
+| php-gmp                  | PHP-Modul                             | Unterstützung für große Ganzzahlen und mathematische Berechnungen. |
+| php-imagick              | PHP-Modul                             | Erweiterung für Bildmanipulation und -bearbeitung.              |
+| libmagickcore-6.q16-6-extra | Bibliothek                         | Zusatzfunktionen für ImageMagick zur Bildbearbeitung.           |
+
+</hidden>
+**Anpassung am Webserver**
+
+Inhalt der der Datei 000-default.conf ersetzen.
+
+<code>
+vi /etc/apache2/sites-available/000-default.conf
+
+<VirtualHost *:80>
+	ServerAdmin webmaster@localhost
+	DocumentRoot /var/www/html
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+  <Directory /var/www/>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+  </Directory>
+
+  <IfModule mod_headers.c>
+        Header always set Strict-Transport-Security "max-age=15552000; includeSubDomains"
+        Redirect 301 /.well-known/carddav /nextcloud/remote.php/dav
+        Redirect 301 /.well-known/caldav /nextcloud/remote.php/dav
+        Redirect 301 /.well-known/webfinger /nextcloud/index.php/.well-known/webfinger
+        Redirect 301 /.well-known/nodeinfo /nextcloud/index.php/.well-known/nodeinfo
+  </IfModule>
+</VirtualHost>
+</code>
+
+
+**Anpassungen am PHP**
+<code>
+vi /etc/php/8.3/apache2/php.ini
+
+memory_limit = 128M                 -> memory_limit = 1024M
+output_buffering = 4096             -> output_buffering = off
+;opcache.interned_strings_buffer=8  -> opcache.interned_strings_buffer=16
+</code>
+
+<code>
+vi /etc/php/8.3/mods-available/apcu.ini
+
+extension=apcu.so
+apc.enable_cli=1
+</code>
+
+
+**Webserver neu starten**
+<code>
+a2enmod headers
+systemctl restart apache2
+</code>
+
+**DB Initialisierung**
+<code>
+Kommando: mysql_secure_installation
+
+Enter current password for root (enter for none):      - Eingabetaste drücken
+Switch to unix_socket authentication [Y/n]             - Y Auswählen
+Change the root password? [Y/n]                        - Y Auswählen (PW merken)
+Remove anonymous users? [Y/n]                          - Y Auswählen
+Disallow root login remotely? [Y/n]                    - Y Auswählen
+Remove test database and access to it? [Y/n]           - Y Auswählen
+Reload privilege tables now? [Y/n]                     - Y Auswählen
+</code>
+
+
+**DB für die Nextcloud Vorbereiten**
+(nach jedem Kommando sollte ein 'Query OK' zu sehen sein)
+<code>
+Kommando: mysql
+
+create database nextcloud; 
+create user 'nc_user'@'localhost' identified by 'nc_pass';
+grant all privileges on nextcloud.* to 'nc_user'@'localhost' identified by 'nc_pass';
+flush privileges;
+exit;
+</code>
+
+**Testem**
+<code>
+Kommando: mysql -u nc_user -p
+
+show databases;
+exit;
+</code>
+
+**Nextcloud Download**
+Download URL der Aktuellen. https://nextcloud.com
+<code>
+cd /var/www/html/
+
+wget https://download.nextcloud.com/server/releases/latest.zip
+unzip latest.zip
+chown -R www-data:www-data nextcloud
+</code>
+
+**Web GUI**
+<code>
+  Datenbankkonto:     nc_user
+  Datenbank-Passwort: nc_pass
+  Datenbank-Name:     nextcloud
+  Datenbank-Host:     localhost
+</code>
+
+**Anmelden und die Empfohlenen Apps installieren.**
+
+**Nextcloud Konfiguration Datei anpassen**
+
+Die nicht vorhandnen Zeilen einfügen.
+
+<code>
+vi /var/www/html/nextcloud/config/config.php
+$CONFIG = array (
+  'instanceid' => 'ocwfjx3qq6yo',
+  'passwordsalt' => 'oS+DeRToSvt6v4ZHsQ2+Pp80HTqG6g',
+  'secret' => 'vhFXGQS11MPSGB1iNGR+CEtEkhJcUrnxMNKY4u2ipMYtVQ2N',
+  'trusted_domains' =>
+  array (
+    0 => '192.168.0.206',
+  ),
+  'datadirectory' => '/var/www/html/nextcloud/data',
+  'dbtype' => 'mysql',
+  'version' => '30.0.5.1',
+  'overwrite.cli.url' => 'http://192.168.0.206/nextcloud',
+  'dbname' => 'nextcloud',
+  'dbhost' => 'localhost',
+  'dbport' => '',
+  'dbtableprefix' => 'oc_',
+  'mysql.utf8mb4' => true,
+  'dbuser' => 'nc_user',
+  'dbpassword' => 'nc_pass',
+  'installed' => true,
+ 
+Dieser Teil Fehlt: 
+  'default_phone_region' => 'DE',
+  'maintenance_window_start' => '1',
+  'memcache.local' => '\\OC\\Memcache\\APCu',
+  'memcache.locking' => '\\OC\\Memcache\\Redis',
+  'redis' =>
+  array (
+    'host' => 'localhost',
+    'port' => 6379,
+  ),
+  'maintenance' => false,
+);
+</code>
+
+**Nextcloud Fehler behebe**
+<code>
+cd /var/www/html/nextcloud/
+
+sudo -u www-data php occ maintenance:repair --include-expensive
+sudo -u www-data php occ db:add-missing-indices
+</code>
+
+**E-Mail-Server**
+
+Wenn man eine Email bei einem Provider hat kann man dies eintragen.
+Die Einstellungen sind auf den Provider Seiten zu sehen.
+
+Administrationseinstellungen -> Grundeinstellungen:
+

@@ -1,0 +1,63 @@
+====== kill - Prozesse beenden ======
+(2025)
+
+Das Kommando **kill** wird verwendet, um Prozesse in einem Linux-System zu beenden. Es sendet Signale an Prozesse, um diese zu steuern, wobei das häufigste Signal das `SIGTERM`-Signal ist, das den Prozess höflich auffordert, sich selbst zu beenden.
+
+===== Syntax =====
+<code>
+kill [OPTIONEN] <PID>
+</code>
+
+----
+
+===== Wichtige Optionen =====
+Die häufig verwendeten Optionen für das Kommando **kill** sind:
+
+^ Option ^ Beschreibung ^
+|  -9  | Sendet das `SIGKILL`-Signal, um den Prozess zwangsweise zu beenden. Dieser Signaltyp kann nicht abgefangen oder ignoriert werden. |
+|  -15 | Sendet das `SIGTERM`-Signal, um den Prozess freundlich zu beenden (Standard). |
+|  -l  | Listet alle verfügbaren Signale auf. |
+|  -s <Signal> | Sendet ein spezifisches Signal an den Prozess (z.B. `kill -s SIGSTOP <PID>`). |
+|  -<PID> | Der Prozess, der beendet werden soll, wird durch die Prozess-ID (PID) angegeben. |
+
+----
+
+===== Beispiele =====
+Einige Beispiele für die Verwendung von **kill**:
+
+  *  Beendet einen Prozess mit der PID `1234`:
+<code>
+kill 1234
+</code>
+
+  *  Zwingt einen Prozess mit der PID `1234` zum Beenden (mit `SIGKILL`):
+<code>
+kill -9 1234
+</code>
+
+  *  Beendet alle Prozesse eines bestimmten Benutzers (z.B. "user1"):
+<code>
+kill -9 -u user1
+</code>
+
+  *  Listet alle verfügbaren Signale auf:
+<code>
+kill -l
+</code>
+
+----
+
+===== Hinweis =====
+  *  Der Befehl **kill** sendet Signale an Prozesse, wobei die Standardaktion das Beenden des Prozesses ist.
+  *  Einige Prozesse können so konfiguriert sein, dass sie bestimmte Signale ignorieren oder abfangen. In solchen Fällen muss eventuell ein anderes Signal verwendet werden (z.B. `SIGKILL` mit `-9`).
+  *  Zum Beenden von Prozessen anderer Benutzer sind möglicherweise Administratorrechte erforderlich (z.B. mit `sudo`).
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **kill** und die verfügbaren Signale:
+<code>
+man kill
+</code>
+
+Weitere Informationen zu Signalen finden Sie unter: [[https://man7.org/linux/man-pages/man7/signal.7.html|Signal Man-Page]]

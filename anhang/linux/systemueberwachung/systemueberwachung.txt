@@ -1,0 +1,88 @@
+====== 00 Systemüberwachung und Logging in Linux ======
+(2025)
+
+Proaktive Systembeobachtung und zentralisierte Protokollierung sind essenziell für Stabilität und Sicherheit. Dieser Artikel erklärt Werkzeuge zur Echtzeit-Überwachung und effizienten Log-Analyse.
+
+===== Syntax =====
+Grundlegende Befehle und Log-Dateien:
+<code>
+top/htop                  # Ressourcenmonitor (Live)
+journalctl -u servicename # Systemd-Journal abfragen
+tail -f /var/log/syslog   # Logs in Echtzeit verfolgen
+grep "ERROR" /var/log/*   # Muster in Logs suchen
+df -h /var/log            # Log-Partitionsauslastung prüfen
+</code>
+
+**Wichtige Log-Dateien**:
+- /var/log/syslog        # Allgemeine Systemereignisse
+- /var/log/auth.log      # Authentifizierungsprotokolle
+- /var/log/kern.log      # Kernel-Meldungen
+- /var/log/nginx/*       # Webserver-Logs
+- /var/log/mysql/*       # Datenbank-Protokolle
+
+===== Wichtige Optionen =====
+^ Tool          ^ Optionen              ^ Beschreibung ^
+| journalctl    | -f -u nginx          | Live-View für einen Service |
+|               | --since "10 min ago" | Zeitfilter für Logs |
+| top           | -p PID               | Spezifischen Prozess überwachen |
+| logrotate     | -vf /etc/logrotate.d/*| Log-Rotation testen |
+| auditd        | -l                    # Kernel Audit Framework |
+| tcpdump       | -i eth0 port 80      # Netzwerkverkehr mitschneiden |
+
+===== Beispiele =====
+HTTP-Errors im Live-Modus erkennen:
+<code>
+tail -f /var/log/nginx/access.log | grep " 500 "
+</code>
+
+Speicherlecks identifizieren:
+<code>
+watch -n 5 "free -m; echo; ps -eo pid,rss,comm --sort=-rss | head"
+</code>
+
+Benutzeranmeldeversuche protokollieren:
+<code>
+grep "Failed password" /var/log/auth.log | awk '{print \$11}' | sort | uniq -c
+</code>
+
+Automatische Log-Komprimierung (logrotate-Konfiguration):
+<code>
+/var/log/myapp/*.log {
+  daily
+  rotate 7
+  compress
+  missingok
+  create 640 root adm
+}
+</code>
+
+===== Hinweis =====
+  * **Log-Rotation**: Große Logs automatisch mit **logrotate** komprimieren/löschen
+  * **Zentrales Logging**: Rsyslog/ELK-Stack für verteilte Systeme
+  * **Sensordaten**: lm-sensors für Hardware-Monitoring (CPU-Temp, Fan)
+  * **Sicherheit**: /var/log/* vor unberechtigtem Zugriff schützen (chmod 640)
+  * **Alerting**: Tools wie **Zabbix** oder **Prometheus** für automatische Benachrichtigungen
+  * **Storage**: Separate Partition für /var/log verwenden
+
+===== Alternativen =====
+  * **Grafana+Prometheus** – Visuelles Dashboard-Monitoring
+  * **Splunk** – Enterprise-Log-Management mit KI-Analyse
+  * **Loki** – Cloud-natives Logging (Kubernetes-kompatibel)
+  * **Netdata** – Real-Time Web-Monitor
+  * **sar** (sysstat) – Langzeit-Performance-Statistiken
+  * **auditd** – Compliance-gerechte Protokollierung
+
+===== Weitere Informationen =====
+Kritische Konfigurationsdateien:
+<code>
+/etc/logrotate.conf       # Globale Log-Rotation
+/etc/rsyslog.conf         # Syslog-Zentralisierung
+/etc/systemd/journald.conf# Journal-Speicherlimits
+</code>
+
+Externe Ressourcen:
+  * [[https://www.loggly.com/ultimate-guide/linux-logging|Linux Logging Ultimate Guide]]
+  * [[https://github.com/grafana/loki|Grafana Loki GitHub]]
+  * [[https://www.cyberciti.biz/tips/linux-log-files-location.html|Linux Log Files Cheat Sheet]]
+  * [[https://sysdig.com/opensource/falco/|Falco Runtime Security Monitoring]]
+  * [[https://www.digitalocean.com/community/tutorials/how-to-use-journalctl|Journalctl Deep Dive]]

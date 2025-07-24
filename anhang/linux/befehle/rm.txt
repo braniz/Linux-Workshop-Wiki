@@ -1,0 +1,89 @@
+====== rm - Entfernen von Dateien und Verzeichnissen ======
+(2025)
+
+Der Befehl **rm** wird verwendet, um Dateien und Verzeichnisse zu löschen. Er ist ein gefährliches Werkzeug, da gelöschte Dateien in der Regel nicht wiederhergestellt werden können, es sei denn, es gibt eine separate Backup-Lösung.
+
+===== Syntax =====
+<code>
+rm [Optionen] Datei/Verzeichnis
+</code>
+
+-----
+
+===== Wichtige Optionen =====
+Der Befehl **rm** bietet mehrere nützliche Optionen:
+
+^ Option ^ Beschreibung ^
+| `-f`                  | Erzwingt das Löschen von Dateien ohne Nachfrage, selbst wenn die Datei schreibgeschützt ist. |
+| `-i`                  | Fragt vor dem Löschen jeder Datei nach Bestätigung. |
+| `-r`                  | Löscht Verzeichnisse rekursiv, d.h. es werden auch alle darin enthaltenen Dateien und Unterverzeichnisse gelöscht. |
+| `-v`                  | Zeigt an, welche Dateien gelöscht werden (Verbose-Modus). |
+| `--no-preserve-root`  | Verhindert das Schützen des Root-Verzeichnisses (`/`) beim rekursiven Löschen. |
+| `--backup`            | Erstellt vor dem Löschen eine Sicherung der Datei. |
+
+-----
+
+===== Beispiele =====
+Hier sind einige praktische Beispiele zur Verwendung von **rm**:
+
+  *  **Löschen einer Datei**:
+<code>
+rm file1.txt
+</code>
+Dieser Befehl löscht die Datei `file1.txt`.
+
+  *  **Löschen einer Datei mit Bestätigung**:
+<code>
+rm -i file1.txt
+</code>
+Dieser Befehl fragt vor dem Löschen der Datei `file1.txt` nach Bestätigung.
+
+  *  **Löschen eines Verzeichnisses**:
+<code>
+rm -r directory/
+</code>
+Dieser Befehl löscht das Verzeichnis `directory/` samt aller darin enthaltenen Dateien und Unterverzeichnisse.
+
+  *  **Erzwingen des Löschens ohne Bestätigung**:
+<code>
+rm -f file1.txt
+</code>
+Dieser Befehl löscht die Datei `file1.txt`, auch wenn sie schreibgeschützt ist, ohne Nachfrage.
+
+  *  **Löschen von mehreren Dateien**:
+<code>
+rm file1.txt file2.txt file3.txt
+</code>
+Dieser Befehl löscht die Dateien `file1.txt`, `file2.txt` und `file3.txt`.
+
+  *  **Löschen mit detaillierter Ausgabe**:
+<code>
+rm -v file1.txt
+</code>
+Dieser Befehl zeigt an, dass die Datei `file1.txt` gelöscht wurde.
+
+-----
+
+===== Beispiel-Ausgabe =====
+Ein typischer **rm**-Befehl mit der Option `-v` könnte eine Ausgabe wie folgt haben:
+<code>
+removed 'file1.txt'
+</code>
+Dies zeigt an, dass die Datei `file1.txt` erfolgreich gelöscht wurde.
+
+-----
+
+===== Hinweis =====
+  *  Der Befehl **rm** löscht Dateien und Verzeichnisse dauerhaft, und die gelöschten Daten können in der Regel nicht wiederhergestellt werden, es sei denn, es gibt ein Backup.
+  *  Um zu verhindern, dass du versehentlich Dateien löschst, kannst du die Option `-i` verwenden, die vor jedem Löschvorgang nach einer Bestätigung fragt.
+  *  Sei vorsichtig beim Einsatz der Option `-r` und `-f`, besonders mit Verzeichnissen, da dies Daten unwiderruflich löschen kann.
+
+-----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über den Befehl **rm** und die verfügbaren Optionen:
+<code>
+man rm
+</code>
+
+Weitere Informationen und Dokumentation zu **rm** findest du auf der [[https://man7.org/linux/man-pages/|Linux Man-Pages]].

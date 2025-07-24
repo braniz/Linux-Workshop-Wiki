@@ -1,0 +1,13 @@
+~~NOTOC~~
+~~NOCACHE~~ 
+
+<WRAP centeralign round box 80% center>
+====== 80 / 20 ======
+
+Die 80/20-Methode (Pareto-Prinzip) besagt, dass 80 % der Ergebnisse mit 20 % des Aufwands erzielt werden. Sie hilft, sich auf die wichtigsten Aufgaben zu konzentrieren, anstatt sich in Details zu verlieren. In vielen Bereichen – von Produktivität bis Wirtschaft – zeigt sich, dass ein kleiner Teil der Ursachen den größten Einfluss hat.
+</WRAP>
+
+<WRAP center round box 80%> 
+<nspages -h1 -nbCol=2 -exclude:8020 -textPages="">
+
+</WRAP>

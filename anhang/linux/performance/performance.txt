@@ -1,0 +1,72 @@
+====== 00 Performance-Optimierung in Linux ======
+(2025)
+
+Systemleistung analysieren und gezielt optimieren – von der Hardware bis zur Anwendungsebene. Dieser Artikel erklärt Methoden zur Identifizierung von Engpässen und Tools für effektives Tuning.
+
+===== Syntax =====
+Häufig verwendete Analyse-Tools:
+<code>
+top/htop         # Echtzeit-Ressourcenmonitor
+vmstat           # Speicher-, CPU- und I/O-Statistiken
+iostat           # Detaillierte Disk-I/O-Analyse
+perf             # Low-Level Performance Counter
+sar              # Langzeit-Statistikaufzeichnung (sysstat)
+nice/ionice      # Prozesspriorität steuern
+sysctl           # Kernel-Parameter dynamisch anpassen
+</code>
+
+===== Wichtige Optionen =====
+^ Tool    ^ Optionen             ^ Beschreibung                                ^
+| vmstat  | -s                   | Speichernutzung im Detail                   |
+| iostat  | -x -d 1              | Erweiterte Disk-Statistiken (1s-Intervall)  |
+| perf    | stat -B              | Basis-Hardware-Performance-Counter          |
+| nice    | -n 19                | Prozess mit niedrigster Priorität starten   |
+| sysctl  | -w vm.swappiness=10  | Kernel-Parameter temporär ändern            |
+
+===== Beispiele =====
+CPU-Last pro Kern anzeigen:
+<code>
+mpstat -P ALL 2  # Alle Kerne, 2s-Intervall
+</code**
+
+I/O-intensive Prozesse identifizieren:
+<code>
+iotop -oPa       # Aktive Schreib-/Lesevorgänge live
+</code>
+
+Kernel-Netzwerkpuffer erhöhen (temporär):
+<code>
+sysctl -w net.core.rmem_max=2097152
+</code**
+
+Automatisiertes Tuning mit **tuned**:
+<code>
+tuned-adm profile throughput-performance
+</code>
+
+===== Hinweis =====
+  * **Nicht blind optimieren**: Immer erst mit Tools wie **perf** oder **vmstat** Engpässe lokalisieren
+  * Kernel-Parameter (sysctl) dauerhaft in **/etc/sysctl.conf** speichern
+  * //Over-Engineering vermeiden//: Oft reicht Anwendungstuning (DB-Indexes, Caching)
+  * **Profiling vor Scaling**: Vertikale Skalierung (Hardware-Upgrade) ist nicht immer die Lösung
+  * Swap-Nutzung (vm.swappiness) an Workload anpassen – z.B. 10 für Datenbankserver
+
+===== Alternativen =====
+  * **bpftrace** – Echtzeit-Systemtracing mit eBPF
+  * **numactl** – Optimierung für NUMA-Architekturen
+  * **irqbalance** – Interrupt-Verteilung auf Multicore-Systemen
+  * **cgroups v2** – Ressourcenlimitierung für Container/Prozesse
+  * **Grafana+Prometheus** – Visuelles Performance-Monitoring
+
+===== Weitere Informationen =====
+Kritische Kernel-Parameter:
+<code>
+/proc/sys/       # Dynamische Kernel-Einstellungen
+/proc/interrupts # Hardware-Interrupt-Statistik
+</code**
+
+Externe Ressourcen:
+  * [[https://www.brendangregg.com/linuxperf.html|Brendan Gregg's Performance Tools]]
+  * [[https://github.com/awesome-linux-tuning/awesome-linux-tuning|Linux Tuning Cheat Sheets]]
+  * [[https://www.phoronix-test-suite.com|Phoronix Benchmark Suite]]
+  * [[https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/|RHEL Performance Tuning Guide]]

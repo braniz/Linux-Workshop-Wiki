@@ -1,0 +1,66 @@
+====== resize2fs – Ein ext2/ext3/ext4-Dateisystem vergrößern oder verkleinern ======
+(2025)
+
+`resize2fs` ist ein Werkzeug zum Ändern der Größe eines ext2-, ext3- oder ext4-Dateisystems. Es ermöglicht das Vergrößern oder Verkleinern eines Dateisystems, um Speicherplatz effizient zu verwalten.
+
+===== Syntax =====
+
+^ Befehl ^ Beschreibung ^
+| //resize2fs [Optionen] <Gerät> [Größe]// | Ändert die Größe des angegebenen Dateisystems. |
+
+-----
+
+===== Wichtige Optionen =====
+
+^ Option ^ Beschreibung ^
+| `(keine)`      | Vergrößert das Dateisystem auf die maximal mögliche Größe der Partition. |
+| `<Größe>`      | Setzt die gewünschte neue Größe des Dateisystems (z.B. `10G` für 10 GiB). |
+| `-p`          | Zeigt den Fortschritt des Resize-Prozesses an. |
+| `-f`          | Erzwingt eine Größenänderung, auch wenn `resize2fs` Bedenken hat. |
+
+-----
+
+===== Dateisystem vergrößern =====
+Ein ext4-Dateisystem kann im laufenden Betrieb vergrößert werden, wenn die Partition bereits vergrößert wurde:
+
+<code>
+sudo resize2fs /dev/sda1
+</code>
+
+Falls eine spezifische Größe gewünscht ist:
+
+<code>
+sudo resize2fs /dev/sda1 50G
+</code>
+
+Dies setzt das Dateisystem auf eine Größe von 50 GiB.
+
+-----
+
+===== Dateisystem verkleinern =====
+Vor dem Verkleinern eines Dateisystems muss es ausgehängt werden:
+
+<code>
+sudo umount /dev/sda1
+sudo fsck -f /dev/sda1
+sudo resize2fs /dev/sda1 20G
+</code>
+
+Danach kann es wieder eingehängt werden:
+
+<code>
+sudo mount /dev/sda1 /mnt
+</code>
+
+-----
+
+===== Hinweise =====
+  * Ein Dateisystem kann nur innerhalb der Größe seiner Partition wachsen oder schrumpfen.
+  * Das Verkleinern erfordert, dass das Dateisystem ausgehängt ist.
+  * Es ist empfohlen, vor einer Größenänderung ein Backup zu erstellen.
+
+===== Weitere Informationen =====
+Für detaillierte Informationen kannst du die Man-Page aufrufen:
+<code>
+man resize2fs
+</code>

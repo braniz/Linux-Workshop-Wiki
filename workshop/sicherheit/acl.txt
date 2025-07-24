@@ -1,0 +1,91 @@
+====== ACL - Access Control Lists ======
+(2025.02)
+
+**ACLs** (Access Control Lists) sind eine Methode zur Verwaltung von Berechtigungen und Zugriffskontrollen auf Dateien und Verzeichnisse in einem Dateisystem. Sie erweitern das traditionelle Unix-Dateiberechtigungssystem, indem sie spezifischere und flexiblere Berechtigungen für Benutzer und Gruppen ermöglichen. Mit **ACLs** können Sie fein granulierte Zugriffskontrollen festlegen, die über die üblichen Benutzer- und Gruppenberechtigungen hinausgehen.
+
+**ACLs** bieten eine zusätzliche Ebene der Sicherheit, indem sie es ermöglichen, Benutzern und Gruppen auf unterschiedliche Weise Zugang zu Ressourcen zu gewähren.
+
+===== Syntax =====
+<code bash>
+setfacl [Optionen] [Befehl] [Datei]
+getfacl [Optionen] [Datei]
+</code>
+
+===== Wichtige Optionen =====
+^ Option          ^ Beschreibung                                                  ^
+| `-m`            | Modifiziert die ACL für eine Datei oder ein Verzeichnis.       |
+| `-x`            | Entfernt eine ACL-Regel von einer Datei oder einem Verzeichnis. |
+| `-b`            | Entfernt alle ACLs von einer Datei oder einem Verzeichnis.     |
+| `-k`            | Entfernt alle Default-ACLs von einem Verzeichnis.               |
+| `-R`            | Wendet die Änderung rekursiv auf Verzeichnisse und deren Inhalt an.|
+| `-s`            | Setzt eine Standard-ACL (für Verzeichnisse).                    |
+| `-d`            | Zeigt nur die Default-ACL an (für Verzeichnisse).               |
+| `-v`            | Gibt detaillierte Ausgabe der ACL an.                           |
+
+===== Verzeichnisse =====
+^ Verzeichnis                       ^ Beschreibung                                                                ^
+| `/etc/acl/`                        | Verzeichnis, in dem ACL-bezogene Konfigurationsdateien für Anwendungen gespeichert werden.|
+| `/etc/fstab`                       | Hier werden Optionen für Dateisysteme definiert, um ACLs auf Dateisystemebene zu aktivieren.  |
+| `/usr/bin/setfacl`                 | Das Kommandozeilenprogramm zum Setzen von ACLs auf Dateien und Verzeichnisse.|
+| `/usr/bin/getfacl`                 | Das Kommandozeilenprogramm zum Abfragen der ACLs auf Dateien und Verzeichnisse.|
+
+===== Beispiele =====
+**Aktuelle ACL einer Datei anzeigen:**
+<code bash>
+getfacl /path/to/datei
+</code>
+Zeigt die aktuellen ACLs einer Datei oder eines Verzeichnisses an.
+
+**ACL für einen Benutzer hinzufügen:**
+<code bash>
+setfacl -m u:username:rwx /path/to/datei
+</code>
+Fügt dem Benutzer `username` Lese-, Schreib- und Ausführungsrechte auf die angegebene Datei hinzu.
+
+**ACL für eine Gruppe hinzufügen:**
+<code bash>
+setfacl -m g:groupname:rx /path/to/datei
+</code>
+Fügt der Gruppe `groupname` Lese- und Ausführungsrechte auf die angegebene Datei hinzu.
+
+**ACL für eine Datei entfernen:**
+<code bash>
+setfacl -x u:username /path/to/datei
+</code>
+Entfernt die ACL für den Benutzer `username` von der angegebenen Datei.
+
+**Alle ACLs für eine Datei entfernen:**
+<code bash>
+setfacl -b /path/to/datei
+</code>
+Entfernt alle ACLs für die angegebene Datei oder das Verzeichnis.
+
+**Änderungen rekursiv anwenden:**
+<code bash>
+setfacl -R -m u:username:rwx /path/to/verzeichnis
+</code>
+Wendet die ACL-Änderungen rekursiv auf alle Dateien und Unterverzeichnisse des Verzeichnisses an.
+
+**Standard-ACL für ein Verzeichnis setzen:**
+<code bash>
+setfacl -d -m u:username:rwx /path/to/verzeichnis
+</code>
+Setzt eine Default-ACL für das angegebene Verzeichnis, die für neu erstellte Dateien innerhalb des Verzeichnisses gilt.
+
+**ACLs für ein Verzeichnis anzeigen:**
+<code bash>
+getfacl -d /path/to/verzeichnis
+</code>
+Zeigt die Standard-ACLs für ein Verzeichnis an.
+
+===== Hinweis =====
+- **ACLs** sind nicht standardmäßig auf allen Dateisystemen aktiviert. Sie müssen in der Regel in der Datei `/etc/fstab` für das betreffende Dateisystem aktiviert werden.
+- Wenn Sie mit **ACLs** arbeiten, müssen Sie sicherstellen, dass Ihr Dateisystem diese unterstützt. In der Regel benötigen Sie dafür ein ext4-, XFS- oder ein anderes modernes Dateisystem.
+- **ACLs** bieten eine viel präzisere Steuerung der Datei- und Verzeichnisberechtigungen im Vergleich zu den traditionellen Unix-Dateiberechtigungen (Besitzer, Gruppe, Andere).
+
+===== Weitere Informationen =====
+Die Man-Pages liefern detaillierte Informationen zu den Kommandos:
+<code bash>
+man setfacl
+man getfacl
+</code>

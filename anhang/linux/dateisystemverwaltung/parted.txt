@@ -1,0 +1,87 @@
+====== parted – Partitionen verwalten und Größenänderungen durchführen ======
+(2025)
+
+`parted` ist ein leistungsstarkes Kommandozeilenwerkzeug zur Verwaltung von Festplattenpartitionen. Es unterstützt sowohl das MBR- als auch das GPT-Partitionierungsschema und bietet eine benutzerfreundliche Möglichkeit, Partitionen zu erstellen, zu löschen und zu ändern.
+
+===== Syntax =====
+
+^ Befehl ^ Beschreibung ^
+| //parted /dev/sdX//  | Startet `parted` auf der angegebenen Festplatte (z.B. /dev/sda). |
+
+-----
+
+===== Wichtige Optionen =====
+
+^ Option ^ Beschreibung ^
+| `-l`   | Listet alle Partitionen auf allen Festplatten des Systems auf. |
+| `mklabel` <Typ>   | Legt ein neues Partitionierungsschema fest (z.B. `mklabel gpt` für GPT). |
+| `mkpart` <Dateisystemtyp> <Start> <Ende> | Erstellt eine neue Partition mit dem angegebenen Dateisystemtyp und den Start- und Endpunkten. |
+| `rm` <Nummer>    | Löscht eine Partition basierend auf ihrer Nummer. |
+| `resizepart` <Nummer> <Ende>   | Ändert die Größe einer bestehenden Partition. |
+| `print`   | Zeigt die Partitionstabelle der Festplatte an. |
+
+-----
+
+===== Interaktive Nutzung =====
+
+Nach dem Starten von `parted` ohne Optionen wird ein interaktives Menü angezeigt, in dem du die Partitionstabelle bearbeiten kannst. Die wichtigsten Befehle innerhalb von `parted` sind:
+
+^ Befehl ^ Beschreibung ^
+| `print`    | Zeigt die Partitionstabelle der Festplatte an. |
+| `mkpart`   | Erstellt eine neue Partition. |
+| `resizepart` | Ändert die Größe einer bestehenden Partition. |
+| `rm`       | Löscht eine Partition. |
+| `quit`     | Beendet `parted` nach dem Speichern der Änderungen. |
+
+-----
+
+===== Partitionen mit parted erstellen =====
+Um eine Partition mit `parted` zu erstellen, folge diesen Schritten:
+
+1. Starte `parted` auf der gewünschten Festplatte:
+<code>
+sudo parted /dev/sda
+</code>
+
+2. Wähle den Partitionstyp (`gpt` oder `msdos`), wenn er noch nicht festgelegt wurde:
+<code>
+mklabel gpt
+</code>
+
+3. Erstelle eine neue Partition mit `mkpart`, indem du den gewünschten Dateisystemtyp und die Start- und Endpunkte angibst:
+<code>
+mkpart primary ext4 0% 100%
+</code>
+
+4. Nachdem die Partition erstellt wurde, kannst du `quit` eingeben, um die Änderungen zu speichern und `parted` zu verlassen.
+
+-----
+
+===== Partitionen vergrößern oder verkleinern =====
+Um die Größe einer Partition mit `parted` zu ändern, folge diesen Schritten:
+
+1. Starte `parted` auf der gewünschten Festplatte:
+<code>
+sudo parted /dev/sda
+</code>
+
+2. Gib den Befehl `resizepart` ein, um die Größe der Partition zu ändern:
+<code>
+resizepart 1 500GB
+</code>
+
+3. Speichere die Änderungen mit dem Befehl `quit`.
+
+-----
+
+===== Hinweise =====
+
+  *  `parted` ist besonders nützlich, wenn du mit GPT-Partitionen (GUID Partition Table) arbeiten möchtest, da es diese vollständig unterstützt.
+  *  Die Größe der Partitionen kann nach der Erstellung mit `resizepart` verändert werden, aber sei vorsichtig, um Datenverlust zu vermeiden.
+  *  Nach der Erstellung oder Änderung von Partitionen solltest du sicherstellen, dass die Partitionen formatiert werden, bevor sie verwendet werden.
+
+===== Weitere Informationen =====
+Für detaillierte Informationen zum Befehl `parted` und seiner Verwendung kannst du die Man-Page aufrufen:
+<code>
+man parted
+</code>

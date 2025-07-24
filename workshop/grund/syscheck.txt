@@ -1,0 +1,97 @@
+====== System Check - Überprüfung des Systemstatus ======
+(2025)
+
+**System Check** bezieht sich auf die Sammlung von Informationen über den Status eines Linux-Systems. Dies umfasst die Abfrage von Hardware-, Software- und Netzwerkinformationen, um eine schnelle Diagnose oder eine detaillierte Analyse des Systems zu ermöglichen.
+
+===== Syntax =====
+<code bash>
+[Hostname] [Befehl] [Optionen]
+</code>
+
+----
+
+===== Wichtige Befehle =====
+Die folgenden Befehle können verwendet werden, um verschiedene Systeminformationen abzurufen:
+
+^ Befehl ^ Beschreibung ^
+| `hostnamectl`                | Zeigt allgemeine Informationen zum Host an. |
+| `lsmem`                      | Zeigt detaillierte Speicherinformationen an. |
+| `lscpu`                      | Zeigt CPU-Informationen an. |
+| `lspci`                      | Zeigt PCI-Geräteinformationen an. |
+| `lsblk`                      | Zeigt Blockgeräteinformationen an. |
+| `free`                       | Zeigt eine Übersicht über den Speicherstatus. |
+| `dmidecode`                  | Dekodiert und zeigt DMI-Tabelleninformationen an. |
+| `systemctl status`           | Zeigt den Status der Systemd-Dienste an. |
+| `df -h`                      | Zeigt eine Übersicht des Festplattenspeichers an. |
+| `ip a`                       | Zeigt Netzwerkschnittstelleninformationen an. |
+| `ip r`                       | Zeigt Routing-Informationen an. |
+| `cat /etc/redhat-release`    | Zeigt die RHEL-Version an (nur für RHEL). |
+| `cat /etc/os-release`        | Zeigt die Versionsinformationen für viele Linux-Distributionen an. |
+| `getenforce`                 | Zeigt den aktuellen Status von SELinux an. |
+| `getfacl`                    | Zeigt die Zugriffssteuerungslisten für Dateien an. |
+| `firewall-cmd --list-all`    | Zeigt alle aktuellen Firewall-Regeln an. |
+| `firewall-cmd --get-active-zones` | Zeigt alle aktiven Zonen der Firewall an. |
+| `dnf history`                | Zeigt die Paketinstallationshistorie an (für Fedora/RHEL). |
+| `uname -a`                   | Zeigt alle Systeminformationen an. |
+
+----
+
+===== Installierte Software =====
+
+Die folgende Tabelle zeigt, wie installierte Software für verschiedene Distributionen abgefragt werden kann:
+
+^ Distribution            ^ Befehl zur Anzeige installierter Software ^
+| RHEL / Fedora          | `rpm -qa`                                 |
+| Debian / Ubuntu        | `dpkg -l`                                 |
+
+----
+
+===== Hardware-Informationen =====
+
+Die folgende Tabelle zeigt grundlegende Hardware-Informationen, die mit den jeweiligen Befehlen abgerufen werden können:
+
+^ Distribution            ^ Systemd Status           ^ CPU-Informationen      ^ Blockgeräte            ^ PCI-Geräte            ^ DMI-Informationen     ^
+| RHEL / Fedora          | `systemctl status`      | `lscpu`                | `lsblk`                | `lspci`               | `dmidecode`           |
+| Debian / Ubuntu        | `systemctl status`      | `lscpu`                | `lsblk`                | `lspci`               | `dmidecode`           |
+| SUSE                   | `systemctl status`      | `lscpu`                | `lsblk`                | `lspci`               | `dmidecode`           |
+
+----
+
+===== Beispiele =====
+
+**Anzeige des Systemstatus:**
+<code bash>
+systemctl status
+</code>
+Zeigt den aktuellen Status der Systemd-Dienste an.
+
+**Anzeige der CPU-Informationen:**
+<code bash>
+lscpu
+</code>
+Zeigt detaillierte Informationen über die CPU des Systems an.
+
+**Anzeige der installierten Software:**
+<code bash>
+rpm -qa (für RHEL/Fedora) oder dpkg -l (für Debian/Ubuntu)
+</code>
+Listet alle auf dem System installierten Pakete auf.
+
+----
+
+===== Hinweis =====
+  * Die in diesem Artikel beschriebenen Befehle sind nützlich für die systemweite Überprüfung von Hardware- und Softwarestatus. Sie helfen bei der Diagnose von Problemen und der Überwachung von Systemressourcen.
+  * Der **systemctl**-Befehl ist besonders wichtig, um Systemd-Dienste zu überwachen und sicherzustellen, dass alle kritischen Dienste aktiv sind.
+
+----
+
+===== Alternativen =====
+Andere Tools wie **htop** oder **glances** bieten benutzerfreundliche Dashboards zur Überwachung der Systemressourcen, während spezialisierte Tools wie **lshw** oder **hwinfo** detaillierte Informationen zur Hardware bieten.
+
+----
+
+===== Weitere Informationen =====
+Für eine detaillierte Analyse der einzelnen Befehle ist die Man-Page hilfreich:
+<code bash>
+man [Befehl]
+</code>

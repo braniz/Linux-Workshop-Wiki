@@ -1,0 +1,179 @@
+====== LXD - Linux Containers ======
+(2025.02)
+
+LXD ist eine containerbasierte Virtualisierungslösung, die auf **LXC** aufbaut und eine einfache Verwaltung von Containern ermöglicht.
+
+Offizielle Website: [[https://linuxcontainers.org/]]
+
+===== Installation =====
+
+==== CentOS ====
+
+**Snapd installieren:**
+<code>
+yum install yum-plugin-copr epel-release
+yum copr enable ngompa/snapcore-el7
+yum install snapd
+systemctl enable --now snapd.socket
+</code>
+
+**ZFS installieren (optional):**
+<code>
+yum install http://download.zfsonlinux.org/epel/zfs-release.el7_4.noarch.rpm
+yum-config-manager --disable zfs
+yum-config-manager --enable zfs-kmod
+yum install zfs
+</code>
+
+**Kernel konfigurieren:**
+<code>
+grubby --args="user_namespace.enable=1" --update-kernel="$(grubby --default-kernel)"
+grubby --args="namespace.unpriv_enable=1" --update-kernel="$(grubby --default-kernel)"
+echo "user.max_user_namespaces=3883" > /etc/sysctl.d/99-userns.conf
+reboot
+</code>
+
+==== Ubuntu ====
+
+**LXD installieren:**
+<code>
+snap install lxd
+</code>
+
+**LXD initialisieren:**
+<code>
+lxd init
+</code>
+
+===== Container-Administration =====
+
+==== Container erstellen und verwalten ====
+
+**Neuen Container starten:**
+<code>
+lxc launch images:ubuntu:16.04 c1
+</code>
+
+**In den Container wechseln:**
+<code>
+lxc exec c1 bash
+</code>
+
+**Wichtige Befehle:**
+<code>
+lxc image list images:                       # Vorhandene Container-Images anzeigen
+lxc launch images:centos/7/amd64 c07         # CentOS 7-Container erstellen
+lxc exec c07 -- yum install epel-release     # Paket innerhalb des Containers installieren
+</code>
+
+==== Storage-Management ====
+
+**LVM für Container-Storage erstellen:**
+<code>
+lvcreate -n lvm-lxd01 -L 100GB vg0
+</code>
+
+**LXD-Storage-Pool erstellen:**
+<code>
+lxc storage create lxd-storage01 btrfs source=/dev/vg0/lvm-lxd01
+</code>
+
+**Container in einem Storage-Pool starten:**
+<code>
+lxc launch images:centos/7/amd64 -s lxd-storage01 iq-wordpress
+</code>
+
+==== Netzwerk-Management ====
+
+**Bridge zu einem Container zuweisen:**
+<code>
+lxc config device add CONTAINER-NAME eth0 nic name=eth0 nictype=bridged parent=br0
+</code>
+
+**Bridge entfernen:**
+<code>
+lxc config device remove CONTAINER-NAME eth0
+</code>
+
+**Feste IP-Adresse zuweisen:**
+<code>
+lxc config set ContainerName raw.lxc 'lxc.net.0.ipv4.address = 10.10.10.10/24'
+</code>
+
+==== Datei-Transfer ====
+
+**Datei aus dem Container kopieren:**
+<code>
+lxc file pull ContainerName/Quelle/Datei .
+</code>
+
+**Datei in den Container kopieren:**
+<code>
+lxc file push quellDatei ContainerName/Ziel/Datei
+</code>
+
+**Ordner aus dem Container kopieren:**
+<code>
+lxc file pull -r ContainerName/Quelle/Ordner .
+</code>
+
+**Ordner in den Container kopieren:**
+<code>
+lxc file push -r quellOrdner ContainerName/Ziel/Ordner/
+</code>
+
+==== Ressourcenlimits setzen ====
+
+**CPU-Limit setzen:**
+<code>
+lxc config set c07 limits.cpu 2
+</code>
+
+**Status überprüfen:**
+<code>
+lxc exec c07 -- cat /proc/cpuinfo | grep ^processor
+</code>
+
+**Container-Speicherlimit setzen:**
+<code>
+lxc config set c07 limits.memory 2GB
+</code>
+
+==== Automatische Erstellung und Verwaltung ====
+
+**Mehrere Container auf einmal starten:**
+<code>
+for N in $(seq 1 4); do lxc launch images:centos/7/amd64 -s lxd_storage test$N; done
+</code>
+
+**Mehrere Container auf einmal stoppen und löschen:**
+<code>
+for i in $(lxc list -cn --format csv | grep test); do lxc stop --force $i; done
+for i in $(lxc list -cn --format csv | grep test); do lxc delete --force $i; done
+</code>
+
+==== Sicherheitseinstellungen ====
+
+**Löschen eines Containers verhindern:**
+<code>
+lxc config set conName security.protection.delete true
+</code>
+
+**Geschützte Container anzeigen:**
+<code>
+lxc list security.protection.delete=true
+</code>
+
+==== UFW-Firewall-Regeln ====
+
+**Routing von Containern mit UFW erlauben:**
+<code>
+ufw route allow in on enp4s0 out on vmbr0
+ufw route allow in on enp4s0 out on lxdbr0
+</code>
+
+===== Weitere Informationen =====
+
+  * LXD-Dokumentation: [[https://linuxcontainers.org/lxd/introduction/]]
+  * CPU-Quota für LXD: [[https://stgraber.org/2016/03/26/lxd-2-0-resource-control-412/]]
+  * Netzwerkkonfiguration: [[https://www.jamescoyle.net/how-to/2532-setting-cpu-resource-limits-with-lxc]]

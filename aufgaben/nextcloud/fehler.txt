@@ -1,0 +1,52 @@
+===== 02 - Fehlermeldung bei der Installation =====
+(2025.02)
+
+Aufrufen der URL über die IP Adresse des Webservers. Beispiel: http://192.168.178.xxx für die weitere Einrichtung.
+
+Es können folgende fehlende Pakete angezeigt werden. Die Fehler Paket Namen beziehen sich auf die PHP Unterstützung.
+
+<code>
+- zip
+- domU
+- XMLWriter
+- libxml
+- mb multibyte
+- GD
+- SimpleXML
+- curl
+</code>
+
+==== Installation der fehlenden Pakete ====
+
+<code>
+root@nc:~# apt search php | grep -i zip
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+  bzip2 module for PHP [default]
+php-pclzip/jammy 2.8.2-5 all
+php-zip/jammy 2:8.1+92ubuntu1 all !(Tip: Nach Möglichket Paket Namen ohne spezielle Versions Nr. verwenden.)!
+  bzip2 module for PHP
+php8.1-zip/jammy-updates,jammy-security 8.1.2-1ubuntu2.14 amd64
+</code>
+
+^ NC ^ apt install ^
+| MySQL Module | apt install php-mysql |
+| PHP-Modul zip | apt install php-zip |
+| PHP-Modul dom | apt install libapache2-mod-php |
+| PHP-Modul XMLWriter | apt install php-xml |
+| PHP-Modul mbstring | apt install php-mbstring |
+| PHP-Modul GDapt | install php-gd |
+| PHP-Modul cURL | apt install php-curl |
+
+**Installation der Fehlenden Pakete auf einmal**
+<code>
+apt install php-mysql php-zip libapache2-mod-php php-xml php-mbstring php-gd php-curl
+</code>
+
+**Nach der Installation der Fehlenden Pakete**
+<code>
+systemctl restart apache2
+</code>
+
+Weiter in der GUI [[aufgaben:nextcloud:nc_admin|]]

@@ -1,0 +1,16 @@
+~~NOTOC~~
+~~NOCACHE~~
+
+<WRAP centeralign center round box 80%> 
+
+====== Linux Workshop ======
+
+</WRAP>
+
+<WRAP center round box 80%> 
+Linux ist ein freies Betriebssystem, das wie Microsoft Windows oder Apple macOS die Schnittstelle zwischen dem Anwender und der Hardware bildet.
+Linux wird hauptsächlich im Serverumfeld und auf mobilen Endgeräten eingesetzt. In diesem kompakten Linux-Workshop lernen Sie, wie man Linux in der
+VirtualBox installiert und administriert. Darüber hinaus erfahren Sie, wie Sie eine Testumgebung erstellen, um verschiedene Szenarien und Anwendungen
+auf Linux zu testen.
+In diesem kompakten Linux-Kurs lernen Sie, wie man Linux installiert und administriert.
+</WRAP>

@@ -1,0 +1,83 @@
+====== mv - Dateien und Verzeichnisse verschieben und umbenennen ======
+(2025)
+
+Der Befehl **mv** wird verwendet, um Dateien und Verzeichnisse zu verschieben oder umzubenennen. Er ist ein grundlegendes Tool in Unix- und Linux-Systemen und bietet auch Optionen zum Überschreiben von Zielen und zum Bestätigen von Aktionen.
+
+===== Syntax =====
+<code>
+mv [Optionen] Quelle Ziel
+</code>
+
+-----
+
+===== Wichtige Optionen =====
+Der Befehl **mv** bietet mehrere nützliche Optionen:
+
+^ Option ^ Beschreibung ^
+| `-i`                  | Fragt vor dem Überschreiben einer bestehenden Datei nach Bestätigung. |
+| `-f`                  | Erzwingt das Überschreiben von Dateien ohne Nachfrage. |
+| `-u`                  | Verschiebt nur, wenn die Quelle neuer ist als das Ziel oder wenn das Ziel nicht existiert. |
+| `-v`                  | Zeigt den Vorgang der Datei- oder Verzeichnisverschiebung an (Verbose-Modus). |
+| `-n`                  | Verhindert das Überschreiben einer bestehenden Datei. |
+| `--backup`            | Erstellt eine Sicherungskopie der Ziel-Datei, wenn sie bereits existiert. |
+
+-----
+
+===== Beispiele =====
+Hier sind einige praktische Beispiele zur Verwendung von **mv**:
+
+  *  **Umbenennen einer Datei**:
+<code>
+mv oldname.txt newname.txt
+</code>
+Dieser Befehl benennt die Datei `oldname.txt` in `newname.txt` um.
+
+  *  **Verschieben einer Datei in ein anderes Verzeichnis**:
+<code>
+mv file1.txt /path/to/destination/
+</code>
+Dieser Befehl verschiebt die Datei `file1.txt` in das Verzeichnis `/path/to/destination/`.
+
+  *  **Verschieben eines Verzeichnisses**:
+<code>
+mv /source/directory /destination/directory
+</code>
+Dieser Befehl verschiebt das Verzeichnis `/source/directory` in das Verzeichnis `/destination/directory`.
+
+  *  **Verschieben und Bestätigung vor Überschreiben**:
+<code>
+mv -i file1.txt /path/to/destination/
+</code>
+Dieser Befehl fragt nach Bestätigung, bevor die Datei `file1.txt` in das Zielverzeichnis verschoben wird, wenn am Zielort bereits eine Datei mit diesem Namen existiert.
+
+  *  **Verschieben mit detaillierter Ausgabe**:
+<code>
+mv -v file1.txt /path/to/destination/
+</code>
+Dieser Befehl zeigt die Datei- oder Verzeichnisverschiebung im Detail an.
+
+-----
+
+===== Beispiel-Ausgabe =====
+Ein typischer **mv**-Befehl mit der Option `-v` könnte eine Ausgabe wie folgt haben:
+<code>
+'file1.txt' -> '/path/to/destination/file1.txt'
+</code>
+Dies zeigt an, dass die Datei `file1.txt` in das Verzeichnis `/path/to/destination/` verschoben wurde.
+
+-----
+
+===== Hinweis =====
+  *  Der Befehl **mv** kann auch verwendet werden, um Dateien umzubenennen. Das Umbenennen ist einfach ein Verschieben der Datei innerhalb des gleichen Verzeichnisses mit einem neuen Namen.
+  *  Der Befehl überschreibt standardmäßig vorhandene Dateien, wenn sie denselben Namen haben. Um das Überschreiben zu verhindern oder zu bestätigen, kannst du die Optionen `-n` oder `-i` verwenden.
+  *  Beim Verschieben von Verzeichnissen mit **mv** wird das gesamte Verzeichnis einschließlich aller darin enthaltenen Dateien und Unterverzeichnisse verschoben.
+
+-----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über den Befehl **mv** und die verfügbaren Optionen:
+<code>
+man mv
+</code>
+
+Weitere Informationen und Dokumentation zu **mv** findest du auf der [[https://man7.org/linux/man-pages/|Linux Man-Pages]].

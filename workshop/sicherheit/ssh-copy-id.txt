@@ -1,0 +1,62 @@
+====== ssh-copy-id - Öffentliche SSH-Schlüssel auf entfernte Server kopieren ======
+(2025.02)
+
+**ssh-copy-id** ist ein praktisches Tool, das dazu verwendet wird, den öffentlichen SSH-Schlüssel auf einen entfernten Server zu kopieren und damit eine passwortlose SSH-Authentifizierung zu ermöglichen. Es fügt den öffentlichen Schlüssel des lokalen Systems zur Datei `~/.ssh/authorized_keys` des entfernten Systems hinzu, sodass zukünftige Verbindungen ohne Eingabe eines Passworts erfolgen können.
+
+Das Tool erleichtert das Einrichten von SSH-Schlüssel-Authentifizierung für die Verwaltung von Servern.
+
+===== Syntax =====
+<code bash>
+ssh-copy-id [Optionen] [Benutzername]@[Hostname]
+</code>
+
+===== Wichtige Optionen =====
+^ Option               ^ Beschreibung                                                    ^
+| `-i`                  | Gibt die Datei an, die den öffentlichen Schlüssel enthält (Standard: `~/.ssh/id_rsa.pub`).|
+| `-p`                  | Gibt einen anderen Port für die SSH-Verbindung an (Standard: Port 22).|
+| `-f`                  | Erzwingt das Überschreiben der Datei `authorized_keys` auf dem Remote-Server.|
+| `-n`                  | Gibt an, dass nur der angegebene Schlüssel hinzugefügt wird und keine bestehenden Schlüssel entfernt werden.|
+| `-v`                  | Aktiviert die detaillierte Ausgabe zur Diagnose von Verbindungsproblemen.|
+| `-h`                  | Zeigt eine Hilfe-Nachricht zu den verfügbaren Optionen an.         |
+
+===== Beispiele =====
+**Öffentlichen Schlüssel auf den Remote-Server kopieren:**
+<code bash>
+ssh-copy-id user@remote.server.com
+</code>
+Kopiert den Standard-öffentlichen Schlüssel (in der Regel `~/.ssh/id_rsa.pub`) auf den Remote-Server unter dem Benutzernamen `user`.
+
+**Öffentlichen Schlüssel einer spezifischen Datei kopieren:**
+<code bash>
+ssh-copy-id -i ~/.ssh/my_custom_key.pub user@remote.server.com
+</code>
+Kopiert einen benutzerdefinierten öffentlichen Schlüssel (in diesem Fall `my_custom_key.pub`) auf den Remote-Server.
+
+**Kopieren auf einen SSH-Server mit einem anderen Port:**
+<code bash>
+ssh-copy-id -p 2222 user@remote.server.com
+</code>
+Kopiert den öffentlichen Schlüssel auf einen SSH-Server, der Port 2222 verwendet.
+
+**Verwendung von `ssh-copy-id` mit detaillierter Ausgabe:**
+<code bash>
+ssh-copy-id -v user@remote.server.com
+</code>
+Aktiviert die detaillierte Ausgabe und zeigt mehr Informationen, wenn der Befehl ausgeführt wird.
+
+**Kopieren des Schlüssels und erzwingen des Überschreibens der `authorized_keys`-Datei:**
+<code bash>
+ssh-copy-id -f user@remote.server.com
+</code>
+Erzwingt das Überschreiben der Datei `authorized_keys` auf dem Remote-Server, falls diese bereits existiert.
+
+===== Hinweis =====
+- **ssh-copy-id** setzt voraus, dass auf dem entfernten Server SSH zugänglich ist und die Verbindung mit einem Passwort authentifiziert werden kann. Das Tool nutzt den SSH-Befehl, um sich auf dem entfernten Server anzumelden und den öffentlichen Schlüssel zu hinterlegen.
+- Es ist eine bequeme Methode, um die SSH-Schlüssel-basierte Authentifizierung für mehrere Server schnell einzurichten, ohne die `authorized_keys`-Datei manuell bearbeiten zu müssen.
+- Wenn der öffentliche Schlüssel bereits auf dem Remote-Server existiert, wird dieser nicht überschrieben, es sei denn, du verwendest die `-f`-Option.
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen zu allen Optionen und zur Verwendung von **ssh-copy-id**:
+<code bash>
+man ssh-copy-id
+</code>

@@ -1,0 +1,64 @@
+====== chmod - Dateiberechtigungen ändern ======
+(2025)
+
+Das Kommando **chmod** (change mode) wird verwendet, um die Berechtigungen von Dateien und Verzeichnissen in einem Linux- oder Unix-ähnlichen Betriebssystem zu ändern. Mit **chmod** können Benutzer festlegen, welche Rechte andere Benutzer oder Gruppen für eine Datei oder ein Verzeichnis haben.
+
+===== Syntax =====
+<code>
+chmod [OPTIONEN] <Berechtigungen> <Datei/Verzeichnis>
+</code>
+
+----
+
+===== Wichtige Optionen =====
+Die wichtigsten Optionen und Argumente für **chmod** sind:
+
+^ Option ^ Beschreibung ^
+| `-R`                | Ändert rekursiv die Berechtigungen für alle Dateien und Unterverzeichnisse innerhalb eines Verzeichnisses. |
+| `-v`                | Zeigt an, welche Berechtigungen geändert wurden. |
+| `--reference=<Datei>` | Setzt die Berechtigungen der angegebenen Datei als Referenz für eine andere Datei oder ein Verzeichnis. |
+
+Die Berechtigungen können entweder in symbolischer oder oktaler Form angegeben werden:
+
+^ Form ^ Beschreibung ^
+| Symbolisch        | Verwenden Sie Zeichen wie `r` (lesen), `w` (schreiben), `x` (ausführen) und kombinieren Sie sie mit den Benutzertypen (`u` für Besitzer, `g` für Gruppe, `o` für andere). |
+| Oktal             | Verwenden Sie Zahlen, um die Berechtigungen anzugeben (z.B. `755` für `rwxr-xr-x`). |
+
+----
+
+===== Beispiele =====
+Hier sind einige Beispiele für die Verwendung von **chmod**:
+
+  *  Setzt die Berechtigungen einer Datei auf `rwxr-xr-x`:
+<code>
+chmod 755 datei.txt
+</code>
+
+  *  Gibt dem Besitzer das Recht zu schreiben und liest nur für die Gruppe und andere:
+<code>
+chmod u+w,g+r,o+r datei.txt
+</code>
+
+  *  Ändert rekursiv die Berechtigungen für alle Dateien in einem Verzeichnis:
+<code>
+chmod -R 755 /pfad/zum/verzeichnis
+</code>
+
+  *  Zeigt an, welche Berechtigungen geändert wurden:
+<code>
+chmod -v 644 datei.txt
+</code>
+
+----
+
+===== Hinweis =====
+  *  **chmod** ändert nur die Berechtigungen für Dateien und Verzeichnisse. Um den Besitzer oder die Gruppe einer Datei zu ändern, müssen Sie den Befehl **chown** verwenden.
+  *  Beachten Sie, dass für das Ändern von Dateiberechtigungen Administratorrechte erforderlich sein können, insbesondere bei Systemdateien.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **chmod**:
+<code>
+man chmod
+</code>

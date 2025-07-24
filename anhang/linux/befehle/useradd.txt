@@ -1,0 +1,73 @@
+====== useradd - Einen neuen Benutzer erstellen ======
+(2025)
+
+Der Befehl **useradd** wird verwendet, um einen neuen Benutzer auf einem Linux-System hinzuzufügen. Mit **useradd** kannst du grundlegende Benutzereigenschaften wie den Benutzernamen, das Home-Verzeichnis und die Shell festlegen. Es ist eine einfache Möglichkeit, neue Benutzer zu verwalten.
+
+===== Syntax =====
+<code>
+useradd [OPTIONEN] <BENUTZERNAME>
+</code>
+
+----
+
+===== Wichtige Optionen =====
+Die wichtigsten Optionen für den **useradd**-Befehl sind:
+
+^ Option ^ Beschreibung ^
+| `-m`               | Erstellt automatisch das Home-Verzeichnis für den neuen Benutzer. |
+| `-d <PFAD>`        | Gibt das Home-Verzeichnis des Benutzers an, anstatt den Standardpfad zu verwenden. |
+| `-s <SHELL>`       | Legt die Standard-Shell für den Benutzer fest. |
+| `-G <GRUPPE>`      | Fügt den Benutzer zu einer oder mehreren Gruppen hinzu (durch Komma getrennt). |
+| `-e <DATUM>`       | Legt das Ablaufdatum des Benutzerkontos fest. |
+| `-f <TAGE>`        | Gibt die Anzahl der Tage an, nach denen das Konto nach Ablauf des Passworts deaktiviert wird. |
+| `-p <PASSWORT>`    | Setzt das Passwort für den Benutzer (in verschlüsselter Form). |
+| `-c <Kommentar>`   | Fügt einen Kommentar zum Benutzerkonto hinzu, z.B. den vollständigen Namen. |
+
+----
+
+===== Beispiele =====
+Hier sind einige Beispiele für die Verwendung von **useradd**:
+
+  *  Einen neuen Benutzer mit einem Home-Verzeichnis und der Standard-Shell hinzufügen:
+<code>
+useradd -m johndoe
+</code>
+
+  *  Einen Benutzer mit einer spezifischen Shell und Home-Verzeichnis erstellen:
+<code>
+useradd -m -d /home/customdir -s /bin/bash johndoe
+</code>
+
+  *  Einen Benutzer zu mehreren Gruppen hinzufügen:
+<code>
+useradd -m -G admin,developers johndoe
+</code>
+
+  *  Ein Ablaufdatum für das Benutzerkonto setzen:
+<code>
+useradd -e 2025-12-31 johndoe
+</code>
+
+  *  Ein Passwort für den neuen Benutzer setzen (verschlüsselt):
+<code>
+useradd -m -p $(openssl passwd -1 'password') johndoe
+</code>
+
+  *  Einen Benutzer mit einem Kommentar (z.B. vollständiger Name) erstellen:
+<code>
+useradd -m -c "John Doe" johndoe
+</code>
+
+----
+
+===== Hinweis =====
+  *  Der **useradd**-Befehl erstellt das Benutzerkonto, setzt aber normalerweise kein Passwort. Du musst **passwd** verwenden, um ein Passwort für den neuen Benutzer festzulegen.
+  *  Der Befehl **useradd** hat keinen Einfluss auf den aktuellen Zustand des Benutzerverzeichnisses (es wird einfach erstellt, wenn es nicht vorhanden ist).
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **useradd**:
+<code>
+man useradd
+</code>

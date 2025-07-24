@@ -1,0 +1,54 @@
+====== groupmod - Gruppe ändern ======
+(2025)
+
+Der Befehl **groupmod** wird verwendet, um bestehende Gruppen zu ändern. Mit diesem Befehl können Sie den Namen einer Gruppe ändern oder andere Eigenschaften wie die Gruppen-ID (GID) anpassen.
+
+===== Syntax =====
+<code>
+groupmod [OPTIONEN] GRUPPENNAME
+</code>
+
+----
+
+===== Wichtige Optionen =====
+Die wichtigsten Optionen für den **groupmod**-Befehl sind:
+
+^ Option ^ Beschreibung ^
+| `-g` GID              | Setzt die Gruppen-ID (GID) für die angegebene Gruppe. |
+| `-n` NEUERNAME        | Ändert den Namen der Gruppe. |
+| `-o`                   | Erlaubt die Verwendung einer nicht eindeutigen GID, falls die angegebene GID bereits einer anderen Gruppe zugewiesen wurde. |
+| `-p` PASSWORT          | Setzt das Passwort für die Gruppe. (Wird in der Regel nicht oft verwendet, da Gruppen normalerweise kein Passwort haben.) |
+
+----
+
+===== Beispiele =====
+Hier sind einige Beispiele für die Verwendung von **groupmod**:
+
+  *  Den Namen der Gruppe `oldgroup` in `newgroup` ändern:
+<code>
+sudo groupmod -n newgroup oldgroup
+</code>
+
+  *  Die GID der Gruppe `developers` auf `1001` ändern:
+<code>
+sudo groupmod -g 1001 developers
+</code>
+
+  *  Eine Gruppe mit einer nicht eindeutigen GID erstellen:
+<code>
+sudo groupmod -o -g 1001 developers
+</code>
+
+----
+
+===== Hinweis =====
+  *  **groupmod** kann nur von einem Administrator oder dem Root-Benutzer ausgeführt werden, da das Ändern von Gruppen eine privilegierte Aktion ist.
+  *  Nach einer Änderung des Gruppennamens oder der GID sollten Sie sicherstellen, dass die zugehörigen Benutzerkonten und Dateien entsprechend aktualisiert werden.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **groupmod**:
+<code>
+man groupmod
+</code>

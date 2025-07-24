@@ -1,0 +1,45 @@
+====== 00 - Netzwerk Übersicht ======
+(2025.02)
+
+===== iproute2 =====
+
+**iproute2** ist eine Sammlung von Netzwerkverwaltungswerkzeugen unter Linux. Es wird verwendet, um Netzwerkschnittstellen, Routen und andere Netzwerkeinstellungen zu konfigurieren. Es bietet detaillierte Kontrolle über Netzwerkinfrastrukturen und ermöglicht die Verwaltung von Routing, Adressen und Schnittstellen.
+
+  * **Vorteile**:
+    - Sehr flexibel und leistungsfähig.
+    - Bietet detaillierte Netzwerkkonfiguration auf niedriger Ebene.
+    - Keine zusätzliche Daemon- oder Dienstinstallation erforderlich.
+  * **Nachteile**:
+    - Erfordert tiefergehende Netzwerkkenntnisse.
+    - Weniger benutzerfreundlich, besonders für Einsteiger.
+
+===== NetworkManager =====
+
+**NetworkManager** ist ein Netzwerkverwaltungsdienst, der speziell für Desktop-Umgebungen entwickelt wurde. Er bietet eine einfache und benutzerfreundliche Möglichkeit, Netzwerke zu konfigurieren und zu überwachen, insbesondere für drahtlose Netzwerke und VPNs. NetworkManager stellt sowohl eine Kommandozeilen- als auch eine grafische Benutzeroberfläche zur Verfügung.
+
+  * **Vorteile**:
+    - Einfach zu bedienen, ideal für Desktop-Umgebungen.
+    - Unterstützt verschiedene Netzwerktechnologien wie Ethernet, WLAN und VPN.
+    - Bietet sowohl GUI- als auch CLI-basierte Verwaltung.
+  * **Nachteile**:
+    - Eher für Desktop- und einfache Serverkonfigurationen geeignet.
+    - Weniger flexibel und mächtig als iproute2 bei komplexen Netzwerkkonfigurationen.
+
+===== systemd-networkd =====
+
+**systemd-networkd** ist ein Netzwerkverwaltungsdienst, der in die systemd-Umgebung integriert ist und vor allem in Serverumgebungen oder für minimalistische Systeme verwendet wird. Es bietet eine einfache, aber stabile Methode zur Verwaltung von Netzwerkkonfigurationen, insbesondere für statische IP-Adressierung.
+
+  * **Vorteile**:
+    - Leichtgewichtig und ideal für Serverumgebungen.
+    - Eng in das systemd-Ökosystem integriert.
+    - Sehr stabil und zuverlässig für einfache Netzwerkkonfigurationen.
+  * **Nachteile**:
+    - Keine automatische Unterstützung für WLAN oder VPN.
+    - Erfordert manuelle Konfiguration über Dateien, was für Einsteiger schwierig sein kann.
+
+===== Zusammenfassung =====
+
+  * **iproute2** ist ein mächtiges, flexibles Werkzeug für fortgeschrittene Benutzer, die detaillierte Kontrolle über ihre Netzwerkkonfiguration benötigen.
+  * **NetworkManager** ist eine benutzerfreundliche Lösung, die vor allem für Desktop-Nutzer und einfache Netzwerkkonfigurationen geeignet ist.
+  * **systemd-networkd** ist eine minimalistische Lösung für Server, die in das systemd-System integriert ist und sich besonders gut für statische Netzwerkkonfigurationen eignet.
+

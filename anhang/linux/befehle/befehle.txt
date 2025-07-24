@@ -1,0 +1,98 @@
+====== 00 Allgemeine Systembefehle in Linux ======
+(2025)
+
+Linux bietet eine Vielzahl von Befehlen, die genutzt werden können, um das System zu verwalten, Informationen zu ermitteln und Aufgaben effizient zu erledigen. Diese Befehle sind grundlegende Werkzeuge, die in jedem Linux-System verfügbar sind und für die Systemadministration, Wartung und Fehlerbehebung verwendet werden.
+
+===== Systeminformationen =====
+Die folgenden Befehle geben wichtige Informationen über das System, seine Hardware und Software aus:
+
+^ Befehl ^ Beschreibung ^
+| //[[anhang:linux:befehle:uname|uname]]//         | Gibt grundlegende Informationen über das System aus, wie z.B. den Kernel-Namen, die Version und die Architektur. |
+| //[[anhang:linux:befehle:hostname|hostname]]//      | Zeigt den Hostnamen des Systems an oder ermöglicht das Setzen eines neuen Hostnamens. |
+| //[[anhang:linux:befehle:uptime|uptime]]//        | Zeigt an, wie lange das System bereits läuft, sowie die aktuelle Systemlast. |
+| //[[anhang:linux:befehle:top|top]]//           | Zeigt eine Echtzeitübersicht der aktuell laufenden Prozesse und ihrer Ressourcennutzung an. |
+| //[[anhang:linux:befehle:dmesg|dmesg]]//         | Zeigt Kernel- und Systemmeldungen, insbesondere während des Bootvorgangs, an. |
+
+-----
+
+===== Dateisystem und Dateien =====
+Diese Befehle ermöglichen den Umgang mit Dateien, Verzeichnissen und Dateisystemen:
+
+^ Befehl ^ Beschreibung ^
+| //[[anhang:linux:befehle:ls|ls]]//           | Listet den Inhalt eines Verzeichnisses auf. |
+| //[[anhang:linux:befehle:cd|cd]]//           | Wechselt das Arbeitsverzeichnis. |
+| //[[anhang:linux:befehle:pwd|pwd]]//          | Zeigt den aktuellen Arbeitsordner an. |
+| //[[anhang:linux:befehle:cp|cp]]//           | Kopiert Dateien und Verzeichnisse. |
+| //[[anhang:linux:befehle:mv|mv]]//           | Verschiebt oder benennt Dateien und Verzeichnisse um. |
+| //[[anhang:linux:befehle:rm|rm]]//           | Entfernt Dateien oder Verzeichnisse. |
+| //[[anhang:linux:befehle:mkdir|mkdir]]//        | Erstellt ein neues Verzeichnis. |
+| //[[anhang:linux:befehle:rmdir|rmdir]]//        | Löscht ein leeres Verzeichnis. |
+| //[[anhang:linux:befehle:chmod|chmod]]//        | Ändert die Berechtigungen von Dateien und Verzeichnissen. |
+| //[[anhang:linux:befehle:chown|chown]]//        | Ändert den Eigentümer und die Gruppe von Dateien oder Verzeichnissen. |
+
+-----
+
+===== Prozesse und Systemüberwachung =====
+Diese Befehle werden genutzt, um laufende Prozesse zu überwachen und zu verwalten:
+
+^ Befehl ^ Beschreibung ^
+| //[[anhang:linux:befehle:ps|ps]]//           | Zeigt eine Liste der aktuellen Prozesse an. |
+| //[[anhang:linux:befehle:kill|kill]]//         | Sendet ein Signal an einen Prozess, um ihn zu beenden. |
+| //[[anhang:linux:befehle:killall|killall]]//      | Beendet alle Prozesse mit einem bestimmten Namen. |
+| //[[anhang:linux:befehle:htop|htop]]//         | Eine interaktive Version von top, die eine benutzerfreundliche Ansicht der Systemressourcen bietet. |
+| //[[anhang:linux:befehle:systemctl|systemctl]]//    | Verwendet, um Systemd-Dienste zu starten, zu stoppen und zu verwalten. |
+| //[[anhang:linux:befehle:journalctl|journalctl]]//   | Zeigt Logeinträge des systemd-Journals an. |
+
+-----
+
+===== Netzwerkinformationen =====
+Diese Befehle werden verwendet, um Netzwerkverbindungen und -einstellungen zu überprüfen und zu konfigurieren:
+
+^ Befehl                                       ^ Beschreibung                                                                                     ^
+| //[[anhang:linux:befehle:ifconfig|ifconfig]]//      | Zeigt Informationen zu Netzwerkinterfaces an (älterer Befehl, wird durch ip ersetzt).            |
+| //[[anhang:linux:befehle:ip|ip]]//                  | Ein moderner Befehl zur Verwaltung von Netzwerkverbindungen und Adressen.                        |
+| //[[anhang:linux:befehle:ping|ping]]//              | Sendet ICMP Echo-Anfragen an ein Ziel, um die Erreichbarkeit zu testen.                          |
+| //[[anhang:linux:befehle:netstat|netstat]]//        | Zeigt aktive Netzwerkverbindungen und deren Status an.                                           |
+| //[[anhang:linux:befehle:ss|ss]]//                  | Eine schnellere und detailliertere Alternative zu netstat zur Anzeige von Netzwerkverbindungen.  |
+| //[[anhang:linux:befehle:traceroute|traceroute]]//  | Verfolgt den Weg von Paketen zum Ziel und zeigt Netzwerk-Router auf diesem Weg an.               |
+| //[[anhang:linux:befehle:nslookup|nslookup]]//      | Abfragen von DNS-Servern, um Informationen zu Domainnamen zu erhalten.                           |
+| //[[anhang:linux:befehle:dig|dig]]//                | DNS-Abfragen durchführen                                                                         |
+
+-----
+
+===== Benutzer und Berechtigungen =====
+Verwende diese Befehle, um Benutzer zu verwalten und Berechtigungen zu ändern:
+
+^ Befehl ^ Beschreibung ^
+| //[[anhang:linux:befehle:useradd|useradd]]//      | Erstellt einen neuen Benutzer. |
+| //[[anhang:linux:befehle:usermod|usermod]]//      | Ändert die Eigenschaften eines bestehenden Benutzers. |
+| //[[anhang:linux:befehle:userdel|userdel]]//      | Löscht einen Benutzer und dessen Home-Verzeichnis. |
+| //[[anhang:linux:befehle:groupadd|groupadd]]//    | Erstellt eine neue Benutzergruppe. |
+| //[[anhang:linux:befehle:groupmod|groupmod]]//    | Ändert die Eigenschaften eines bestehenden Gruppe. |
+| //[[anhang:linux:befehle:groupdel|groupdel]]//    | Löscht einen eine bestehende Gruppe. |
+| //[[anhang:linux:befehle:chage|chage]]//          | Ändert das Ablaufdatum des Benutzerpassworts und andere Passwortrichtlinien. |
+| //[[anhang:linux:befehle:passwd|passwd]]//        | Setzt ein Passwort für einen Benutzer. |
+| //[[anhang:linux:befehle:last|last]]//            | Benutzeranmeldungen und Systemstart anzeigen. |
+
+-----
+
+===== Systemwartung und -pflege =====
+Diese Befehle helfen bei der Systemwartung und Fehlerbehebung:
+
+^ Befehl ^ Beschreibung ^
+| //[[anhang:linux:befehle:df|df]]//           | Zeigt den verfügbaren Speicherplatz auf den gemounteten Dateisystemen an. |
+| //[[anhang:linux:befehle:du|du]]//           | Zeigt den Speicherplatz an, der von Dateien und Verzeichnissen verwendet wird. |
+| //[[anhang:linux:befehle:free|free]]//         | Zeigt die Speichernutzung des Systems an, einschließlich RAM und Swap. |
+| //[[anhang:linux:befehle:fsck|fsck]]//         | Überprüft und repariert Dateisystemfehler. |
+| //[[anhang:linux:aufgaben:cron|cron]]//         | Verwaltet geplante Aufgaben, die zu bestimmten Zeiten oder Intervallen ausgeführt werden. |
+| //[[anhang:linux:befehle:at|at]]//           | Plant eine einmalige Ausführung eines Befehls zu einem späteren Zeitpunkt. |
+
+-----
+
+===== Weitere Informationen =====
+Für detaillierte Informationen zu den einzelnen Befehlen kannst du die Man-Pages verwenden:
+<code>
+man <Befehl>
+</code>
+
+Weitere Dokumentationen und Hilfen zu allgemeinen Linux-Systembefehlen findest du auf [[https://linux.die.net/|Die.net Linux Documentation]].

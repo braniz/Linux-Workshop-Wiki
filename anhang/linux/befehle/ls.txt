@@ -1,0 +1,93 @@
+====== ls - Auflisten von Dateien und Verzeichnissen ======
+(2025)
+
+Der Befehl **ls** wird verwendet, um den Inhalt eines Verzeichnisses anzuzeigen. Er ist eines der am häufigsten verwendeten Kommandos in Linux und Unix-basierten Systemen und bietet zahlreiche Optionen, um die Anzeige der Dateiinformationen anzupassen.
+
+===== Syntax =====
+<code>
+ls [Optionen] [Datei/Verzeichnis]
+</code>
+
+-----
+
+===== Wichtige Optionen =====
+Der Befehl **ls** bietet eine Vielzahl von Optionen, um die Anzeige von Dateien und Verzeichnissen zu steuern:
+
+^ Option ^ Beschreibung ^
+| `-l`                  | Listet die Dateien im langen Format auf, einschließlich der Berechtigungen, Eigentümer, Dateigröße und Änderungszeit. |
+| `-a`                  | Zeigt alle Dateien an, einschließlich versteckter Dateien (die mit einem Punkt beginnen). |
+| `-h`                  | Zeigt Dateigrößen in menschenlesbarem Format (z.B. `1K`, `234M`, `2G`) an, wenn mit `-l` verwendet. |
+| `-R`                  | Listet den Inhalt von Unterverzeichnissen rekursiv auf. |
+| `-S`                  | Sortiert die Dateien nach ihrer Größe (größte zuerst). |
+| `-t`                  | Sortiert die Dateien nach Änderungszeit (neueste zuerst). |
+| `--color`             | Hebt die Ausgabe farblich hervor, um verschiedene Dateitypen zu unterscheiden. |
+| `-d`                  | Zeigt nur Informationen über das angegebene Verzeichnis selbst an, anstatt dessen Inhalt. |
+
+-----
+
+===== Beispiele =====
+Hier sind einige praktische Beispiele zur Verwendung von **ls**:
+
+  *  **Anzeige der Dateien im aktuellen Verzeichnis im langen Format**:
+<code>
+ls -l
+</code>
+Dieser Befehl zeigt die Dateien im aktuellen Verzeichnis im langen Format an, einschließlich der Dateiberechtigungen, Eigentümer, Größe und Änderungszeit.
+
+  *  **Anzeige aller Dateien, einschließlich versteckter Dateien**:
+<code>
+ls -a
+</code>
+Dieser Befehl zeigt alle Dateien im aktuellen Verzeichnis an, einschließlich der versteckten Dateien (die mit einem Punkt beginnen).
+
+  *  **Anzeige der Dateien im langen Format mit menschenlesbarer Dateigröße**:
+<code>
+ls -lh
+</code>
+Dieser Befehl zeigt die Dateien im langen Format an, wobei die Dateigröße in einem menschenlesbaren Format wie `1K`, `234M` oder `2G` dargestellt wird.
+
+  *  **Rekursive Anzeige von Dateien in Unterverzeichnissen**:
+<code>
+ls -R
+</code>
+Dieser Befehl listet alle Dateien im aktuellen Verzeichnis sowie in allen Unterverzeichnissen rekursiv auf.
+
+  *  **Anzeige der Dateien, sortiert nach Änderungszeit**:
+<code>
+ls -lt
+</code>
+Dieser Befehl zeigt die Dateien im langen Format an, sortiert nach dem Änderungsdatum, wobei die neuesten Dateien zuerst angezeigt werden.
+
+-----
+
+===== Beispiel-Ausgabe =====
+Ein typischer **ls -l**-Befehl könnte eine Ausgabe wie folgt haben:
+<code>
+-rw-r--r-- 1 user user  12345 Mar  2 12:34 example.txt
+drwxr-xr-x 2 user user  4096 Mar  1 10:01 dir_example
+-rw-r--r-- 1 user user  67890 Feb 28 09:12 another_example.txt
+</code>
+
+In der Ausgabe zeigt jede Zeile eine Datei oder ein Verzeichnis an, mit den folgenden Informationen:
+-  Die ersten 10 Zeichen (`-rw-r--r--`) zeigen die Dateiberechtigungen an.
+-  Die Zahl `1` zeigt die Anzahl der Verknüpfungen zur Datei oder zum Verzeichnis an.
+-  `user` ist der Eigentümer der Datei, und `user` ist die Gruppe der Datei.
+-  `12345` zeigt die Dateigröße in Byte an.
+-  `Mar  2 12:34` zeigt das Datum und die Uhrzeit der letzten Änderung.
+-  `example.txt` ist der Name der Datei.
+
+-----
+
+===== Hinweis =====
+  *  **ls** zeigt nur den Inhalt des angegebenen Verzeichnisses an. Um das Verzeichnis selbst anzuzeigen, kannst du die `-d`-Option verwenden.
+  *  Wenn du viele Dateien in einem Verzeichnis hast, könnte die Ausgabe von **ls** lang sein. In diesem Fall ist es hilfreich, den Befehl mit `less` zu kombinieren (z.B. `ls -l | less`), um die Ausgabe seitenweise anzuzeigen.
+
+-----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über den Befehl **ls** und die verfügbaren Optionen:
+<code>
+man ls
+</code>
+
+Weitere Informationen und Dokumentation zu **ls** findest du auf der [[https://man7.org/linux/man-pages/|Linux Man-Pages]].

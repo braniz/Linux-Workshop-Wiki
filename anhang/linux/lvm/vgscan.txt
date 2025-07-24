@@ -1,0 +1,57 @@
+====== vgscan – Suche nach Volume Groups ======
+(2025)
+
+Der Befehl **vgscan** durchsucht das System nach vorhandenen **Volume Groups (VGs)** und zeigt eine Liste der gefundenen Volume Groups an. Dies ist besonders nützlich, wenn neue Volume Groups hinzugefügt wurden oder wenn du nach nicht aktivierten Volume Groups suchen möchtest.
+
+===== Syntax =====
+<code>
+vgscan [Optionen]
+</code>
+
+**Wichtige Optionen:**
+
+^ Option ^ Beschreibung ^
+| **-v**, **--verbose**          | Zeigt zusätzliche Informationen während des Scannens an. |
+| **--physical-volume <Pfad>**   | Gibt ein Physical Volume an, das nach Volume Groups durchsucht werden soll. |
+| **--norescan**                 | Verhindert das erneute Scannen nach Volume Groups. |
+
+-----
+
+===== Beispiele =====
+
+  *  **Suche nach allen vorhandenen Volume Groups**  
+<code>
+sudo vgscan
+</code>
+
+  *  **Suche nach Volume Groups auf einem bestimmten Physical Volume**  
+<code>
+sudo vgscan --physical-volume /dev/sda
+</code>
+
+  *  **Suche mit detaillierten Ausgaben**  
+<code>
+sudo vgscan -v
+</code>
+
+-----
+
+===== Hinweis =====
+  *  Der Befehl `vgscan` aktualisiert die Systeminformationen über die verfügbaren Volume Groups, indem es alle verfügbaren Physical Volumes durchsucht.
+  *  Falls du neue Volume Groups hinzugefügt hast oder das System nicht alle Volume Groups anzeigt, kann ein erneutes Ausführen von `vgscan` helfen.
+
+-----
+
+===== Alternativen =====
+  *  `vgs` – Zeigt eine Übersicht über alle aktiven Volume Groups an.  
+  *  `vgdisplay` – Zeigt detaillierte Informationen über Volume Groups an.  
+
+-----
+
+===== Weitere Informationen =====
+Für detaillierte Informationen siehe die Man-Page:  
+<code>
+man vgscan
+</code>
+
+Weitere Dokumentation findest du unter [[https://man7.org/linux/man-pages/man8/vgscan.8.html|vgscan Man-Page]].

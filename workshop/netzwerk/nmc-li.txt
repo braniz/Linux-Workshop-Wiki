@@ -1,0 +1,94 @@
+====== nmcli - Netzwerkmanagement mit NetworkManager ======
+(2025.02)
+
+**nmcli** ist ein Kommandozeilen-Tool zur Verwaltung und Konfiguration von Netzwerkverbindungen in Linux-Systemen, die den **NetworkManager** verwenden. Mit `nmcli` können Administratoren Netzwerkverbindungen einrichten, den Status überwachen und Netzwerkschnittstellen konfigurieren.
+
+===== Syntax =====
+<code bash>
+nmcli [Optionen] [Befehl] [Argumente]
+</code>
+
+===== Wichtige Optionen =====
+^ Option               ^ Beschreibung                                              ^
+| `device`             | Zeigt oder verwaltet Netzwerkschnittstellen.               |
+| `connection`         | Zeigt oder verwaltet Netzwerkverbindungen.                |
+| `radio`              | Verwaltet drahtlose Netzwerkschnittstellen.                |
+| `general`            | Zeigt allgemeine Informationen zu NetworkManager.         |
+| `help`               | Zeigt die Hilfeseite des Befehls an.                      |
+
+===== Verwendete Befehle =====
+^ Befehl                    ^ Beschreibung                                                       ^
+| `nmcli device status`     | Zeigt den Status aller Netzwerkgeräte an.                           |
+| `nmcli device connect`    | Stellt eine Verbindung zu einem Netzwerkgerät her.                 |
+| `nmcli device disconnect` | Trennt die Verbindung zu einem Netzwerkgerät.                      |
+| `nmcli connection show`   | Zeigt alle gespeicherten Netzwerkverbindungen an.                  |
+| `nmcli connection up`     | Aktiviert eine gespeicherte Netzwerkverbindung.                   |
+| `nmcli connection down`   | Deaktiviert eine gespeicherte Netzwerkverbindung.                 |
+| `nmcli radio wifi on`     | Aktiviert WiFi auf einem drahtlosen Gerät.                         |
+| `nmcli radio wifi off`    | Deaktiviert WiFi auf einem drahtlosen Gerät.                       |
+
+===== Verzeichnis =====
+^ Verzeichnis               ^ Beschreibung                                               ^
+| `/etc/NetworkManager/`     | Verzeichnis für die Konfigurationsdateien von NetworkManager.   |
+| `/var/log/NetworkManager/` | Logdateien von NetworkManager.                                |
+
+===== Beispiele =====
+**Netzwerkschnittstellen anzeigen:**
+<code bash>
+nmcli device status
+</code>
+Zeigt den Status aller Netzwerkschnittstellen und deren Verbindungen an.
+
+**Verbindung zu einem Netzwerk herstellen:**
+<code bash>
+nmcli device connect eth0
+</code>
+Stellt eine Verbindung zu der Netzwerkschnittstelle `eth0` her.
+
+**Verbindung trennen:**
+<code bash>
+nmcli device disconnect eth0
+</code>
+Trennt die Verbindung zu der Netzwerkschnittstelle `eth0`.
+
+**Liste der gespeicherten Verbindungen anzeigen:**
+<code bash>
+nmcli connection show
+</code>
+Zeigt alle gespeicherten Netzwerkverbindungen an.
+
+**Verbindung aktivieren:**
+<code bash>
+nmcli connection up "WLAN-Home"
+</code>
+Aktiviert die gespeicherte Verbindung mit dem Namen `WLAN-Home`.
+
+**Verbindung deaktivieren:**
+<code bash>
+nmcli connection down "WLAN-Home"
+</code>
+Deaktiviert die gespeicherte Verbindung mit dem Namen `WLAN-Home`.
+
+**WiFi aktivieren:**
+<code bash>
+nmcli radio wifi on
+</code>
+Aktiviert die drahtlose Netzwerkschnittstelle.
+
+**WiFi deaktivieren:**
+<code bash>
+nmcli radio wifi off
+</code>
+Deaktiviert die drahtlose Netzwerkschnittstelle.
+
+===== Hinweis =====
+- **nmcli** ist besonders nützlich für die Verwaltung von Netzwerkverbindungen auf Systemen ohne grafische Benutzeroberfläche (z.B. Server). 
+- Viele `nmcli`-Befehle benötigen Root-Rechte, insbesondere wenn Änderungen an Netzwerkschnittstellen oder Verbindungen vorgenommen werden.
+- Für detaillierte Informationen und erweiterte Optionen kann die Man-Page verwendet werden.
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen:
+<code bash>
+man nmcli
+</code>
+

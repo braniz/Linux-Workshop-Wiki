@@ -1,0 +1,69 @@
+====== killall - Prozesse nach Namen beenden ======
+(2025)
+
+Das Kommando **killall** wird verwendet, um Prozesse basierend auf ihrem Namen zu beenden. Im Gegensatz zu **kill**, das nach der Prozess-ID (PID) eines Prozesses sucht, ermöglicht **killall** das Beenden aller Prozesse mit einem bestimmten Namen. Es sendet ein Signal an alle Prozesse, die den angegebenen Namen haben.
+
+===== Syntax =====
+<code>
+killall [OPTIONEN] <Prozessname>
+</code>
+
+----
+
+===== Wichtige Optionen =====
+Die häufig verwendeten Optionen für das Kommando **killall** sind:
+
+^ Option ^ Beschreibung ^
+| -9  | Sendet das `SIGKILL`-Signal, um den Prozess sofort zu beenden (zwangsweise). |
+| -15 | Sendet das `SIGTERM`-Signal, um den Prozess freundlich zu beenden (Standard). |
+| -i  | Fragt vor dem Beenden jedes Prozesses nach Bestätigung. |
+| -u <Benutzer> | Beendet nur die Prozesse eines bestimmten Benutzers. |
+| -e  | Beendet nur Prozesse, deren Name exakt mit dem angegebenen Namen übereinstimmt. |
+| -v  | Zeigt eine detaillierte Ausgabe an, welche Prozesse beendet wurden. |
+
+----
+
+===== Beispiele =====
+Einige Beispiele für die Verwendung von **killall**:
+
+  *  Beendet alle Prozesse mit dem Namen `firefox`:
+<code>
+killall firefox
+</code>
+
+  *  Zwangsweise Beenden aller Prozesse mit dem Namen `firefox`:
+<code>
+killall -9 firefox
+</code>
+
+  *  Beendet alle Prozesse des Benutzers `user1`:
+<code>
+killall -u user1
+</code>
+
+  *  Zeigt alle Prozesse an, die mit `httpd` zu tun haben:
+<code>
+killall -v httpd
+</code>
+
+  *  Beendet nur Prozesse, deren Name genau mit `myapp` übereinstimmt (keine Teilübereinstimmungen):
+<code>
+killall -e myapp
+</code>
+
+----
+
+===== Hinweis =====
+  *  **killall** beendet alle Prozesse mit dem angegebenen Namen. Seien Sie vorsichtig, da mehrere Instanzen desselben Programms betroffen sein können.
+  *  Einige Prozesse können so konfiguriert sein, dass sie bestimmte Signale ignorieren oder abfangen. In solchen Fällen könnte es erforderlich sein, das `SIGKILL`-Signal (Option `-9`) zu verwenden.
+  *  Zum Beenden von Prozessen anderer Benutzer sind möglicherweise Administratorrechte erforderlich (z.B. mit `sudo`).
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **killall**:
+<code>
+man killall
+</code>
+
+Weitere Informationen zu Signalen finden Sie unter: [[https://man7.org/linux/man-pages/man7/signal.7.html|Signal Man-Page]]

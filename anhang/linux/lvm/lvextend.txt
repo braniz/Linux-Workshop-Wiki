@@ -1,0 +1,60 @@
+====== lvextend – Erweiterung eines Logischen Volumes ======
+(2025)
+
+Der Befehl **lvextend** wird verwendet, um die Größe eines bestehenden logischen Volumes (LV) in einer Volume Group (VG) zu erhöhen. Dies ermöglicht es, das logische Volume dynamisch zu vergrößern, ohne die Systemeinstellungen zu ändern.
+
+===== Syntax =====
+<code>
+lvextend [Optionen] -L <Größe> <LogicalVolume>
+</code>
+
+**Wichtige Optionen:**
+
+^ Option ^ Beschreibung ^
+| **-L <Größe>**      | Gibt die neue Größe des logischen Volumes an (z. B. 10G für 10 Gigabyte). |
+| **-l <Anzahl>**     | Gibt die Anzahl der Extents an, die zum logischen Volume hinzugefügt werden (z. B. 100%FREE, um den gesamten freien Speicherplatz zu verwenden). |
+| **-n <Name>**       | Setzt einen benutzerdefinierten Namen für das logische Volume (optional). |
+| **--resizefs**      | Erweitert das Dateisystem auf das neue Volume, nachdem das Volume vergrößert wurde (wird nur bei unterstützten Dateisystemen verwendet). |
+| **-i <Anzahl>**     | Gibt die Anzahl der Stripe-Einheiten an, wenn das Volume mit Striping erstellt wurde. |
+| **--size <Größe>**  | Eine alternative Möglichkeit zur Festlegung der Größe (z. B. 1T für 1 Terabyte). |
+
+-----
+
+===== Beispiele =====
+
+  *  **Erweiterung eines logischen Volumes "mylv" um 10 GB**  
+<code>
+sudo lvextend -L +10G /dev/vg01/mylv
+</code>
+
+  *  **Erweiterung eines logischen Volumes "mylv" um den gesamten freien Speicherplatz in der Volume Group "vg01"**  
+<code>
+sudo lvextend -l 100%FREE /dev/vg01/mylv
+</code>
+
+  *  **Erweiterung eines logischen Volumes und gleichzeitiges Erweitern des Dateisystems**  
+<code>
+sudo lvextend -L +10G --resizefs /dev/vg01/mylv
+</code>
+
+-----
+
+===== Hinweis =====
+  *  Nach der Erweiterung eines logischen Volumes kann es notwendig sein, das Dateisystem auf diesem Volume ebenfalls zu erweitern. Dies kann automatisch mit der Option `--resizefs` durchgeführt werden, falls das Dateisystem unterstützt wird.
+  *  Der zusätzliche Speicherplatz wird aus der Volume Group entnommen. Stelle sicher, dass genug freier Speicherplatz in der VG vorhanden ist.
+
+-----
+
+===== Alternativen =====
+  *  `lvcreate` – Zum Erstellen eines neuen logischen Volumes.
+  *  `lvremove` – Entfernt ein bestehendes logisches Volume.
+
+-----
+
+===== Weitere Informationen =====
+Für detaillierte Informationen siehe die Man-Page:  
+<code>
+man lvextend
+</code>
+
+Weitere Dokumentation findest du unter [[https://man7.org/linux/man-pages/man8/lvextend.8.html|lvextend Man-Page]].

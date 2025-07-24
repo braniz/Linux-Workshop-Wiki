@@ -1,0 +1,25 @@
+===== ~/.ssh/config =====
+(2025.02)
+
+**Dokumentation**
+man ssh_config 
+
+**Beispiel**
+<code>
+vi .ssh/config
+</code>
+
+<code>
+
+Host <AliasName>
+  HostName IP-Adresse oder DNS-Name
+  User <UserName>
+
+Host <AliasName>
+  HostName IP-Adresse oder DNS-Name
+  User <UserName>
+  IdentityFile ~/.ssh/id_ed25519 (Beispiel)
+  Port <PortNr>
+</code>
+
+

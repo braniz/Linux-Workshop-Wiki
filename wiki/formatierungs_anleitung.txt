@@ -1,0 +1,266 @@
+====== Wiki Formatierungs-Anleitung ======
+(2025.07)
+
+Diese Anleitung beschreibt die einheitlichen Formatierungsstandards für alle Inhalte im Workshop-Wiki. Folgen Sie diesen Richtlinien, um konsistente und professionelle Dokumentation zu erstellen.
+
+===== 1. Grundstruktur einer Seite =====
+
+==== 1.1 Kopfzeile ====
+Jede Seite beginnt mit einem Haupttitel und einem Datumsstempel:
+
+<code>
+====== Seitentitel ======
+(YYYY.MM)
+</code>
+
+**Beispiele:**
+<code>
+====== ssh-keygen - SSH-Schlüsselpaare erstellen ======
+(2025.02)
+
+====== 80 - Nextcloud Administration - OCC ======
+(2025.02)
+</code>
+
+==== 1.2 Einführung ====
+Nach dem Titel folgt eine kurze Beschreibung (1-3 Absätze) ohne Überschrift:
+
+<code>
+**Befehlsname** ist eine kurze Beschreibung des Tools/Befehls. 
+Weitere Details zur Funktionalität und zum Einsatzzweck.
+
+Zusätzliche Informationen zur Verwendung oder zum Kontext.
+</code>
+
+===== 2. Standardsektionen =====
+
+==== 2.1 Pflicht-Sektionen ====
+Jede Dokumentationsseite sollte diese Grundsektionen enthalten:
+
+^ Sektion ^ Beschreibung ^ Beispiel ^
+| **Syntax** | Grundlegende Befehlssyntax | `ssh-keygen [Optionen]` |
+| **Wichtige Optionen** | Parameter und Flags (Tabelle) | Tabelle mit Optionen und Beschreibungen |
+| **Beispiele** | Praktische Anwendungsbeispiele | Code-Blöcke mit Erklärungen |
+| **Hinweis** | Wichtige Informationen und Warnungen | Tipps, Warnungen, Best Practices |
+| **Weitere Informationen** | Referenzen und Links | Man-Pages, externe Dokumentation |
+
+==== 2.2 Optionale Sektionen ====
+^ Sektion ^ Wann verwenden ^ Beispiel ^
+| **Einführung** | Bei komplexeren Themen | Detaillierte Erklärung des Konzepts |
+| **Wichtige Dateien** | Bei systemrelevanten Tools | Konfigurationsdateien, Pfade |
+| **Alternativen** | Wenn ähnliche Tools existieren | Verweis auf verwandte Befehle |
+
+===== 3. Formatierungsregeln =====
+
+==== 3.1 Überschriften ====
+<code>
+====== Haupttitel (H1) ======
+===== Hauptsektion (H2) =====
+==== Untersektion (H3) ====
+=== Unter-Untersektion (H4) ===
+</code>
+
+**Richtlinien:**
+- Haupttitel nur einmal pro Seite
+- Sektionen logisch strukturieren
+- Keine Sprünge in der Hierarchie
+
+==== 3.2 Textformatierung ====
+^ Formatierung ^ Syntax ^ Verwendung ^
+| **Fett** | `**Text**` | Befehlsnamen, wichtige Begriffe |
+| //Kursiv// | `//Text//` | Dateinamen, Pfade, Variablen |
+| `Code` | ``` `Text` ``` | Befehle, Parameter, Code-Snippets |
+| __Unterstrichen__ | `__Text__` | Selten verwenden, nur bei Bedarf |
+
+==== 3.3 Code-Blöcke ====
+**Einfacher Code-Block:**
+<code>
+<code>
+kommando --option wert
+</code>
+</code>
+
+**Code-Block mit Syntax-Highlighting:**
+<code>
+<code bash>
+#!/bin/bash
+echo "Hello World"
+</code>
+</code>
+
+**Unterstützte Sprachen:** `bash`, `php`, `python`, `javascript`, `css`, `html`, `xml`, `yaml`
+
+===== 4. Tabellen =====
+
+==== 4.1 Standard-Tabelle ====
+<code>
+^ Spalte 1 ^ Spalte 2 ^ Spalte 3 ^
+| Inhalt 1 | Inhalt 2 | Inhalt 3 |
+| Inhalt A | Inhalt B | Inhalt C |
+</code>
+
+**Ergebnis:**
+^ Spalte 1 ^ Spalte 2 ^ Spalte 3 ^
+| Inhalt 1 | Inhalt 2 | Inhalt 3 |
+| Inhalt A | Inhalt B | Inhalt C |
+
+==== 4.2 Optionen-Tabelle (Standard-Format) ====
+<code>
+^ Option ^ Beschreibung ^
+| `-t` | Gibt den Schlüsseltyp an (z.B. rsa, ecdsa, ed25519). |
+| `-b` | Gibt die Schlüssellänge an (z.B. 2048 für RSA). |
+| `-f` | Legt den Dateinamen für den Schlüssel fest. |
+</code>
+
+==== 4.3 Befehls-Tabelle (erweiterte Version) ====
+<code>
+^ Befehl ^ Beschreibung ^ Wichtige Optionen ^
+| `ip link show` | Zeigt alle Netzwerkinterfaces | `-s` (statistiken) |
+| `ip addr add` | Fügt IP-Adresse hinzu | `dev` (interface) |
+</code>
+
+===== 5. Listen =====
+
+==== 5.1 Aufzählungslisten ====
+<code>
+  * Punkt 1
+  * Punkt 2
+    * Unterpunkt 2.1
+    * Unterpunkt 2.2
+  * Punkt 3
+</code>
+
+==== 5.2 Nummerierte Listen ====
+<code>
+  - Schritt 1
+  - Schritt 2
+  - Schritt 3
+</code>
+
+===== 6. Spezielle Formatierungen =====
+
+==== 6.1 Hinweise und Warnungen ====
+<code>
+**Hinweis:** Wichtige Information für den Benutzer.
+
+**Warnung:** Kritische Information, die beachtet werden muss.
+
+**Tipp:** Hilfreiche Zusatzinformation.
+</code>
+
+==== 6.2 Datei-Pfade und Verzeichnisse ====
+<code>
+/etc/ssh/sshd_config          # Konfigurationsdatei
+~/.ssh/id_rsa                 # Benutzerdatei
+/var/log/syslog              # Log-Datei
+</code>
+
+==== 6.3 Versteckte Inhalte ====
+Für längere Code-Ausgaben oder Details:
+<code>
+<hidden Beschreibung der versteckten Inhalte>
+<code>
+Langer Code oder Output hier...
+</code>
+</hidden>
+</code>
+
+===== 7. Beispiel-Template =====
+
+==== 7.1 Basis-Template für neue Seiten ====
+<code>
+====== Befehlsname - Kurze Beschreibung ======
+(YYYY.MM)
+
+**Befehlsname** ist eine kurze Beschreibung des Tools und seiner Hauptfunktion.
+
+Weitere Details zur Verwendung und zum Kontext.
+
+===== Syntax =====
+<code bash>
+befehl [optionen] [argumente]
+</code>
+
+===== Wichtige Optionen =====
+^ Option ^ Beschreibung ^
+| `-h` | Zeigt die Hilfe an |
+| `-v` | Aktiviert verbose Modus |
+
+===== Beispiele =====
+**Grundlegende Verwendung:**
+<code bash>
+befehl --option wert
+</code>
+Beschreibung was dieser Befehl macht.
+
+**Erweiterte Verwendung:**
+<code bash>
+befehl --option1 wert1 --option2 wert2
+</code>
+Beschreibung der erweiterten Funktionalität.
+
+===== Hinweis =====
+- Wichtige Informationen zur Verwendung
+- Sicherheitshinweise
+- Best Practices
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen:
+<code bash>
+man befehlsname
+</code>
+
+Weitere Dokumentation und Tutorials findest du auf [externe Links].
+</code>
+
+===== 8. Namenskonventionen =====
+
+==== 8.1 Dateinamen ====
+- Kleinbuchstaben verwenden
+- Bindestriche statt Leerzeichen: `ssh-key.txt`
+- Unterstriche für zusammengesetzte Begriffe: `file_permissions.txt`
+- Beschreibende Namen: `network_configuration.txt`
+
+==== 8.2 Ordnerstruktur ====
+- Thematische Gruppierung
+- Logische Hierarchie
+- Konsistente Benennung
+
+===== 9. Qualitätssicherung =====
+
+==== 9.1 Checkliste vor Veröffentlichung ====
+- [ ] Rechtschreibung geprüft
+- [ ] Formatierung einheitlich
+- [ ] Code-Beispiele getestet
+- [ ] Links funktionsfähig
+- [ ] Struktur logisch
+- [ ] Datum aktuell
+
+==== 9.2 Häufige Fehler vermeiden ====
+- Inkonsistente Formatierung
+- Fehlende Code-Blöcke
+- Ungetestete Beispiele
+- Fehlende Beschreibungen
+- Rechtschreibfehler
+
+===== 10. Wartung und Updates =====
+
+==== 10.1 Regelmäßige Überprüfung ====
+- Inhalte aktuell halten
+- Veraltete Informationen entfernen
+- Neue Features ergänzen
+- Links überprüfen
+
+==== 10.2 Versionierung ====
+- Datum in Kopfzeile aktualisieren
+- Änderungen dokumentieren
+- Konsistenz wahren
+
+===== Weitere Informationen =====
+
+Für erweiterte DokuWiki Syntax siehe:
+<code>
+[[wiki:syntax|DokuWiki Syntax Referenz]]
+</code>
+
+Diese Anleitung sollte als Referenz für alle Wiki-Beiträge verwendet werden, um eine einheitliche und professionelle Dokumentation zu gewährleisten.

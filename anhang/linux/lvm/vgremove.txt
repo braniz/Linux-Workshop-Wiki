@@ -1,0 +1,44 @@
+====== vgremove - Entfernen einer Volume-Gruppe ======
+
+`vgremove` ist ein Befehl, der verwendet wird, um eine Volume-Gruppe (VG) zu löschen. Dabei werden alle zugehörigen logischen Volumes (LVs) und physische Volumes (PVs) nicht gelöscht, sondern lediglich die Zuordnung in der Volume-Gruppe entfernt.
+
+===== Syntax =====
+<code>
+vgremove [Optionen] <Volume-Group>
+</code>
+
+===== Wichtige Optionen =====
+
+^ Option           ^ Beschreibung                                                               ^
+| `-v`, `--verbose` | Zeigt detaillierte Ausgaben während der Ausführung des Befehls an.          |
+| `--test`          | Führt einen Testlauf durch, ohne Änderungen vorzunehmen.                      |
+
+===== Beschreibung =====
+`vgremove` entfernt eine Volume-Gruppe (VG). Dies bedeutet, dass alle Zuordnungen von logischen Volumes (LVs) zu dieser VG entfernt werden, aber die tatsächlichen LVs und PVs bleiben bestehen. Es wird empfohlen, alle LVs zu entfernen oder in andere VGs zu verschieben, bevor die VG entfernt wird. Wenn noch LVs oder PVs in der VG existieren, schlägt der Befehl fehl.
+
+Vor der Verwendung von `vgremove` sollte die VG unbenutzt sein und keine LVs mehr enthalten. Alle darauf befindlichen Daten sollten gesichert oder verschoben werden.
+
+===== Beispiele =====
+
+  * Entfernen einer Volume-Gruppe:
+  <code>
+  vgremove vgdata
+  </code>
+  In diesem Beispiel wird die Volume-Gruppe `vgdata` entfernt.
+
+  * Testen, was passieren würde, wenn die Volume-Gruppe entfernt wird:
+  <code>
+  vgremove --test vgdata
+  </code>
+  Dies zeigt nur die Auswirkungen des Befehls, ohne die tatsächlichen Änderungen vorzunehmen.
+
+===== Hinweis =====
+
+  *  Vor der Ausführung von `vgremove` sollten Sie sicherstellen, dass alle logischen Volumes (LVs) in der Volume-Gruppe entfernt oder verschoben wurden.
+  *  Der Befehl entfernt nur die Volume-Gruppe und ihre Zuordnungen, aber keine Daten auf den physischen Volumes (PVs).
+  
+===== Weitere Informationen =====
+Weitere Details finden Sie in den Manpages des Befehls:
+<code>
+man vgremove
+</code>

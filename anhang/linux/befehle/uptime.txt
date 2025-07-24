@@ -1,0 +1,47 @@
+====== uptime - Systemlaufzeit anzeigen ======
+(2025)
+
+Der Befehl **uptime** zeigt die aktuelle Systemlaufzeit (Zeit seit dem letzten Start des Systems) sowie die aktuelle Uhrzeit, die Anzahl der angemeldeten Benutzer und die durchschnittliche Last des Systems über verschiedene Zeiträume an.
+
+===== Syntax =====
+<code>
+uptime
+</code>
+
+-----
+
+===== Wichtige Optionen =====
+Der Befehl **uptime** bietet keine zusätzlichen Optionen. Es wird lediglich die Systemlaufzeit und weitere Statistiken angezeigt.
+
+-----
+
+===== Beispiele =====
+Hier sind einige praktische Beispiele zur Verwendung von `uptime`:
+
+  *  **Aktuelle Systemlaufzeit anzeigen**:
+<code>
+uptime
+</code>
+Dieser Befehl zeigt die Systemlaufzeit sowie weitere wichtige Informationen an, wie die aktuelle Uhrzeit, die Anzahl der angemeldeten Benutzer und die durchschnittliche Systemlast über 1, 5 und 15 Minuten.
+
+Beispielausgabe:
+<code>
+15:34:02 up 3 days,  5:12,  2 users,  load average: 0.07, 0.12, 0.09
+</code>
+Dies bedeutet, dass das System seit 3 Tagen, 5 Stunden und 12 Minuten läuft, es 2 Benutzer gibt und die durchschnittliche Last in den letzten 1, 5 und 15 Minuten bei 0.07, 0.12 bzw. 0.09 liegt.
+
+-----
+
+===== Hinweis =====
+  *  Der Befehl `uptime` liefert keine detaillierten Informationen über den Systemzustand oder Prozesse. Er ist ein einfacher Befehl, um die grundlegende Systemlaufzeit und die aktuelle Last zu überprüfen.
+  *  Der Befehl kann in Skripten oder Systemüberwachungsaufgaben verwendet werden, um schnell die Betriebszeit und Systemauslastung zu überprüfen.
+
+-----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über den Befehl `uptime`:
+<code>
+man uptime
+</code>
+
+Weitere Informationen zu Systemüberwachungsbefehlen findest du in der [[https://man7.org/linux/man-pages/|Linux Man-Pages]].

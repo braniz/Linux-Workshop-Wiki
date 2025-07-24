@@ -1,0 +1,81 @@
+====== usermod - Benutzerinformationen ändern ======
+(2025)
+
+Der Befehl **usermod** wird verwendet, um die Eigenschaften eines bestehenden Benutzers auf einem Linux-System zu ändern. Du kannst mit diesem Befehl beispielsweise den Benutzernamen, das Home-Verzeichnis, die Shell oder die Gruppenmitgliedschaften eines Benutzers anpassen.
+
+===== Syntax =====
+<code>
+usermod [OPTIONEN] <BENUTZERNAME>
+</code>
+
+----
+
+===== Wichtige Optionen =====
+Die wichtigsten Optionen für den **usermod**-Befehl sind:
+
+^ Option ^ Beschreibung ^
+| `-l <NEUER_NAME>`       | Ändert den Benutzernamen des Benutzers. |
+| `-d <NEUER_PFAD>`       | Ändert das Home-Verzeichnis des Benutzers. |
+| `-m`                    | Verschiebt das Home-Verzeichnis des Benutzers an den neuen Pfad, falls das Home-Verzeichnis geändert wird. |
+| `-s <SHELL>`            | Setzt die Standard-Shell für den Benutzer. |
+| `-G <GRUPPEN>`          | Fügt den Benutzer zu einer oder mehreren Gruppen hinzu (durch Komma getrennt). |
+| `-g <GRUPPE>`           | Setzt die primäre Gruppe des Benutzers. |
+| `-e <DATUM>`            | Legt das Ablaufdatum des Benutzerkontos fest. |
+| `-f <TAGE>`             | Gibt die Anzahl der Tage an, nach denen das Konto nach Ablauf des Passworts deaktiviert wird. |
+| `-a`                    | Fügt den Benutzer zu den angegebenen Gruppen hinzu, ohne die bestehenden Gruppenzugehörigkeiten zu entfernen. |
+| `-c <KOMMENTAR>`        | Ändert den Kommentar (normalerweise den vollständigen Namen) des Benutzers. |
+
+----
+
+===== Beispiele =====
+Hier sind einige Beispiele für die Verwendung von **usermod**:
+
+  *  Den Benutzernamen eines bestehenden Benutzers ändern:
+<code>
+usermod -l johndoe_new johndoe
+</code>
+
+  *  Das Home-Verzeichnis eines Benutzers ändern und gleichzeitig das Verzeichnis verschieben:
+<code>
+usermod -d /home/johndoe_new -m johndoe
+</code>
+
+  *  Die primäre Gruppe eines Benutzers ändern:
+<code>
+usermod -g newgroup johndoe
+</code>
+
+  *  Einen Benutzer zu mehreren Gruppen hinzufügen:
+<code>
+usermod -a -G admin,developers johndoe
+</code>
+
+  *  Die Standard-Shell eines Benutzers ändern:
+<code>
+usermod -s /bin/zsh johndoe
+</code>
+
+  *  Das Ablaufdatum für das Benutzerkonto setzen:
+<code>
+usermod -e 2025-12-31 johndoe
+</code>
+
+  *  Einen Kommentar für den Benutzer ändern:
+<code>
+usermod -c "John Doe, Developer" johndoe
+</code>
+
+----
+
+===== Hinweis =====
+  *  Bei der Änderung des Home-Verzeichnisses wird das alte Verzeichnis **nicht automatisch entfernt**. Verwende die Option `-m`, um das Verzeichnis zu verschieben.
+  *  Einige Änderungen, wie die Änderung des Benutzernamens, erfordern möglicherweise zusätzliche Maßnahmen, insbesondere wenn der Benutzer derzeit angemeldet ist.
+  *  Um Gruppenmitgliedschaften zu ändern, verwende die Option `-G`. Beachte, dass der Benutzer durch den Befehl **usermod -G** nur in die neuen Gruppen aufgenommen wird, jedoch nicht aus bestehenden Gruppen entfernt wird.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **usermod**:
+<code>
+man usermod
+</code>

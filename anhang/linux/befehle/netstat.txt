@@ -1,0 +1,98 @@
+====== netstat - Netzwerkstatistiken ======
+(2025)
+
+**netstat** (Network Statistics) ist ein Netzwerkdiagnosetool auf Unix-ähnlichen Systemen, das Informationen über Netzwerkverbindungen, Routing-Tabellen, Schnittstellenstatistiken und andere Netzwerkprotokolle liefert. Es ist hilfreich, um die Netzwerkaktivität zu überwachen und Probleme zu diagnostizieren.
+
+===== Syntax =====
+  netstat [Optionen]
+
+----
+
+===== Wichtige Optionen =====
+^ Option ^ Beschreibung ^
+| -a          | Zeigt alle Verbindungen und lauschen Ports an. |
+| -t          | Zeigt nur TCP-Verbindungen an. |
+| -u          | Zeigt nur UDP-Verbindungen an. |
+| -l          | Zeigt nur die Ports an, die auf eingehende Verbindungen warten (Listening Ports). |
+| -n          | Zeigt IP-Adressen und Ports als numerische Werte an, anstatt die Hostnamen und Dienstnamen aufzulösen. |
+| -p          | Zeigt den PID (Prozess-ID) und den Namen des Prozesses, der die Verbindung hält, an. |
+| -r          | Zeigt die Routing-Tabelle an. |
+| -i          | Zeigt detaillierte Informationen zu den Netzwerk-Schnittstellen an. |
+| -s          | Zeigt Netzwerkstatistiken pro Protokoll an. |
+
+----
+
+===== Beispiel =====
+  *  Alle Netzwerkverbindungen und Listening-Ports anzeigen:
+<code>
+netstat -a
+</code>
+
+  *  Nur die TCP-Verbindungen anzeigen:
+<code>
+netstat -t
+</code>
+
+  *  Nur die UDP-Verbindungen anzeigen:
+<code>
+netstat -u
+</code>
+
+  *  Die Routing-Tabelle anzeigen:
+<code>
+netstat -r
+</code>
+
+  *  Zeigt die Schnittstellenstatistiken an:
+<code>
+netstat -i
+</code>
+
+  *  Zeigt Netzwerkstatistiken für jedes Protokoll an:
+<code>
+netstat -s
+</code>
+
+  *  Zeigt die Verbindungen an, die von einem bestimmten Prozess gehalten werden:
+<code>
+netstat -p
+</code>
+
+----
+
+===== Erklärung der Spalten im netstat-Output =====
+Wenn Sie den Befehl `netstat -tulnp` ausführen, erhalten Sie eine Ausgabe, die mehrere Spalten enthält. Hier sind die wichtigsten Spalten und deren Bedeutung:
+
+^ Spalte       ^ Beschreibung ^
+| **Proto**    | Zeigt das verwendete Protokoll an (z.B. TCP, UDP). |
+| **Recv-Q**   | Zeigt die Anzahl der empfangenen Bytes, die noch nicht von einem Prozess verarbeitet wurden. |
+| **Send-Q**   | Zeigt die Anzahl der Bytes, die noch an die Remote-Host-Adresse gesendet werden müssen. |
+| **Local Address** | Zeigt die lokale Adresse (IP-Adresse und Portnummer), an die die Verbindung gebunden ist. |
+| **Foreign Address** | Zeigt die Adresse des entfernten Hosts, mit dem eine Verbindung besteht. |
+| **State**    | Zeigt den aktuellen Zustand der Verbindung an, z.B. `ESTABLISHED`, `LISTENING`, `TIME_WAIT`. |
+| **PID/Program name** | Zeigt die Prozess-ID und den Namen des Prozesses an, der die Verbindung hält. Diese Spalte erscheint nur, wenn die Option `-p` verwendet wird. |
+
+Beispiel für den Output:
+<code>
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1036/sshd
+tcp6       0      0 :::80                   :::*                    LISTEN      1123/apache2
+</code>
+
+In diesem Beispiel:
+  * Der erste Eintrag zeigt, dass der `sshd`-Prozess auf allen IP-Adressen (`0.0.0.0:22`) für eingehende Verbindungen auf Port 22 (SSH) hört.
+  * Der zweite Eintrag zeigt, dass der `apache2`-Prozess auf allen IPv6-Adressen (`:::80`) für HTTP-Verbindungen auf Port 80 hört.
+
+----
+
+===== Hinweis =====
+  *  **netstat** wird nicht in allen modernen Linux-Distributionen vorinstalliert sein. In vielen Fällen wird es durch **ss** ersetzt.
+  *  Einige Optionen, wie z.B. `-p`, erfordern möglicherweise Administratorrechte, um alle Verbindungen und deren zugehörige Prozesse zu sehen.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **netstat**:
+<code>
+man netstat
+</code>

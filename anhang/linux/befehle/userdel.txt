@@ -1,0 +1,53 @@
+====== userdel - Benutzer löschen ======
+(2025)
+
+Der Befehl **userdel** wird verwendet, um einen Benutzer von einem Linux-System zu löschen. Dies umfasst sowohl das Entfernen des Benutzerkontos als auch optional das Löschen des Home-Verzeichnisses und der Dateien des Benutzers.
+
+===== Syntax =====
+<code>
+userdel [OPTIONEN] <BENUTZERNAME>
+</code>
+
+----
+
+===== Wichtige Optionen =====
+Die wichtigsten Optionen für den **userdel**-Befehl sind:
+
+^ Option ^ Beschreibung ^
+| `-r`                      | Löscht das Home-Verzeichnis des Benutzers und alle darin enthaltenen Dateien. |
+| `-f`                      | Erzwingt das Löschen des Benutzers, auch wenn er gerade angemeldet ist oder andere Prozesse hat. |
+| `-h`                      | Zeigt eine Hilfe zu den verfügbaren Optionen an. |
+
+----
+
+===== Beispiele =====
+Hier sind einige Beispiele für die Verwendung von **userdel**:
+
+  *  Einen Benutzer löschen, ohne das Home-Verzeichnis zu entfernen:
+<code>
+userdel johndoe
+</code>
+
+  *  Einen Benutzer löschen und gleichzeitig das Home-Verzeichnis und alle Dateien des Benutzers entfernen:
+<code>
+userdel -r johndoe
+</code>
+
+  *  Einen Benutzer löschen, auch wenn er momentan angemeldet ist:
+<code>
+userdel -f johndoe
+</code>
+
+----
+
+===== Hinweis =====
+  *  Der Befehl **userdel** löscht nur das Benutzerkonto und die zugehörigen Dateien, aber keine Dateien, die der Benutzer möglicherweise in anderen Verzeichnissen hinterlassen hat. Verwende daher immer die Option `-r`, wenn du sicherstellen möchtest, dass das Home-Verzeichnis und alle Dateien des Benutzers entfernt werden.
+  *  Wenn der Benutzer derzeit angemeldet ist, kann das Löschen des Benutzers möglicherweise nicht sofort erfolgreich sein, es sei denn, die Option `-f` wird verwendet.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **userdel**:
+<code>
+man userdel
+</code>

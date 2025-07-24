@@ -1,0 +1,63 @@
+====== pvscan – Scannen von Physical Volumes ======
+(2025)
+
+Der Befehl **pvscan** wird verwendet, um das System nach **Physical Volumes (PVs)** zu durchsuchen, die Teil eines **Logical Volume Managers (LVM)** sind. Dieser Befehl hilft, alle auf dem System erkannten PVs zu identifizieren, einschließlich derjenigen, die in **Volume Groups (VGs)** enthalten sind.
+
+===== Syntax =====
+<code>
+pvscan [Optionen]
+</code>
+
+**Wichtige Optionen:**  
+
+^ Option ^ Beschreibung ^
+|  **-v**    | Zeigt detaillierte Informationen während des Scans an. |
+|  **--noheadings**    | Unterdrückt die Kopfzeilen in der Ausgabe. |
+|  **-u**    | Zeigt auch die UUIDs der PVs an. |
+|  **-s**    | Zeigt eine komprimierte Zusammenfassung der Scans. |
+
+-----
+
+===== Beispiele =====
+
+  *  **Scannen des Systems nach allen Physical Volumes**  
+<code>
+sudo pvscan
+</code>
+
+  *  **Detaillierte Ausgabe des Scans anzeigen**  
+<code>
+sudo pvscan -v
+</code>
+
+  *  **Scannen und nur die UUID der PVs anzeigen**  
+<code>
+sudo pvscan -u
+</code>
+
+  *  **Scannen ohne Kopfzeilen in der Ausgabe**  
+<code>
+sudo pvscan --noheadings
+</code>
+
+-----
+
+===== Hinweis =====
+  *  **pvscan** wird in der Regel verwendet, um das System nach PVs zu durchsuchen, besonders nachdem neue Geräte hinzugefügt wurden.
+  *  Wenn keine Ausgabe erfolgt, könnte es sein, dass keine Physical Volumes im System vorhanden sind.
+
+-----
+
+===== Alternativen =====
+  *  `pvdisplay` – Zeigt detaillierte Informationen zu einem oder mehreren Physical Volumes an.  
+  *  `pvs` – Zeigt eine kompakte Übersicht über alle Physical Volumes.  
+
+-----
+
+===== Weitere Informationen =====
+Für detaillierte Informationen siehe die Man-Page:  
+<code>
+man pvscan
+</code>
+
+Weitere Dokumentation findest du unter [[https://man7.org/linux/man-pages/man8/pvscan.8.html|pvscan Man-Page]].

@@ -1,0 +1,72 @@
+====== 00 Software RAID in Linux ======
+(2025)
+
+Redundant Array of Independent Disks (RAID) ermöglicht Datensicherheit und Performance-Steigerung durch Kombination mehrerer physischer Laufwerke. Dieser Artikel erklärt die Konfiguration von Software-RAID unter Linux mit **mdadm**.
+
+===== Syntax =====
+Grundlegende Befehle und Dateien:
+<code>
+mdadm --create /dev/mdX --level=Y --raid-devices=Z /dev/sd[abc]  # RAID erstellen
+mdadm --detail /dev/mdX            # RAID-Status anzeigen
+cat /proc/mdstat                   # Aktive RAID-Arrays überprüfen
+/etc/mdadm/mdadm.conf              # Persistente RAID-Konfiguration
+</code>
+
+===== Wichtige Optionen =====
+^ Befehl      ^ Optionen                 ^ Beschreibung ^
+| mdadm       | --create (--level, --raid-devices) | Neues RAID erstellen |
+|             | --add /dev/mdX /dev/sdd | Festplatte zum Array hinzufügen |
+|             | --fail /dev/mdX /dev/sdb | Laufwerk als defekt markieren |
+|             | --remove /dev/mdX /dev/sdb | Laufwerk aus Array entfernen |
+| lsblk       | -o NAME,SIZE,RAID       | RAID-Zugehörigkeit anzeigen |
+
+===== Beispiele =====
+RAID 1 (Mirror) mit 2 Laufwerken erstellen:
+<code>
+mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/sda /dev/sdb
+mkfs.ext4 /dev/md0                 # Dateisystem erstellen
+</code>
+
+RAID 5 mit 3 Disks + 1 Hot-Spare:
+<code>
+mdadm --create /dev/md1 --level=5 --raid-devices=3 /dev/sdc /dev/sdd /dev/sde --spare-devices=1 /dev/sdf
+</code>
+
+Defekte Platte ersetzen:
+<code>
+mdadm --manage /dev/md0 --fail /dev/sda   # Als fehlerhaft markieren
+mdadm --manage /dev/md0 --remove /dev/sda # Aus Array entfernen
+mdadm --manage /dev/md0 --add /dev/sdg    # Neue Platte hinzufügen
+</code>
+
+===== Hinweis =====
+  * **RAID ≠ Backup**: Schützt nicht vor Löschungen oder Ransomware!
+  * **RAID-Level wählen**:
+    * RAID 0: Striping (Performance, **keine Redundanz**)
+    * RAID 1: Mirroring (100% Overhead)
+    * RAID 5: Parity (1 Disk kann ausfallen, min. 3 Platten)
+    * RAID 6: Doppelte Parity (2 Disks, min. 4 Platten)
+    * RAID 10: Kombination aus 1+0 (min. 4 Platten)
+  * **Monitoring aktivieren**: `mdadm --monitor --daemonise /dev/mdX`
+  * **Konfiguration speichern**: `mdadm --detail --scan >> /etc/mdadm/mdadm.conf`
+
+===== Alternativen =====
+  * **ZFS/Btrfs** – Dateisysteme mit integrierter RAID-Funktionalität
+  * **LVM RAID** – RAID-Integration in Logical Volume Manager
+  * **Hardware-RAID** – Dedizierte Controller-Karten (bessere Performance)
+  * **Ceph** – Distributed Storage Cluster für große Infrastrukturen
+  * **Cloud-RAID** – Automatisierte Redundanz bei AWS/GCP Storage
+
+===== Weitere Informationen =====
+Kritische Systemdateien:
+<code>
+/proc/mdstat            # Live-Status aller RAID-Arrays
+/var/log/syslog         # RAID-Ereignisprotokolle
+</code>
+
+Externe Ressourcen:
+  * [[https://wiki.archlinux.org/title/RAID|Arch Linux RAID Guide]]
+  * [[https://raid.wiki.kernel.org|Linux RAID Wiki]]
+  * [[https://ubuntu.com/server/docs/disk-raid|Ubuntu RAID Setup]]
+  * [[https://www.thomas-krenn.com/de/wiki/Linux_Software_RAID|Thomas-Krenn RAID Tutorial]]
+  * [[https://www.reddit.com/r/DataHoarder/|DataHoarder Community Tipps]]

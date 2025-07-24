@@ -1,0 +1,64 @@
+~~NOTOC~~
+~~NOCACHE~~ 
+
+<WRAP centeralign center round box 80%> 
+====== CLI - Sammlung ======
+
+^ Kapitel                                                                                         ^
+| //[[anhang:linux:befehle:befehle|Allgemeine Systembefehle]]//                                                    |
+| //[[anhang:linux:benutzer_gruppen:benutzer_gruppen|Benutzer- und Gruppenverwaltung]]//                 |
+| //[[anhang:linux:dateisystemverwaltung:dateisystemverwaltung|Dateisystemverwaltung ]]//                |
+| //[[anhang:linux:lvm:lvm|LVM (Logical Volume Manager) ]]//                                             |
+| //[[anhang:linux:raid:raid|Software RAID ]]//                                                          |
+| //[[anhang:linux:acl:acl|Dateiberechtigungen und ACLs ]]//                                             |
+| //[[anhang:linux:sicherheit_berechtigung: sicherheit_berechtigung|Sicherheit und Berechtigungen ]]//   |
+| //[[anhang:linux:backup:backup|Backup und Wiederherstellung ]]//                                       |
+| //[[anhang:linux:netzwerk: netzwerk|Netzwerkbefehle ]]//                                               |
+| //[[anhang:linux:systemd:systemd|Systemd und Dienstverwaltung ]]//                                     |
+| //[[anhang:linux:prozessmanagement:prozessmanagement|Prozessmanagement ]]//                            |
+| //[[anhang:linux:systemueberwachung: systemueberwachung|Systemüberwachung und Logging ]]//             |
+| //[[anhang:linux:boot_grub: boot_grub|Bootprozess und GRUB ]]//                                        |
+| //[[anhang:linux:aufgaben:aufgaben|Zeit- und Aufgabenplanung ]]//                                             |
+| //[[anhang:linux:performance: performance|Performance-Optimierung ]]//                                 |
+| //[[anhang:linux:paketmanagement: paketmanagement|Paketmanagement ]]//                                 |
+| //[[anhang:linux:shell_skripte: shell_skripte|Shell-Skripting und Automatisierung ]]//                 |
+| //[[anhang:linux:textverarbeitung: textverarbeitung|Textverarbeitung und Suche ]]//                    |
+| //[[anhang:linux:komprimierung_archiv: komprimierung_archiv|Komprimierung und Archivierung ]]//        |
+| //[[anhang:linux:hardware: hardware|Geräte- und Hardwareverwaltung ]]//                                |
+| //[[anhang:linux:kernel: kernel|Kernelmodule und Treiber ]]//                                          |
+| //[[anhang:linux:ssh:ssh|SSH und Fernwartung ]]//                                                      |
+| //[[anhang:linux:vm_container: vm_container|Virtualisierung und Container ]]//                         |
+| //[[anhang:linux:container_orchester: container_orchester|Container und Container-Orchestrierung ]]//  |
+| //[[anhang:linux:entw:entw|Entwicklungstools und Compiler ]]//                                         |
+| //[[anhang:linux:datenbank:datenbank|Datenbanken und SQL-Tools ]]//                                    |
+
+</WRAP>
+
+<WRAP center round box 80%> 
+<nspages anhang:linux:befehle                 -h1 -nbCol=2 -textPages="Allgemeine Systembefehle">
+<nspages anhang:linux:benutzer_gruppen        -h1 -nbCol=2 -textPages="Benutzer- und Gruppenverwaltung">
+<nspages anhang:linux:dateisystemverwaltung   -h1 -nbCol=2 -textPages="Dateisystemverwaltung">
+<nspages anhang:linux:lvm                     -h1 -nbCol=2 -textPages="LVM (Logical Volume Manager)">
+<nspages anhang:linux:raid                    -h1 -nbCol=2 -textPages="Software RAID">
+<nspages anhang:linux:acl                     -h1 -nbCol=2 -textPages="Dateiberechtigungen und ACLs">
+<nspages anhang:linux:sicherheit_berechtigung -h1 -nbCol=2 -textPages="Sicherheit und Berechtigungen">
+<nspages anhang:linux:backup                  -h1 -nbCol=2 -textPages="Backup und Wiederherstellung">
+<nspages anhang:linux:netzwerk                -h1 -nbCol=2 -textPages="Netzwerkbefehle">
+<nspages anhang:linux:systemd                 -h1 -nbCol=2 -textPages="Systemd und Dienstverwaltung">
+<nspages anhang:linux:prozessmanagement       -h1 -nbCol=2 -textPages="Prozessmanagement">
+<nspages anhang:linux:systemueberwachung      -h1 -nbCol=2 -textPages="Systemüberwachung und Logging">
+<nspages anhang:linux:boot_grub               -h1 -nbCol=2 -textPages="Bootprozess und GRUB">
+<nspages anhang:linux:aufgaben                -h1 -nbCol=2 -textPages="Zeit- und Aufgabenplanung">
+<nspages anhang:linux:performance             -h1 -nbCol=2 -textPages="Performance-Optimierung">
+<nspages anhang:linux:paketmanagement         -h1 -nbCol=2 -textPages="Paketmanagement">
+<nspages anhang:linux:shell_skripte           -h1 -nbCol=2 -textPages="Shell-Skripting und Automatisierung">
+<nspages anhang:linux:textverarbeitung        -h1 -nbCol=2 -textPages="Textverarbeitung und Suche">
+<nspages anhang:linux:komprimierung_archiv    -h1 -nbCol=2 -textPages="Komprimierung und Archivierung">
+<nspages anhang:linux:hardware                -h1 -nbCol=2 -textPages="Geräte- und Hardwareverwaltung">
+<nspages anhang:linux:kernel                  -h1 -nbCol=2 -textPages="Kernelmodule und Treiber">
+<nspages anhang:linux:ssh                     -h1 -nbCol=2 -textPages="SSH und Fernwartung">
+<nspages anhang:linux:vm_container            -h1 -nbCol=2 -textPages="Virtualisierung und Container">
+<nspages anhang:linux:container_orchester     -h1 -nbCol=2 -textPages="Container und Container-Orchestrierung">
+<nspages anhang:linux:entw                    -h1 -nbCol=2 -textPages="Entwicklungstools und Compiler">
+<nspages anhang:linux:datenbank               -h1 -nbCol=2 -textPages="Datenbanken und SQL-Tools">
+</WRAP>

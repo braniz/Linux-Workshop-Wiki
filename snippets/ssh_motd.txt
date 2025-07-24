@@ -1,0 +1,21 @@
+====== SSH - Begrüßung ======
+
+Um einen Begrüßungstext zu erhalten wenn man sich über ssh in ein System einloggt gibt es zwei Dateien  /etc/motd und /etc/issue.net (zweite ist frei wählbar) bearbeiten:
+
+  ***Begrüßung nach dem login:**
+<code>
+Datei aufrufen und bearbeiten:
+
+vi /etc/motd
+</code>
+
+  ***Begrüßung vor dem login**
+<code>
+1. Begrüßung Text erstellen
+   vi /etc/issue.net
+2. vi /etc/ssh/sshd_config
+   Banner /Pfad/zu Datei
+3. sshd neu starten
+</code>
+
+

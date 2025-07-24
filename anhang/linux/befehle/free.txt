@@ -1,0 +1,70 @@
+====== free - Speicherinformationen anzeigen ======
+(2025)
+
+Der Befehl **free** wird verwendet, um Informationen über den physischen und virtuellen Speicher sowie den verwendeten und freien Speicherplatz anzuzeigen.
+
+===== Syntax =====
+<code>
+free [OPTIONEN]
+</code>
+
+----
+
+===== Wichtige Optionen =====
+^ Option ^ Beschreibung ^
+| `-h`, `--human-readable`   | Gibt die Speichermenge in einem für Menschen lesbaren Format aus, z.B. in Kilobytes (K), Megabytes (M) oder Gigabytes (G). |
+| `-b`, `--bytes`            | Zeigt die Speichernutzung in Bytes an. |
+| `-k`                       | Zeigt die Speichernutzung in Kilobytes an (Standard). |
+| `-m`                       | Zeigt die Speichernutzung in Megabytes an. |
+| `-g`                       | Zeigt die Speichernutzung in Gigabytes an. |
+| `-t`, `--total`            | Zeigt die Gesamtsumme der Speichernutzung an, einschließlich des virtuellen Speichers. |
+| `-s` <Sekunden>            | Gibt die Speichernutzung alle n Sekunden aus. |
+
+----
+
+===== Beispiele =====
+Hier sind einige Beispiele für die Verwendung von **free**:
+
+  *  Anzeigen der allgemeinen Speichernutzung:
+<code>
+free
+</code>
+
+  *  Anzeigen der Speichernutzung im menschenlesbaren Format:
+<code>
+free -h
+</code>
+
+  *  Anzeigen der Speichernutzung in Megabytes:
+<code>
+free -m
+</code>
+
+  *  Anzeigen der Speichernutzung in Gigabytes:
+<code>
+free -g
+</code>
+
+  *  Anzeigen der Speichernutzung alle 5 Sekunden:
+<code>
+free -s 5
+</code>
+
+  *  Anzeigen der Gesamtsumme der Speichernutzung:
+<code>
+free -t
+</code>
+
+----
+
+===== Hinweis =====
+  *  Der Befehl **free** zeigt nur eine Momentaufnahme der Speicherauslastung zu dem Zeitpunkt an, an dem der Befehl ausgeführt wird.
+  *  Die Ausgabe von **free** enthält Informationen über den physischen Speicher, den Swap-Speicher und den virtuellen Speicher.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **free**:
+<code>
+man free
+</code>

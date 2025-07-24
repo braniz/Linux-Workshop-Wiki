@@ -1,0 +1,47 @@
+====== lvdisplay - Anzeigen von Informationen über logische Volumes ======
+(2025)
+
+Der Befehl `lvdisplay` wird verwendet, um detaillierte Informationen über **logische Volumes (LV)** in einer **Volume Group (VG)** anzuzeigen. Dies umfasst Angaben zur Größe, dem verwendeten Speicherplatz, den Attributen und den Status des Volumes.
+
+===== Syntax =====
+
+<code>
+lvdisplay <LV-Name>
+</code>
+
+===== Optionen =====
+
+^ Option ^ Beschreibung ^
+| **-v, --verbose**   | Gibt detailliertere Informationen über das logische Volume aus. |
+| **-a, --all**       | Zeigt alle logischen Volumes in der aktuellen Volume Group an, auch inaktive. |
+
+===== Ausgabe =====
+
+Die Ausgabe von `lvdisplay` enthält verschiedene Informationen zu jedem logischen Volume:
+
+^ Feld ^ Beschreibung ^
+| **LV Name**         | Der Name des logischen Volumes. |
+| **VG Name**         | Der Name der Volume Group, zu der das logische Volume gehört. |
+| **LV Size**         | Die Größe des logischen Volumes. |
+| **PE Size**         | Die Größe der Extents, die das logische Volume in der Volume Group verwendet. |
+| **Total PE**        | Die Gesamtzahl der Extents, die das logische Volume verwendet. |
+| **Alloc PE / Size** | Die Anzahl der zugewiesenen Extents und deren Größe. |
+| **Read / Write**    | Der Zugriffsmodus des logischen Volumes (z. B. `rw` für Lese- und Schreibzugriff). |
+| **LV Status**       | Zeigt den Status des logischen Volumes an (aktiv oder inaktiv). |
+
+===== Beispiel: Anzeigen von Informationen zu einem logischen Volume =====
+
+<code>
+lvdisplay /dev/vgname/lvname
+</code>
+
+Dies zeigt die Details des logischen Volumes `lvname` in der Volume Group `vgname`.
+
+===== Weitere Informationen =====
+
+Für detailliertere Informationen zu den verfügbaren Optionen und zur Verwendung von `lvdisplay` kannst du die Man-Page aufrufen:
+<code>
+man lvdisplay
+</code>
+
+Weitere Dokumentationen zu LVM und der Verwaltung von logischen Volumes findest du auf [[https://linux.die.net/|Die.net Linux Documentation]].

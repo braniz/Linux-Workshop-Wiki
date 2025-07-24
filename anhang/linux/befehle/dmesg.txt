@@ -1,0 +1,86 @@
+====== dmesg ======
+(2025)
+
+Der Befehl **dmesg** zeigt die Kernel-Nachrichten des Systems an. Diese Nachrichten enthalten wichtige Informationen zu den beim Booten und während des Betriebs des Systems geladenen Hardware-Komponenten und deren Status sowie zu Systemereignissen wie Kernel-Fehlern oder Geräteproblemen.
+
+===== Syntax =====
+<code>
+dmesg
+</code>
+
+-----
+
+===== Wichtige Optionen =====
+Der Befehl **dmesg** bietet mehrere nützliche Optionen:
+
+^ Option ^ Beschreibung ^
+| `-C`                  | Löscht den Ringpuffer, der die Kernel-Nachrichten speichert. |
+| `-c`                  | Gibt die Nachrichten aus und löscht anschließend den Ringpuffer. |
+| `-f <Filter>`         | Filtert die Nachrichten nach einer bestimmten Schweregrad-Kategorie. Mögliche Werte sind: `emerg`, `alert`, `crit`, `err`, `warning`, `notice`, `info`, `debug`. |
+| `-n <Stufe>`          | Setzt die minimale Schweregrad-Stufe für die Anzeige von Nachrichten. |
+| `-T`                  | Gibt die Zeitstempel der Nachrichten im menschenlesbaren Format aus. |
+| `-x`                  | Gibt die Nachrichten in einem erweiterten Format aus, das zusätzliche Informationen wie das Symbol des Ereignisses bietet. |
+
+-----
+
+===== Beispiele =====
+Hier sind einige praktische Beispiele zur Verwendung von **dmesg**:
+
+  *  **Anzeige der Kernel-Nachrichten**:
+<code>
+dmesg
+</code>
+Dieser Befehl zeigt alle verfügbaren Kernel-Nachrichten an, die seit dem letzten Booten des Systems aufgezeichnet wurden.
+
+  *  **Löschen des Ringpuffers nach dem Ausgeben der Nachrichten**:
+<code>
+dmesg -c
+</code>
+Dieser Befehl gibt die Kernel-Nachrichten aus und löscht anschließend den Ringpuffer, sodass keine weiteren Nachrichten mehr im Puffer gespeichert sind.
+
+  *  **Anzeige von Nachrichten mit einer bestimmten Schweregrad-Stufe**:
+<code>
+dmesg -f err
+</code>
+Dieser Befehl filtert die Nachrichten und zeigt nur diejenigen an, die als Fehler (`err`) gekennzeichnet sind.
+
+  *  **Anzeige von Nachrichten mit Zeitstempeln im menschenlesbaren Format**:
+<code>
+dmesg -T
+</code>
+Dieser Befehl zeigt die Kernel-Nachrichten zusammen mit menschenlesbaren Zeitstempeln an.
+
+-----
+
+===== Beispiel-Ausgabe =====
+Ein typischer **dmesg**-Befehl könnte eine Ausgabe wie folgt haben:
+<code>
+[    0.000000] Linux version 5.4.0-70-generic (buildd@lcy02-amd64-019) (gcc version 8.4.0 (Ubuntu 8.4.0-1ubuntu1~18.04)) #78-Ubuntu SMP Wed Jan 13 00:31:34 UTC 2021
+[    0.010340] Booting the kernel.
+[    0.030320] ACPI: Core revision 20200528
+[    0.050234] energy: energy_monitor:   Initialized
+[    0.071124] USB 1-1: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 2.00
+[    0.090014] USB 1-1: New USB device strings: Mfr=3, Product=1, SerialNumber=2
+[    0.111451] usb 1-1: Product: USB2.0 Hub
+[    0.133756] hub 1-1:1.0: USB hub found
+[    0.141990] hub 1-1:1.0: 4 ports detected
+</code>
+
+Die Ausgabe zeigt eine Reihe von Kernel-Nachrichten, die Informationen über den Start des Systems und die Hardware-Komponenten enthalten. Jede Zeile stellt eine bestimmte Nachricht dar, die mit einem Zeitstempel und einer Beschreibung versehen ist.
+
+-----
+
+===== Hinweis =====
+  *  Die Ausgaben von **dmesg** enthalten oft viele technische Details. Die Ausgabe kann mit weiteren Befehlen wie `grep` gefiltert werden, um nach bestimmten Ereignissen oder Fehlern zu suchen.
+     *  Beispiel: `dmesg | grep error` zeigt nur Nachrichten, die das Wort "error" enthalten.
+  *  **dmesg** kann für die Fehlerbehebung von Hardware- oder Treiberproblemen nützlich sein, da es Informationen über Geräte und Treiberanfragen liefert.
+
+-----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über den Befehl **dmesg** und die verfügbaren Optionen:
+<code>
+man dmesg
+</code>
+
+Weitere Informationen und Dokumentation zu **dmesg** findest du auf der [[https://man7.org/linux/man-pages/|Linux Man-Pages]].

@@ -1,0 +1,68 @@
+====== systemd-Kommandos ======
+(2025)
+
+Systemd bietet eine Reihe von nützlichen Kommandos zur Verwaltung und Steuerung von Systemdiensten und -prozessen. Hier sind einige der wichtigsten Befehle, die du in der Verwaltung deines Systems mit systemd verwenden kannst:
+
+===== systemctl =====
+Das wichtigste Kommando in systemd ist `systemctl`, mit dem du Systemdienste starten, stoppen, neu starten, aktivieren und deaktivieren kannst.
+
+^Befehl ^Beschreibung ^
+| `systemctl start <dienstname>` | Startet einen Dienst. |
+| `systemctl stop <dienstname>` | Stoppt einen Dienst. |
+| `systemctl restart <dienstname>` | Startet einen Dienst neu. |
+| `systemctl reload <dienstname>` | Lädt die Konfiguration eines laufenden Dienstes neu, ohne ihn neu zu starten. |
+| `systemctl status <dienstname>` | Zeigt den aktuellen Status eines Dienstes an. |
+| `systemctl enable <dienstname>` | Aktiviert einen Dienst, damit er beim nächsten Systemstart automatisch gestartet wird. |
+| `systemctl disable <dienstname>` | Deaktiviert einen Dienst, sodass er beim nächsten Systemstart nicht gestartet wird. |
+| `systemctl list-units` | Zeigt eine Liste aller aktiven Systemd-Einheiten (Dienste, Targets, Sockets, etc.). |
+| `systemctl is-active <dienstname>` | Überprüft, ob ein Dienst aktiv ist. |
+| `systemctl is-enabled <dienstname>` | Überprüft, ob ein Dienst beim Systemstart aktiviert ist. |
+
+===== journalctl =====
+`journalctl` ist das Kommando zur Anzeige und Verwaltung der Systemprotokolle, die von `systemd` gesammelt werden.
+
+^Befehl ^Beschreibung ^
+| `journalctl` | Zeigt alle Systemprotokolle an. |
+| `journalctl -u <dienstname>` | Zeigt die Protokolle für einen bestimmten Dienst an. |
+| `journalctl -f` | Zeigt die neuesten Protokolle in Echtzeit an. |
+| `journalctl --since "YYYY-MM-DD HH:MM:SS"` | Zeigt Protokolle seit einem bestimmten Zeitpunkt an. |
+| `journalctl --until "YYYY-MM-DD HH:MM:SS"` | Zeigt Protokolle bis zu einem bestimmten Zeitpunkt an. |
+
+===== systemd-analyze =====
+Mit `systemd-analyze` kannst du den Bootvorgang und die Leistung deines Systems analysieren.
+
+^Befehl ^Beschreibung ^
+| `systemd-analyze` | Zeigt eine Übersicht des Systemstarts und wie lange einzelne Komponenten gebraucht haben. |
+| `systemd-analyze blame` | Zeigt, welche Dienste den meisten Zeitaufwand beim Starten des Systems verursacht haben. |
+| `systemd-analyze critical-chain` | Zeigt eine Kette von Diensten an, die den Start des Systems verzögert haben. |
+
+===== systemd-cgls =====
+`systemd-cgls` zeigt die hierarchische Struktur der cgroups (Control Groups), die von Systemd verwaltet werden.
+
+^Befehl ^Beschreibung ^
+| `systemd-cgls` | Zeigt die hierarchische Struktur der cgroups auf, die vom System verwaltet werden. |
+
+===== systemd-tmpfiles =====
+`systemd-tmpfiles` wird verwendet, um temporäre Dateien und Verzeichnisse zu erstellen, zu bereinigen oder zu entfernen.
+
+^Befehl ^Beschreibung ^
+| `systemd-tmpfiles --clean` | Bereinigt temporäre Dateien und Verzeichnisse, die nicht mehr benötigt werden. |
+| `systemd-tmpfiles --create` | Erstellt temporäre Dateien und Verzeichnisse laut Konfiguration. |
+
+===== Weitere systemd-Kommandos =====
+
+^Befehl ^Beschreibung ^
+| `systemd-analyze plot` | Erstellt eine SVG-Datei mit einer grafischen Darstellung des Bootvorgangs. |
+| `systemd-run` | Führt einen Befehl in einer separaten, systemd-managed Instanz aus. |
+| `systemd-escape` | Entkompiliert Dateinamen und andere Zeichenketten in ein Format, das von systemd verwendet werden kann. |
+
+===== Hinweis =====
+Systemd bietet eine breite Palette an Kommandos, die dir bei der Verwaltung und Überwachung deines Systems helfen. Eine vollständige Liste und weiterführende Informationen findest du in der Man-Page von `systemd` und `systemctl`.
+
+===== Weitere Informationen =====
+
+Die Man-Page liefert detaillierte Informationen:
+
+<code>man systemd</code>
+
+Weitere Informationen und Dokumentation zu systemd findest du auf [[https://www.freedesktop.org/wiki/Software/systemd/|Freedesktop.org systemd]].

@@ -1,0 +1,53 @@
+====== 00 Dateisystemverwaltung in Linux ======
+(2025)
+
+Linux bietet eine Vielzahl von Befehlen zur Verwaltung von Dateisystemen, Festplatten und Partitionen. Diese Befehle ermöglichen es, Partitionen zu erstellen, zu formatieren, zu mounten, zu überprüfen und zu reparieren.
+
+===== Partitionen und Dateisysteme =====
+Diese Befehle werden verwendet, um Partitionen zu verwalten und Dateisysteme zu erstellen:
+
+^ Befehl ^ Beschreibung ^
+| //[[anhang:linux:dateisystemverwaltung:fdisk|fdisk]]//      | Ein Befehl zur Partitionierung von Festplatten. Unterstützt MBR-Partitionstabellen. |
+| //[[anhang:linux:dateisystemverwaltung:parted|parted]]//     | Ein weiteres Partitionierungswerkzeug, das auch GPT-Partitionstabellen unterstützt. |
+| //[[anhang:linux:dateisystemverwaltung:mkfs|mkfs]]//         | Erstellt ein Dateisystem auf einer Partition (z.B. ext4, xfs). |
+| //[[anhang:linux:dateisystemverwaltung:mkfs.ext4|mkfs.ext4]]//| Erstellt ein ext4-Dateisystem auf einer Partition. |
+| //[[anhang:linux:dateisystemverwaltung:tune2fs|tune2fs]]//    | Ändert die Parameter eines ext2, ext3 oder ext4 Dateisystems. |
+| //[[anhang:linux:dateisystemverwaltung:resize2fs|resize2fs]]//| Verändert die Größe eines ext2, ext3 oder ext4 Dateisystems. |
+
+-----
+
+===== Mounten und Aushängen von Dateisystemen =====
+Diese Befehle werden verwendet, um Dateisysteme zu mounten (einzuhängen) und zu unmounten (auszuhängen):
+
+^ Befehl ^ Beschreibung ^
+| //[[anhang:linux:dateisystemverwaltung:mount|mount]]//       | Hängt ein Dateisystem in den Verzeichnisbaum ein, um es zugänglich zu machen. |
+| //[[anhang:linux:dateisystemverwaltung:umount|umount]]//     | Hängt ein Dateisystem aus dem Verzeichnisbaum aus, um es sicher zu entfernen. |
+
+-----
+
+===== Speicherplatz und Dateisystemnutzung =====
+Diese Befehle zeigen Informationen über den verfügbaren Speicherplatz und die Nutzung der Dateisysteme:
+
+^ Befehl ^ Beschreibung ^
+| //[[anhang:linux:dateisystemverwaltung:df|df]]//             | Zeigt den freien und genutzten Speicherplatz auf den gemounteten Dateisystemen an. |
+| //[[anhang:linux:dateisystemverwaltung:du|du]]//             | Zeigt die Belegung von Speicherplatz durch Dateien und Verzeichnisse an. |
+
+-----
+
+===== Dateisystemprüfung und -reparatur =====
+Diese Befehle helfen dabei, die Integrität von Dateisystemen zu prüfen und zu reparieren:
+
+^ Befehl ^ Beschreibung ^
+| //[[anhang:linux:dateisystemverwaltung:fsck|fsck]]//         | Überprüft und repariert Dateisysteme auf Fehler. |
+| //[[anhang:linux:dateisystemverwaltung:blkid|blkid]]//       | Zeigt Informationen zu Blockgeräten, wie z.B. UUIDs und Dateisystemtypen. |
+| //[[anhang:linux:dateisystemverwaltung:lsblk|lsblk]]//       | Listet alle Blockgeräte und deren Partitionen auf. |
+
+-----
+
+===== Weitere Informationen =====
+Für detaillierte Informationen zu den einzelnen Befehlen kannst du die Man-Pages verwenden:
+<code>
+man <Befehl>
+</code>
+
+Weitere Dokumentationen und Hilfen zur Dateisystemverwaltung findest du auf [[https://linux.die.net/|Die.net Linux Documentation]].

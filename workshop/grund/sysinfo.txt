@@ -1,0 +1,32 @@
+====== System Info - System- und Hardware-Informationen ======
+(2025)
+
+**System Info** bezieht sich auf eine Reihe von Befehlen, die verwendet werden, um detaillierte Informationen über das System und die Hardware zu sammeln. Diese Befehle liefern nützliche Einblicke in den Kernel, die CPU, den Speicher, die angeschlossenen Geräte und vieles mehr.
+
+===== System- und Hardware-Informationen =====
+
+^ Befehl                                                 ^ Beschreibung                                                 ^ **Optionale Parameter**                           ^
+| //[[anhang:cli:uname -a|uname -a]]//                | Zeigt Informationen über den Kernel und die Systemarchitektur an. | -r (Kernel-Version), -m (Architektur)          |
+| //[[anhang:cli:dmesg|dmesg]]//                      | Zeigt den Kernel-Ringpuffer an, der System- und Kernel-Nachrichten enthält. | -T (Zeigt Zeitstempel an)                        |
+| //[[anhang:cli:dmidecode|dmidecode]]//              | DMI-Tabellen-Decoder; zeigt Hardware-Details aus dem BIOS.      | -t (zeigt Informationen zu einem bestimmten Typ, z.B. -t memory) |
+| //[[anhang:cli:lshw|lshw]]//                        | Zeigt detaillierte Hardware-Informationen an.                   | -short (kompakte Darstellung), -html (HTML-Bericht) |
+| //[[anhang:cli:lshw-gtk|lshw-gtk]]//                | GUI-Frontend für lshw, bietet eine grafische Darstellung der Hardware. | Keine zusätzlichen Parameter                      |
+| //[[anhang:cli:lscpu|lscpu]]//                      | Zeigt CPU-Architektur-Informationen an.                          | Keine zusätzlichen Parameter                      |
+| //[[anhang:cli:lspci|lspci]]//                      | Listet alle PCI-Geräte und deren Details auf.                   | -v (detaillierte Ausgabe), -nn (zeigt IDs)     |
+| //[[anhang:cli:lsusb|lsusb]]//                      | Listet alle USB-Geräte und deren Details auf.                   | -v (detaillierte Ausgabe), -t (Baumansicht)    |
+| //[[anhang:cli:lsblk|lsblk]]//                      | Listet Blockgeräte wie Festplatten und Partitionen auf.          | -f (zeigt Dateisysteme), -o (wählbare Spalten) |
+| //[[anhang:cli:lsmod|lsmod]]//                      | Zeigt eine Liste der aktuell geladenen Kernel-Module an.         | Keine zusätzlichen Parameter                      |
+| //[[anhang:cli:free -m|free -m]]//                  | Zeigt Speicherinformationen an.                                  | -h (Menschlich lesbare Formate), -t (Zusammenfassung) |
+| //[[anhang:cli:proc|proc]]//                        | Virtuelles Dateisystem für Systeminformationen                   | -h (Menschlich lesbare Formate), -t (Zusammenfassung) |
+
+----
+
+===== Paketverwaltung =====
+
+^ Befehl                                                 ^ Beschreibung                                        ^ Optionale Parameter  ^
+| //[[anhang:cli:dpkg|dpkg -l]]//                   | Listet alle installierten Pakete auf (Debian-basierte Systeme). | grep <paketname> (suchen) |
+| //[[anhang:cli:yum|yum list installed]]// | Listet alle installierten Pakete auf (CentOS 7, RHEL 7).       | grep <paketname> (suchen) |
+| //[[anhang:cli:dnf|dnf list installed]]// | Listet alle installierten Pakete auf (CentOS 8, RHEL 8, Fedora 22+). | grep <paketname> (suchen) |
+| //[[anhang:cli:rpm|rpm -qa]]//                   | Listet alle installierten Pakete auf (RPM-basierte Systeme).    | grep <paketname> (suchen) |
+
+

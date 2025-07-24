@@ -1,0 +1,69 @@
+====== hostname ======
+(2025)
+
+Der Befehl **hostname** wird verwendet, um den Hostnamen des Systems anzuzeigen oder zu ändern. Der Hostname ist der Name des Computers im Netzwerk und dient zur Identifizierung des Systems in einer Netzwerkumgebung.
+
+===== Syntax =====
+<code>
+hostname [OPTION] [NAME]
+</code>
+
+-----
+
+===== Wichtige Optionen =====
+Der Befehl **hostname** bietet einige nützliche Optionen, um Informationen über den Hostnamen zu erhalten oder ihn zu ändern:
+
+^ Option ^ Beschreibung ^
+| keine Option   | Zeigt den aktuellen Hostnamen des Systems an. |
+| `-a`           | Gibt alle Aliasnamen des Hosts aus. |
+| `-d`           | Zeigt die Domain des Hostnamens an. |
+| `-f`           | Gibt den vollständigen, qualifizierten Domainnamen (FQDN) des Hosts aus. |
+| `-i`           | Zeigt die IP-Adresse des Hosts an. |
+| `-s`           | Gibt nur den kurzen Hostnamen ohne Domain an. |
+| `-v`           | Zeigt die Versionsnummer des Hostnamens an. |
+| `NAME`         | Ermöglicht das Festlegen eines neuen Hostnamens. Wenn der Name angegeben wird, wird der Hostname des Systems geändert. |
+
+-----
+
+===== Beispiele =====
+Hier sind einige praktische Beispiele zur Verwendung von `hostname`:
+
+  *  **Aktuellen Hostnamen anzeigen**:
+<code>
+hostname
+</code>
+Dieser Befehl gibt den aktuellen Hostnamen des Systems aus (z.B. `localhost`).
+
+  *  **FQDN (vollständiger qualifizierter Domainname) anzeigen**:
+<code>
+hostname -f
+</code>
+Dieser Befehl gibt den vollständigen Domainnamen des Systems aus (z.B. `server.example.com`).
+
+  *  **Ändern des Hostnamens**:
+<code>
+sudo hostname neuerhostname
+</code>
+Mit diesem Befehl wird der Hostname des Systems auf den angegebenen Wert `neuerhostname` geändert. Beachte, dass eine dauerhafte Änderung des Hostnamens auch in der Datei `/etc/hostname` vorgenommen werden muss.
+
+  *  **IP-Adresse des Hosts anzeigen**:
+<code>
+hostname -i
+</code>
+Dieser Befehl gibt die IP-Adresse des Hosts aus (z.B. `192.168.1.10`).
+
+-----
+
+===== Hinweis =====
+  *  Das Ändern des Hostnamens mit dem Befehl `hostname` funktioniert temporär. Um den Hostnamen dauerhaft zu ändern, muss die Datei `/etc/hostname` bearbeitet und das System neu gestartet oder der Dienst neu gestartet werden.
+  *  Einige Systeme erfordern möglicherweise Administratorrechte (z.B. `sudo`) für das Ändern des Hostnamens.
+
+-----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über den Befehl `hostname` und alle verfügbaren Optionen:
+<code>
+man hostname
+</code>
+
+Für weitere Informationen zu verschiedenen Unix-Kommandos findest du die [[https://man7.org/linux/man-pages/|Linux Man-Pages]].

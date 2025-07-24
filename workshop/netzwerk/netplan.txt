@@ -1,0 +1,93 @@
+====== Netplan - Netzwerk-Konfiguration in Linux ======
+(2025.02)
+
+**Netplan** ist ein Netzwerk-Konfigurationstool, das die Konfiguration von Netzwerkschnittstellen auf modernen Linux-Distributionen (insbesondere Ubuntu) vereinfacht. Es verwendet YAML-Dateien, um Netzwerkverbindungen und -einstellungen zu definieren, und wandelt diese Konfigurationen in systemd-networkd oder NetworkManager-Konfigurationen um.
+
+===== Syntax =====
+<code bash>
+netplan [Optionen] [Befehl] [Datei]
+</code>
+
+===== Wichtige Optionen =====
+^ Option               ^ Beschreibung                                                ^
+| `apply`              | Wendet die Änderungen in den Netplan-Konfigurationsdateien an.  |
+| `generate`           | Generiert die entsprechenden Netzwerkdateien für systemd-networkd oder NetworkManager. |
+| `try`                | Testet die Konfiguration und verwirft Änderungen im Fehlerfall. |
+| `ip`                 | Zeigt aktuelle IP-Adressen an.                                 |
+
+===== Verwendete Befehle =====
+^ Befehl                  ^ Beschreibung                                                    ^
+| `netplan apply`         | Wendet die Netzwerkkonfiguration an.                             |
+| `netplan generate`      | Generiert die entsprechenden Konfigurationsdateien für systemd-networkd oder NetworkManager. |
+| `netplan try`           | Testet die Netzwerkkonfiguration, um sicherzustellen, dass keine Fehler vorliegen. |
+| `netplan ip`            | Zeigt die aktuellen IP-Adressen der Schnittstellen an.           |
+
+===== Verzeichnis =====
+^ Verzeichnis              ^ Beschreibung                                                    ^
+| `/etc/netplan/`          | Das Hauptverzeichnis für die Netplan-Konfigurationsdateien.      |
+
+===== Beispiele =====
+**Netzwerk-Konfiguration anzeigen:**
+<code bash>
+netplan ip
+</code>
+Zeigt die aktuellen IP-Adressen und Netzwerkschnittstellen an.
+
+**Konfiguration anwenden:**
+<code bash>
+netplan apply
+</code>
+Wendet die Änderungen aus den Netplan-Konfigurationsdateien an.
+
+**Konfiguration testen:**
+<code bash>
+netplan try
+</code>
+Testet die aktuelle Netzwerkkonfiguration und wird zurückgesetzt, falls Fehler auftreten.
+
+**Konfiguration generieren:**
+<code bash>
+netplan generate
+</code>
+Generiert die systemd-networkd oder NetworkManager Konfigurationsdateien aus den YAML-Dateien.
+
+===== Beispiel-Konfigurationsdatei =====
+Eine typische Netplan-Konfigurationsdatei im YAML-Format könnte wie folgt aussehen:
+
+<code yaml>
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp3s0:
+      dhcp4: true
+</code>
+In diesem Beispiel wird das Ethernet-Interface `enp3s0` automatisch per DHCP konfiguriert.
+
+**Statische IP-Adresse konfigurieren:**
+<code yaml>
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp3s0:
+      dhcp4: false
+      addresses:
+        - 192.168.1.10/24
+      gateway4: 192.168.1.1
+      nameservers:
+        addresses:
+          - 8.8.8.8
+          - 8.8.4.4
+</code>
+In diesem Beispiel wird dem Interface `enp3s0` eine statische IP-Adresse zugewiesen.
+
+===== Hinweis =====
+- **Netplan** ist das bevorzugte Tool für die Netzwerkkonfiguration in neueren Ubuntu-Versionen (ab 17.10) und anderen Systemen, die auf `systemd` basieren.
+- Netplan verwendet YAML-Dateien, um die Konfiguration zu definieren. Fehler in der YAML-Syntax können dazu führen, dass Netzwerkschnittstellen nicht korrekt konfiguriert werden.
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen:
+<code bash>
+man netplan
+</code>

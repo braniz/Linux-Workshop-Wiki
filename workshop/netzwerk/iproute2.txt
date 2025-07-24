@@ -1,0 +1,83 @@
+====== iproute2 - Netzwerk-Routing-Tools in Linux ======
+(2025.02)
+
+**iproute2** ist eine Sammlung von Netzwerktools unter Linux zur Konfiguration und Verwaltung von Routing-Tabellen. Es besteht aus verschiedenen Befehlen wie `ip`, `ip route`, `ip addr` und `ip link`, die eine einfache und flexible Verwaltung von Netzwerkinterfaces und Routing-Tabellen ermöglichen.
+
+===== Syntax =====
+<code bash>
+ip [Optionen] [Befehl] [Argumente]
+</code>
+
+===== Wichtige Optionen =====
+^ Option         ^ Beschreibung                                                ^
+| `link`         | Zeigt und konfiguriert Netzwerkinterfaces (z. B. `ip link show`). |
+| `addr`         | Zeigt und konfiguriert IP-Adressen (z. B. `ip addr show`).        |
+| `route`        | Zeigt und konfiguriert Routing-Tabellen (z. B. `ip route show`).   |
+| `neigh`        | Zeigt und konfiguriert Nachbarinformationen (ARP-Tabelle).          |
+| `rule`         | Zeigt und konfiguriert Routing-Regeln (z. B. `ip rule add`).        |
+
+===== Wichtige Befehle =====
+^ Befehl                                ^ Beschreibung                                                        ^
+| `ip link show`                        | Zeigt alle Netzwerkinterfaces und deren Status.                       |
+| `ip addr show`                        | Zeigt alle konfigurierten IP-Adressen für die Interfaces.             |
+| `ip route show`                       | Zeigt die Routing-Tabellen des Systems.                               |
+| `ip route add`                        | Fügt eine neue Route zum Routing-Table hinzu.                         |
+| `ip route del`                        | Löscht eine bestehende Route aus dem Routing-Table.                   |
+| `ip addr add`                         | Fügt eine neue IP-Adresse zu einem Interface hinzu.                   |
+| `ip addr del`                         | Löscht eine IP-Adresse von einem Interface.                          |
+| `ip link set dev <interface> up/down`  | Aktiviert oder deaktiviert ein Netzwerkinterface.                     |
+| `ip rule add`                         | Fügt eine neue Routing-Regel hinzu.                                   |
+| `ip rule del`                         | Löscht eine Routing-Regel.                                           |
+
+===== Beispiele =====
+**Netzwerkinterfaces anzeigen:**
+<code bash>
+ip link show
+</code>
+Zeigt eine Liste aller verfügbaren Netzwerkinterfaces.
+
+**IP-Adressen anzeigen:**
+<code bash>
+ip addr show
+</code>
+Zeigt alle aktuellen IP-Adressen, die den Netzwerkinterfaces zugeordnet sind.
+
+**Routing-Tabelle anzeigen:**
+<code bash>
+ip route show
+</code>
+Zeigt die Routing-Tabelle des Systems an.
+
+**Neue Route hinzufügen:**
+<code bash>
+ip route add 192.168.1.0/24 via 192.168.0.1
+</code>
+Fügt eine Route hinzu, um den Netzwerkbereich `192.168.1.0/24` über `192.168.0.1` zu erreichen.
+
+**Route löschen:**
+<code bash>
+ip route del 192.168.1.0/24
+</code>
+Löscht die Route für das Netzwerk `192.168.1.0/24`.
+
+**IP-Adresse hinzufügen:**
+<code bash>
+ip addr add 192.168.1.100/24 dev eth0
+</code>
+Fügt dem Interface `eth0` die IP-Adresse `192.168.1.100/24` hinzu.
+
+**Interface aktivieren:**
+<code bash>
+ip link set dev eth0 up
+</code>
+Aktiviert das Netzwerkinterface `eth0`.
+
+===== Hinweis =====
+- **ip** ersetzt die älteren Kommandos `ifconfig`, `route` und `netstat` und bietet eine einheitliche Syntax zur Verwaltung aller Aspekte der Netzwerkkonfiguration.
+- Änderungen an den Routing-Tabellen oder IP-Adressen sind nur temporär, es sei denn, sie werden in den entsprechenden Systemdateien gespeichert oder durch Netzwerkmanagement-Daemonen wie `NetworkManager` dauerhaft gemacht.
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen:
+<code bash>
+man ip
+</code>

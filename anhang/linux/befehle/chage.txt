@@ -1,0 +1,62 @@
+====== chage - Benutzerpasswort- und Kontoablauf verwalten ======
+(2025)
+
+Der Befehl **chage** wird verwendet, um die Passwort- und Kontoablaufinformationen eines Benutzers zu verwalten. Er ermöglicht es, die Gültigkeitsdauer von Passwörtern sowie andere Passwortbezogene Einstellungen für Benutzer zu ändern.
+
+===== Syntax =====
+<code>
+chage [OPTIONEN] <BENUTZERNAME>
+</code>
+
+----
+
+===== Wichtige Optionen =====
+Die wichtigsten Optionen für den **chage**-Befehl sind:
+
+^ Option ^ Beschreibung ^
+| `-l`                         | Zeigt die aktuellen Passwort- und Kontoinformationen für den angegebenen Benutzer an. |
+| `-m` <TAGE>                  | Legt die Mindestanzahl an Tagen fest, die zwischen Passwortänderungen liegen müssen. |
+| `-M` <TAGE>                  | Legt die maximale Anzahl an Tagen fest, die ein Passwort gültig bleibt. |
+| `-W` <TAGE>                  | Setzt die Anzahl der Tage, vor Ablauf des Passworts, an denen der Benutzer gewarnt wird. |
+| `-I` <TAGE>                  | Legt die Anzahl der Tage fest, nach denen das Konto nach Ablauf des Passworts deaktiviert wird. |
+| `-E` <DATUM>                 | Setzt das Datum, an dem das Konto abläuft (Format: JJJJ-MM-TT). |
+| `-h`                         | Gibt eine kurze Hilfe zu den Optionen des Befehls aus. |
+
+----
+
+===== Beispiele =====
+Hier sind einige Beispiele für die Verwendung von **chage**:
+
+  *  Die Passwortablaufinformationen für den Benutzer `alice` anzeigen:
+<code>
+chage -l alice
+</code>
+
+  *  Das Passwort von `alice` so konfigurieren, dass es alle 60 Tage abläuft:
+<code>
+chage -M 60 alice
+</code>
+
+  *  Die Mindestanzahl an Tagen zwischen Passwortänderungen für `bob` auf 10 Tage setzen:
+<code>
+chage -m 10 bob
+</code>
+
+  *  Das Ablaufdatum des Kontos für `carol` auf den 31. Dezember 2025 setzen:
+<code>
+chage -E 2025-12-31 carol
+</code>
+
+----
+
+===== Hinweis =====
+  *  Der **chage**-Befehl wird hauptsächlich von Administratoren verwendet, um die Passwortsicherheit zu verwalten und sicherzustellen, dass Benutzer regelmäßig ihre Passwörter ändern.
+  *  Beachte, dass du als Root oder mit entsprechenden Berechtigungen arbeiten musst, um die **chage**-Befehle auszuführen.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **chage**:
+<code>
+man chage
+</code>

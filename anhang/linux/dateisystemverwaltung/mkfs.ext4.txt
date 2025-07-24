@@ -1,0 +1,65 @@
+====== mkfs.ext4 – Ein ext4-Dateisystem formatieren ======
+(2025)
+
+`mkfs.ext4` ist ein Kommandozeilenbefehl, der verwendet wird, um ein ext4-Dateisystem auf einer Partition oder einem Blockgerät zu erstellen. ext4 (Fourth Extended File System) ist das Standard-Dateisystem für viele Linux-Distributionen und bietet eine gute Leistung sowie Funktionen wie Journaling, größere Dateigrößen und bessere Fehlererkennung.
+
+===== Syntax =====
+
+^ Befehl ^ Beschreibung ^
+| //mkfs.ext4 /dev/sdX#//  | Erstellt ein ext4-Dateisystem auf der angegebenen Partition (z.B. `/dev/sda1`). |
+
+-----
+
+===== Wichtige Optionen =====
+
+^ Option ^ Beschreibung ^
+| `-L <Label>`        | Setzt das Label des ext4-Dateisystems. |
+| `-m <Prozent>`      | Legt den Prozentsatz des Dateisystems fest, der für den Root-Benutzer reserviert werden soll (Standard: 5%). |
+| `-O <Optionen>`      | Aktiviert bestimmte Features im Dateisystem (z.B. `dir_index`, `extattr`). |
+| `-v`                 | Gibt detaillierte Informationen während der Erstellung des Dateisystems aus. |
+| `-E <Parameter>`     | Zusätzliche erweiterte Optionen wie das Setzen der Blockgröße oder die Benutzung von UUIDs. |
+| `-F`                 | Erzwingt die Formatierung, auch wenn die Partition anscheinend nicht leer ist. |
+
+-----
+
+===== Dateisystem erstellen =====
+Um ein ext4-Dateisystem auf einer Partition zu erstellen, verwende folgenden Befehl:
+
+<code>
+sudo mkfs.ext4 /dev/sda1
+</code>
+
+Dieser Befehl erstellt ein ext4-Dateisystem auf der Partition `/dev/sda1`.
+
+-----
+
+===== Setzen eines Labels =====
+Mit der Option `-L` kannst du dem Dateisystem ein Label zuweisen. Dies hilft, das Dateisystem leichter zu identifizieren:
+
+<code>
+sudo mkfs.ext4 -L "MeinePartition" /dev/sda1
+</code>
+
+-----
+
+===== Anpassung der Reserve-Blocks =====
+Du kannst den Prozentsatz des Dateisystems anpassen, der für den Root-Benutzer reserviert ist. Standardmäßig sind es 5%, was für den sicheren Betrieb erforderlich ist. Du kannst diesen Wert verringern, wenn du mehr Platz für Daten verwenden möchtest:
+
+<code>
+sudo mkfs.ext4 -m 2 /dev/sda1
+</code>
+
+Dieser Befehl reserviert nur 2% des Dateisystems für den Root-Benutzer.
+
+-----
+
+===== Hinweise =====
+  *  Achte darauf, dass beim Erstellen eines Dateisystems mit `mkfs.ext4` alle Daten auf der Partition gelöscht werden. Stelle sicher, dass du vorher ein Backup gemacht hast.
+  *  Nach dem Formatieren mit `mkfs.ext4` musst du das Dateisystem noch einhängen (mounten), bevor du darauf zugreifen kannst.
+  *  Um die Performance und die Integrität des ext4-Dateisystems zu optimieren, ist es ratsam, regelmäßig `fsck` zur Überprüfung und Reparatur des Dateisystems auszuführen.
+
+===== Weitere Informationen =====
+Für detaillierte Informationen zum Befehl `mkfs.ext4` kannst du die Man-Page aufrufen:
+<code>
+man mkfs.ext4
+</code>

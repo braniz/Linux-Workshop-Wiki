@@ -1,0 +1,117 @@
+====== ufw - Uncomplicated Firewall ======
+(2025.02)
+
+**ufw** (Uncomplicated Firewall) ist eine benutzerfreundliche Frontend-Oberfläche für **iptables**, die es ermöglicht, Firewall-Regeln auf einfache Weise zu konfigurieren. **ufw** richtet sich vor allem an Anfänger und Benutzer, die eine einfache Möglichkeit benötigen, ihre Firewall zu verwalten. Es bietet eine vereinfachte Syntax und erleichtert das Erstellen von Regeln, um den Netzwerkzugriff zu steuern.
+
+**ufw** wird standardmäßig in vielen Ubuntu-basierten Distributionen verwendet, eignet sich aber auch für andere Linux-Systeme.
+
+===== Syntax =====
+<code bash>
+ufw [Optionen] [Befehl] [Argumente]
+</code>
+
+===== Wichtige Optionen =====
+^ Option              ^ Beschreibung                                                 ^
+| `enable`            | Aktiviert die Firewall.                                        |
+| `disable`           | Deaktiviert die Firewall.                                      |
+| `status`            | Zeigt den aktuellen Status der Firewall an.                    |
+| `default`           | Setzt die Standardregel für eingehenden oder ausgehenden Verkehr.|
+| `allow`             | Erlaubt eine bestimmte Verbindung.                             |
+| `deny`              | Blockiert eine bestimmte Verbindung.                           |
+| `reject`            | Lehnt eine Verbindung ab (mit einer Antwort).                 |
+| `status numbered`   | Zeigt die Regeln mit Nummern an, um sie einfach zu referenzieren.|
+| `reset`             | Setzt alle **ufw**-Einstellungen zurück.                       |
+| `logging`           | Aktiviert oder deaktiviert das Logging.                        |
+
+===== Verzeichnisse =====
+^ Verzeichnis                          ^ Beschreibung                                                            ^
+| `/etc/ufw/`                           | Hauptverzeichnis für die **ufw**-Konfiguration.                           |
+| `/etc/ufw/user.rules`                 | Datei, die benutzerdefinierte Regeln für **ufw** enthält.                |
+| `/etc/ufw/before.rules`               | Regeln, die vor den benutzerdefinierten Regeln geladen werden.           |
+| `/etc/ufw/after.rules`                | Regeln, die nach den benutzerdefinierten Regeln geladen werden.          |
+| `/var/log/ufw.log`                    | Log-Datei, in der **ufw**-Ereignisse protokolliert werden.               |
+
+===== Beispiele =====
+**Firewall-Status anzeigen:**
+<code bash>
+ufw status
+</code>
+Zeigt den aktuellen Status der Firewall an (ob sie aktiviert ist und welche Regeln angewendet werden).
+
+**Firewall aktivieren:**
+<code bash>
+ufw enable
+</code>
+Aktiviert die **ufw**-Firewall.
+
+**Firewall deaktivieren:**
+<code bash>
+ufw disable
+</code>
+Deaktiviert die **ufw**-Firewall.
+
+**Standardregel für eingehenden Verkehr setzen (Blockieren):**
+<code bash>
+ufw default deny incoming
+</code>
+Blockiert alle eingehenden Verbindungen, die nicht explizit erlaubt sind.
+
+**Standardregel für ausgehenden Verkehr setzen (Erlauben):**
+<code bash>
+ufw default allow outgoing
+</code>
+Erlaubt alle ausgehenden Verbindungen.
+
+**SSH-Verbindungen erlauben:**
+<code bash>
+ufw allow ssh
+</code>
+Erlaubt eingehende SSH-Verbindungen (Port 22).
+
+**HTTP und HTTPS-Verbindungen erlauben:**
+<code bash>
+ufw allow http
+ufw allow https
+</code>
+Erlaubt eingehende HTTP- (Port 80) und HTTPS- (Port 443) Verbindungen.
+
+**Port 8080 für TCP-Verkehr erlauben:**
+<code bash>
+ufw allow 8080/tcp
+</code>
+Erlaubt eingehende TCP-Verbindungen auf Port 8080.
+
+**Port 8080 für UDP-Verkehr blockieren:**
+<code bash>
+ufw deny 8080/udp
+</code>
+Blockiert eingehende UDP-Verbindungen auf Port 8080.
+
+**Regel zur Ablehnung von Verbindungen aus einer bestimmten IP hinzufügen:**
+<code bash>
+ufw deny from 192.168.1.100
+</code>
+Blockiert eingehende Verbindungen von der IP-Adresse `192.168.1.100`.
+
+**Regeln mit Nummern anzeigen:**
+<code bash>
+ufw status numbered
+</code>
+Zeigt alle aktiven Regeln mit Nummern an, um sie leichter zu bearbeiten oder zu löschen.
+
+**Regel entfernen:**
+<code bash>
+ufw delete 1
+</code>
+Löscht die Regel mit der Nummer 1.
+
+===== Hinweis =====
+- **ufw** ist eine benutzerfreundliche Lösung für die Verwaltung von **iptables**, aber es bietet weniger Flexibilität und Optionen im Vergleich zur direkten Verwendung von **iptables** oder **nftables**.
+- Um sicherzustellen, dass keine wichtigen Dienste blockiert werden, solltest du vor der Aktivierung von **ufw** sicherstellen, dass du alle notwendigen Verbindungen (z.B. SSH) zugelassen hast.
+- Die Änderungen, die du mit **ufw** vornimmst, werden direkt in die **iptables**-Regeln übernommen, sodass du die zugrunde liegende **iptables**-Konfiguration weiterhin verwenden kannst.
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen:
+<code bash>
+man ufw
+</code>

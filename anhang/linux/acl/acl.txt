@@ -1,0 +1,75 @@
+====== 00 Dateiberechtigungen und ACLs in Linux ======
+(2025)
+
+Granulare Zugriffskontrolle ist entscheidend für Sicherheit und Zusammenarbeit. Dieser Artikel erklärt Standard-POSIX-Berechtigungen und erweiterte Access Control Lists (ACLs) für komplexe Anwendungsfälle.
+
+===== Syntax =====
+Grundlegende Befehle und Konzepte:
+<code>
+chmod [Optionen] Modus Datei            # Berechtigungen ändern
+chown [Optionen] Benutzer:Gruppe Datei  # Besitzer/Gruppe anpassen
+getfacl Datei                           # ACLs anzeigen
+setfacl [Optionen] Regel Datei          # ACL-Einträge manipulieren
+</code>
+
+**Berechtigungs-Triple** (z.B. `rwxr-xr--`):
+  * **r** = Lesen (4), **w** = Schreiben (2), **x** = Ausführen (1)
+  * Erste 3 Zeichen: Besitzer, zweite 3: Gruppe, letzte 3: Andere
+
+===== Wichtige Optionen =====
+^ Befehl      ^ Optionen    ^ Beschreibung ^
+| chmod       | -R         | Rekursiv auf Verzeichnisse anwenden |
+|             | u=rwx,g=r,o= | Symbolischer Modus (User/Group/Other) |
+| chmod       | 755        | Numerischer Modus (7=rwx, 5=r-x) |
+| setfacl     | -m u:alice:rwx | ACL für Benutzer "alice" hinzufügen |
+| setfacl     | -d -m g:dev:rX | Default-ACL für neue Dateien (Verzeichnis) |
+| setfacl     | -x u:bob    | ACL-Eintrag für "bob" entfernen |
+
+===== Beispiele =====
+Gruppenschreibrechte für Projektordner:
+<code>
+chmod g+w /projekt
+chown :dev-team /projekt  # Gruppe zuweisen
+</code>
+
+ACL für externen Mitarbeiter (ohne Gruppenänderung):
+<code>
+setfacl -m u:consultant:rx /projekt/docs
+</code>
+
+Default-ACL für automatische Vererbung:
+<code>
+setfacl -d -m g:backup:rX /archive  # Neue Dateien erben Leserechte
+</code>
+
+Kombinierte Berechtigungen prüfen:
+<code>
+getfacl /shared-data | grep "effective"  # Effektive Rechte anzeigen
+</code>
+
+===== Hinweis =====
+  * **Umask beachten**: Standardberechtigungen für neue Dateien (z.B. 022 für 755)
+  * **SUID/GUID**: Gefährliche Sonderberechtigungen (z.B. `chmod u+s` für Passwd-Binary)
+  * **ACL-Priorität**: Spezifischere Einträge überschreiben generelle Regeln
+  * **Sicherheitsrisiko**: Weltweit schreibbare Dateien (`chmod o+w`) vermeiden
+  * **ACL-Kompatibilität**: Nicht alle Dateisysteme/Backup-Tools unterstützen ACLs vollständig
+
+===== Alternativen =====
+  * **SELinux/AppArmor** – Mandatory Access Control (MAC) für Enterprise-Systeme
+  * **Namespace Isolation** – Container-basierte Zugriffsbeschränkung (Docker/Podman)
+  * **EncFS/eCryptfs** – Verschlüsselung statt Berechtigungen für Datenschutz
+  * **Git-Repo-Permissions** – Versionierungssysteme für Kollaboration
+  * **Samba-ACLs** – Windows-kompatible Berechtigungen für Netzwerkfreigaben
+
+===== Weitere Informationen =====
+Kritische Systemdateien:
+<code>
+/etc/permissions.local     # Spezielle Regeln (SUSE)
+/etc/security/access.conf  # Systemweite Zugriffsregeln
+</code>
+
+Externe Ressourcen:
+  * [[https://wiki.archlinux.org/title/File_permissions_and_attributes|Arch Linux Permissions Guide]]
+  * [[https://linuxize.com/post/linux-setfacl-command/|Linux ACL Tutorial]]
+  * [[https://www.redhat.com/sysadmin/linux-access-control-lists|Red Hat ACL Deep Dive]]
+  * [[https://www.vanemery.com/Linux/ACL/POSIX_ACL_on_Linux.html|POSIX ACL Cheat Sheet]]

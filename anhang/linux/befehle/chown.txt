@@ -1,0 +1,93 @@
+====== chown - Besitzer und Gruppe einer Datei ändern ======
+(2025)
+
+Der Befehl **chown** (change owner) wird verwendet, um den Besitzer und die Gruppe einer Datei oder eines Verzeichnisses in Linux und anderen Unix-ähnlichen Betriebssystemen zu ändern.
+
+===== Syntax =====
+<code>
+chown [Optionen] Benutzer[:Gruppe] Datei/Verzeichnis
+</code>
+
+-----
+
+===== Wichtige Optionen =====
+Der Befehl **chown** unterstützt mehrere nützliche Optionen:
+
+^ Option ^ Beschreibung ^
+| `-R`                  | Ändert den Besitzer und/oder die Gruppe rekursiv für alle Dateien und Unterverzeichnisse in einem Verzeichnis. |
+| `--help`              | Zeigt eine Hilfe zur Verwendung von **chown** und eine kurze Beschreibung der verfügbaren Optionen. |
+| `-v`                  | Gibt eine detaillierte Ausgabe darüber, welche Dateien geändert wurden. |
+
+-----
+
+===== Modus =====
+Der Befehl **chown** erlaubt es, entweder den Besitzer oder die Gruppe einer Datei zu ändern, oder beides gleichzeitig.
+
+- **Benutzer**: Der Benutzername oder die Benutzer-ID (UID), dem die Datei gehören soll.
+- **Gruppe**: Der Gruppenname oder die Gruppen-ID (GID), der die Datei zugewiesen werden soll. Optional, wenn nur der Besitzer geändert werden soll.
+
+Beispiel:
+<code>
+chown benutzer:gruppe datei.txt
+</code>
+In diesem Beispiel wird der Besitzer der Datei `datei.txt` auf `benutzer` und die Gruppe auf `gruppe` geändert.
+
+Um nur den Besitzer zu ändern, kann der Befehl auch ohne Angabe einer Gruppe verwendet werden:
+<code>
+chown benutzer datei.txt
+</code>
+In diesem Fall wird nur der Besitzer geändert.
+
+Um nur die Gruppe zu ändern, kann ein Doppelpunkt ohne einen Benutzernamen angegeben werden:
+<code>
+chown :gruppe datei.txt
+</code>
+Dieser Befehl ändert nur die Gruppe der Datei.
+
+-----
+
+===== Beispiele =====
+Hier sind einige praktische Beispiele zur Verwendung von **chown**:
+
+  *  **Ändern des Besitzers einer Datei**:
+<code>
+chown benutzer datei.txt
+</code>
+Dieser Befehl ändert den Besitzer der Datei `datei.txt` auf `benutzer`, lässt jedoch die Gruppe unverändert.
+
+  *  **Ändern des Besitzers und der Gruppe einer Datei**:
+<code>
+chown benutzer:gruppe datei.txt
+</code>
+Dieser Befehl ändert sowohl den Besitzer als auch die Gruppe der Datei `datei.txt`.
+
+  *  **Rekursives Ändern des Besitzers und der Gruppe für alle Dateien und Verzeichnisse in einem Verzeichnis**:
+<code>
+chown -R benutzer:gruppe verzeichnis
+</code>
+Dieser Befehl ändert den Besitzer und die Gruppe rekursiv für das Verzeichnis `verzeichnis` und alle darin enthaltenen Dateien und Unterverzeichnisse.
+
+-----
+
+===== Beispiel-Ausgabe =====
+Ein typischer **chown**-Befehl könnte eine Ausgabe wie folgt haben:
+<code>
+chown: changing ownership of 'datei.txt': Operation not permitted
+</code>
+Dies bedeutet, dass der Benutzer keine Berechtigung hat, den Besitzer oder die Gruppe der Datei zu ändern (in der Regel, weil er nicht der Eigentümer der Datei ist oder keine Administratorrechte hat).
+
+-----
+
+===== Hinweis =====
+  *  Um **chown** auszuführen, müssen Sie in der Regel Administratorrechte besitzen, insbesondere wenn Sie den Besitzer einer Datei ändern möchten, die nicht Ihnen gehört. Dies kann mit **sudo** erfolgen.
+  *  Seien Sie vorsichtig beim rekursiven Ändern von Besitzern und Gruppen, insbesondere bei Systemdateien, da dies das System instabil machen kann.
+
+-----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über den Befehl **chown** und die verfügbaren Optionen:
+<code>
+man chown
+</code>
+
+Weitere Informationen und Dokumentation zu **chown** findest du auf der [[https://man7.org/linux/man-pages/|Linux Man-Pages]].

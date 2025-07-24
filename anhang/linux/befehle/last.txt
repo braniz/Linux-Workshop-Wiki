@@ -1,0 +1,55 @@
+====== last - Benutzeranmeldungen und Systemstart anzeigen ======
+(2025)
+
+Der Befehl **last** zeigt eine Liste der zuletzt angemeldeten Benutzer sowie die Systemstarts und Neustarts. Diese Informationen werden aus der Datei `/var/log/wtmp` abgerufen.
+
+===== Syntax =====
+  last [Optionen] [Benutzername]
+
+----
+
+===== Beispiel =====
+  *  Letzte Benutzeranmeldungen anzeigen:
+<code>
+last
+</code>
+
+  *  Letzte Anmeldungen eines bestimmten Benutzers anzeigen:
+<code>
+last username
+</code>
+
+----
+
+===== Beispiel-Output =====
+Der folgende Output zeigt, wie der Befehl **last** verwendet wird, um die letzten Anmeldungen anzuzeigen:
+
+<code>
+username  tty1         :0           Thu Mar  2 14:30   still logged in
+reboot   system boot  4.15.0-96-ge  Thu Mar  2 14:30   gone   12 days ago
+username  tty1         :0           Thu Mar  2 14:00 - 14:20  (00:20)
+</code>
+
+Die Ausgabe von **last** enthält folgende Informationen:
+
+  * **Benutzername**: Der Name des Benutzers, der sich angemeldet hat.
+  * **Terminal**: Das Terminal, von dem aus sich der Benutzer angemeldet hat (z.B. `tty1`).
+  * **IP-Adresse oder Hostname**: Zeigt an, von welchem Host der Benutzer eingeloggt war (für lokale Anmeldungen wird oft `:0` verwendet).
+  * **Datum und Uhrzeit**: Das Datum und die Uhrzeit der Anmeldung oder des Systemstarts.
+  * **Dauer**: Wie lange der Benutzer eingeloggt war (bei einem Systemstart wird "gone" angezeigt, wenn das System bereits neu gestartet wurde).
+  * **Reboot-Zeile**: Zeigt an, wann das System neu gestartet wurde.
+
+----
+
+===== Hinweis =====
+  *  Wenn keine Optionen angegeben werden, zeigt **last** die letzten Anmeldungen und Neustarts in umgekehrter Reihenfolge an.
+  *  Wenn nach einem bestimmten Benutzer gesucht wird, zeigt **last** nur die Anmeldungen dieses Benutzers an.
+  *  Um die Anzeige von **last** zu begrenzen, können Sie die Option `-n` verwenden, um eine bestimmte Anzahl von Einträgen anzuzeigen, z.B. `last -n 10`, um nur die letzten 10 Einträge anzuzeigen.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **last**:
+<code>
+man last
+</code>

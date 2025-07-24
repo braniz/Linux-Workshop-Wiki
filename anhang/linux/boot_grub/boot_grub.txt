@@ -1,0 +1,112 @@
+====== 00 Bootprozess und GRUB in Linux ======
+(2025) | Grundlagen des Systemstarts und Bootloader-Konfiguration
+
+Der Linux-Bootvorgang ist ein mehrstufiger Prozess, der vom Einschalten des Rechners bis zur vollständigen Systeminitialisierung reicht. GRUB (Grand Unified Bootloader) spielt dabei eine zentrale Rolle bei der Auswahl und dem Laden des Kernels.
+
+===== Bootphasen-Übersicht =====
+^ Phase               ^ Verantwortlich         ^ Beschreibung ^
+| **Firmware**        | BIOS/UEFI             | Hardware-Tests und Bootloader-Aufruf |
+| **Bootloader**      | GRUB                  | Kernel-Auswahl und Parameterweitergabe |
+| **Kernel**          | Linux-Kernel          | Hardware-Initialisierung, initramfs laden |
+| **Init-System**     | systemd/SysVinit      | Dienste starten, Runlevel/ Targets |
+
+===== GRUB-Konfiguration =====
+**Wichtige Dateien**:
+- **/boot/grub/grub.cfg**      # Hauptkonfiguration (nicht direkt editieren!)
+- **/etc/default/grub**        # Umgebungsvariablen für Generierung
+- **/etc/grub.d/**             # Skripte für Menüeinträge
+- **/boot/initramfs-*.img**    # Temporäres Root-Dateisystem
+
+**Grundlegende Befehle**:
+<code>
+sudo update-grub              # Konfiguration neu generieren (Debian/Ubuntu)
+sudo grub2-mkconfig -o /boot/grub2/grub.cfg  # RedHat/CentOS
+grub-install /dev/sda         # Bootloader auf Festplatte installieren
+</code>
+
+===== Wichtige Optionen =====
+^ Konfiguration          ^ Beispielwert          ^ Wirkung ^
+| GRUB_DEFAULT          | saved                | Zuletzt gewähltes System booten |
+| GRUB_TIMEOUT          | 5                    | Menüanzeige in Sekunden |
+| GRUB_CMDLINE_LINUX    | "quiet splash"       # Kernel-Parameter für alle Einträge |
+| GRUB_DISABLE_OS_PROBER| true                 # Automatische OS-Suche deaktivieren |
+| GRUB_GFXMODE          | 1920x1080x32         # Grafikauflösung einstellen |
+
+===== Praxisbeispiele =====
+**1. Kernel-Parameter hinzufügen** (z.B. systemd-Debugging):
+<code>
+# In /etc/default/grub ändern:
+GRUB_CMDLINE_LINUX="systemd.log_level=debug"
+sudo update-grub
+</code>
+
+**2. Alten Kernel booten** (Bei Update-Problemen):
+<code>
+# Im GRUB-Menü:
+→ Erweitert → Kernel-Version auswählen → 'e' drücken
+→ Linux-Zeile mit 'ro quiet splash' finden → Booten mit F10
+</code>
+
+**3. Notfallmodus erreichen**:
+<code>
+Im GRUB-Menü: 
+→ Kernel-Zeile auswählen → 'e' drücken
+→ Am Ende der 'linux'-Zeile anfügen: **systemd.unit=rescue.target**
+→ Strg+X zum Booten
+</code>
+
+**4. Passwortschutz für GRUB**:
+<code>
+sudo grub-mkpasswd-pbkdf2  # Passwort-Hash generieren
+# In /etc/grub.d/40_custom einfügen:
+set superusers="admin"
+password_pbkdf2 admin <generierter-Hash>
+sudo update-grub
+</code>
+
+===== Fehlerbehebung =====
+**Häufige Probleme**:
+  * **GRUB Rescue Prompt**: 
+    - Ursache: Beschädigte Konfiguration oder fehlende Partition
+    - Lösung: Manuell Partition und Kernel lokalisieren:
+    <code>
+    ls (hd0,gpt2)/boot  
+    set root=(hd0,gpt2)
+    linux /vmlinuz root=/dev/sda2
+    initrd /initrd.img
+    boot
+    </code>
+
+  * **Kernel Panic**: 
+    - initramfs neu generieren:
+    <code>
+    sudo mkinitramfs -o /boot/initramfs-$(uname -r).img
+    </code>
+
+  * **UEFI vs BIOS-Modus**:
+    - Prüfen mit: 
+    <code>
+    [ -d /sys/firmware/efi ] && echo "UEFI" || echo "BIOS"
+    </code>
+
+===== Sicherheitshinweise =====
+  * **Secure Boot**: UEFI-Funktion zum Signieren von Bootkomponenten
+  * **GRUB-Verschlüsselung**: 
+    - LUKS-Container für /boot-Partition (komplex, Performance-Tradeoff)
+  * **Audit-Logging**: 
+    - Kernel-Parameter **audit=1** für Boot-Protokollierung
+  * **Physischer Schutz**: BIOS/UEFI-Passwort setzen
+
+===== Alternativen zu GRUB =====
+^ Bootloader       ^ Einsatzgebiet          ^ Besonderheit ^
+| **systemd-boot** | Moderne UEFI-Systeme   | Integration mit systemd |
+| **rEFInd**       | Multi-OS-Umgebungen     | Automatische Erkennung |
+| **Syslinux**     | Legacy BIOS-Systeme    | Einfache Konfiguration |
+| **Coreboot**     | Open-Source-Firmware   | Ersetzt proprietäre Firmware |
+
+===== Weiterführende Links =====
+  * [[https://www.gnu.org/software/grub/manual/|Offizielle GRUB-Dokumentation]]
+  * [[https://wiki.archlinux.org/title/GRUB|Arch Linux GRUB Guide]]
+  * [[https://wiki.ubuntu.com/UEFI/SecureBoot|Ubuntu Secure Boot]]
+  * [[https://www.rodsbooks.com/efi-bootloaders/|Rod's Bootloader FAQ]]
+  * [[https://github.com/pixelb/grub-customizer|GRUB Customizer Tool]]

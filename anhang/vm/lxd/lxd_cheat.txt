@@ -1,0 +1,89 @@
+====== LXD Cheat Sheet ======
+(2025.02)
+
+LXD ist eine containerbasierte Virtualisierungslösung, die auf **LXC** aufbaut und eine einfache Verwaltung von Containern ermöglicht.
+
+===== Verfügbare Quellen für LXD-Images =====
+
+  * Offizielle LXD-Images: [[https://images.linuxcontainers.org]]
+  * Ubuntu Cloud Images: [[https://cloud-images.ubuntu.com/releases]] und [[https://cloud-images.ubuntu.com/daily]]
+
+===== Wichtige LXD-Befehle =====
+
+  * **LXD-Initialisierung**:
+<code>
+lxd init
+</code>
+
+  * **Verfügbare Image-Quellen anzeigen**:
+<code>
+lxc remote list
+</code>
+
+  * **Image-Listen auf verschiedenen Quellen abrufen**:
+<code>
+lxc image list images:
+lxc image list local:
+lxc image list ubuntu:
+lxc image list ubuntu-daily:
+</code>
+
+  * **Netzwerke verwalten**:
+<code>
+lxc network list                     # Liste der LXD-Netzwerke
+lxc network -h                        # Weitere Netzwerk-Parameter anzeigen
+lxc network show lxdbr0               # Konfiguration eines bestimmten Netzwerks anzeigen
+lxc network list-leases lxdbr0        # DHCP-IP-Adressen und zugehörige Hosts anzeigen
+</code>
+
+  * **Speicherverwaltung**:
+<code>
+lxc storage list                      # Liste der verfügbaren Storage-Pools
+lxc storage info <PoolName>           # Allgemeine Informationen zu einem Storage-Pool
+lxc storage show <PoolName>           # Detaillierte Informationen zu einem Storage-Pool
+</code>
+
+===== Container-Administration =====
+
+  * **Einen neuen Container starten**:
+<code>
+lxc launch ubuntu:22.04 [ConName]     # Erstellt einen Ubuntu 22.04-Container
+</code>
+
+  * **Informationen zu einem Container anzeigen**:
+<code>
+lxc info [ConName]
+</code>
+
+  * **Container starten, stoppen und neustarten**:
+<code>
+lxc start [ConName]  
+lxc stop [ConName]  
+lxc restart [ConName]
+</code>
+
+  * **Container löschen oder umbenennen**:
+<code>
+lxc delete [ConName]                  # Löscht den Container und alle Snapshots
+lxc rename [ConName] [NewConName]      # Benennt den Container um
+</code>
+
+  * **Snapshots und Backups erstellen**:
+<code>
+lxc snapshot [ConName] [SnapshotName]  # Erstellt einen Snapshot
+lxc copy [ConName] [NewConName]        # Erstellt eine Kopie eines Containers
+</code>
+
+  * **Interaktiv mit einem Container arbeiten**:
+<code>
+lxc exec [ConName] -- bash             # In den Container wechseln
+lxc exec [ConName] -- [Kommando]       # Kommando im Container ausführen
+</code>
+
+===== Hinweis =====
+  * **Container ohne Root-Rechte verwalten**: Falls LXD als normaler Benutzer genutzt wird, müssen die entsprechenden Rechte gesetzt werden.
+  * **Netzwerkverbindungen prüfen**: Falls Container keine Internetverbindung haben, kann mit `lxc network list` und `lxc network show lxdbr0` die Konfiguration überprüft werden.
+
+===== Weitere Informationen =====
+  * Offizielle LXD-Dokumentation: [[https://linuxcontainers.org/lxd/introduction/]]
+  * Man-Page: ''man lxc''

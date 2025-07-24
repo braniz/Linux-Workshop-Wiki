@@ -1,0 +1,69 @@
+====== du - Festplattennutzung von Verzeichnissen anzeigen ======
+(2025)
+
+Der Befehl **du** (Disk Usage) wird verwendet, um die Festplattennutzung von Verzeichnissen und Dateien zu ermitteln. Er zeigt die Größe eines Verzeichnisses sowie die Größe von Unterverzeichnissen an.
+
+===== Syntax =====
+<code>
+du [OPTIONEN] [DATEIPFAD...]
+</code>
+
+----
+
+===== Wichtige Optionen =====
+^ Option ^ Beschreibung ^
+| `-h`, `--human-readable`   | Gibt die Größen in einem für Menschen lesbaren Format aus, z.B. in Kilobytes (K), Megabytes (M) oder Gigabytes (G). |
+| `-s`, `--summarize`        | Zeigt nur die Gesamtgröße des angegebenen Verzeichnisses oder der Datei an, ohne die Größen der Unterverzeichnisse anzuzeigen. |
+| `-a`, `--all`              | Zeigt die Größe aller Dateien und Verzeichnisse an, nicht nur die der Verzeichnisse. |
+| `-c`, `--total`            | Zeigt eine Gesamtsumme der Festplattennutzung am Ende der Ausgabe an. |
+| `-d` <TIEFE>               | Beschränkt die Anzeige auf eine bestimmte Anzahl von Verzeichnisebenen. |
+| `--max-depth=N`            | Zeigt die Größen von Verzeichnissen bis zur angegebenen Tiefe an. |
+
+----
+
+===== Beispiele =====
+Hier sind einige Beispiele für die Verwendung von **du**:
+
+  *  Anzeigen der Festplattennutzung eines Verzeichnisses:
+<code>
+du /path/to/directory
+</code>
+
+  *  Anzeigen der Festplattennutzung eines Verzeichnisses im menschenlesbaren Format:
+<code>
+du -h /path/to/directory
+</code>
+
+  *  Anzeigen der Gesamtgröße eines Verzeichnisses (ohne Unterverzeichnisse):
+<code>
+du -s /path/to/directory
+</code>
+
+  *  Anzeigen der Größen für alle Dateien und Verzeichnisse im aktuellen Verzeichnis:
+<code>
+du -a
+</code>
+
+  *  Anzeigen der Festplattennutzung mit einer maximalen Verzeichnistiefe von 2 Ebenen:
+<code>
+du --max-depth=2 /path/to/directory
+</code>
+
+  *  Anzeigen der Gesamtnutzung aller Verzeichnisse:
+<code>
+du -c /path/to/directory
+</code>
+
+----
+
+===== Hinweis =====
+  *  Der **du**-Befehl kann je nach Dateisystem und Anzahl der Dateien im Verzeichnis einige Zeit in Anspruch nehmen, insbesondere bei großen Verzeichnissen.
+  *  Beachten Sie, dass **du** die Größe von Dateien und Verzeichnissen in der Blockgröße des Dateisystems anzeigt, was zu Abweichungen von der tatsächlichen Dateigröße führen kann.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **du**:
+<code>
+man du
+</code>

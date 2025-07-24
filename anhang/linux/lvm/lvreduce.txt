@@ -1,0 +1,55 @@
+====== lvreduce - Reduzierung der Größe eines logischen Volumes ======
+(2025)
+
+Der Befehl `lvreduce` wird verwendet, um die Größe eines **logischen Volumes (LV)** in einer **Volume Group (VG)** zu verringern. Dies kann nützlich sein, wenn weniger Speicherplatz benötigt wird und eine Partition verkleinert werden soll. Allerdings ist es wichtig zu beachten, dass beim Reduzieren eines logischen Volumes Datenverlust auftreten kann, wenn nicht genug freien Speicherplatz vorhanden ist oder das Dateisystem nicht ordnungsgemäß angepasst wird.
+
+===== Syntax =====
+
+<code>
+lvreduce [Optionen] <LV-Name>
+</code>
+
+===== Optionen =====
+
+^ Option ^ Beschreibung ^
+| **-L, --size**       | Gibt die neue Größe des logischen Volumes an. Beispiel: `-L 50G` reduziert das LV auf 50 GB. |
+| **-l, --extents**    | Gibt die Anzahl der Extents an, die das LV nach der Reduzierung haben soll. Beispiel: `-l 100` reduziert das LV auf 100 Extents. |
+| **-n, --name**       | Ändert den Namen des logischen Volumes. |
+| **--resizefs**       | Versucht, das Dateisystem automatisch zu verkleinern, um es mit der reduzierten Größe des logischen Volumes in Einklang zu bringen. |
+| **-f, --force**      | Erzwingt die Reduzierung ohne Bestätigung. (Vorsicht! Dies kann zu Datenverlust führen.) |
+| **-v, --verbose**    | Gibt detailliertere Informationen über den Reduzierungsvorgang aus. |
+
+===== Wichtige Hinweise =====
+
+  * **Datenverlust vermeiden:** Bevor du ein logisches Volume verkleinern, stelle sicher, dass du ein vollständiges Backup der Daten erstellt hast. Das Verkleinern eines LV kann zu Datenverlust führen, wenn der Speicherbereich des Dateisystems überschritten wird.
+  * **Dateisystem verkleinern:** Wenn das logische Volume verkleinert wird, muss das Dateisystem innerhalb des Volumes ebenfalls angepasst werden. Der Befehl `lvreduce` kann dies mit der Option `--resizefs` automatisch erledigen, es wird jedoch empfohlen, das Dateisystem vorher manuell zu überprüfen und zu verkleinern (z. B. mit `resize2fs` für ext4-Dateisysteme).
+  * **Vorsicht beim Einsatz von `--force`:** Die Verwendung der Option `--force` kann sehr riskant sein, da sie die Reduzierung erzwingt, ohne zusätzliche Sicherheitsprüfungen vorzunehmen.
+
+===== Beispiel: Reduzieren eines logischen Volumes =====
+
+  1. Zuerst überprüfe das Dateisystem und verkleinere es, falls nötig:
+
+<code>
+resize2fs /dev/vgname/lvname 50G
+</code>
+
+  2. Verkleinere nun das logische Volume:
+
+<code>
+lvreduce -L 50G /dev/vgname/lvname
+</code>
+
+  3. Falls erforderlich, erzwinge die Reduzierung ohne Bestätigung:
+
+<code>
+lvreduce -f -L 50G /dev/vgname/lvname
+</code>
+
+===== Weitere Informationen =====
+
+Für detailliertere Informationen zu den verfügbaren Optionen und zur Verwendung von `lvreduce` kannst du die Man-Page aufrufen:
+<code>
+man lvreduce
+</code>
+
+Die vollständige Dokumentation zu LVM und Volumenverwaltung findest du in den offiziellen Linux-Dokumentationen oder auf [[https://linux.die.net/|Die.net Linux Documentation]].

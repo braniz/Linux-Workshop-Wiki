@@ -1,0 +1,15 @@
+====== Diagnose Linux Netzwerk======
+(2025.02)
+
+Hier sind die wichtigsten Netzwerk-Diagnosetools in einer Tabelle zusammengefasst:
+
+^ Kommando                                   ^ Beschreibung                                                   ^ **Optionale Parameter** ^
+| //[[anhang:cli:netzwerk-diagnose:dig|dig]]//               | DNS-Abfragewerkzeug                                            | +short (zeigt nur die wichtigsten Infos), -t (Typ der Abfrage), @server (spezifischer DNS-Server) |
+| //[[anhang:cli:netzwerk-diagnose:ethtool|ethtool]]//       | Netzwerkschnittstellen-Analyse                                 | -i (Informationen zur Schnittstelle), -s (setzt Einstellungen), -p (blinken lassen) |
+| //[[anhang:cli:netzwerk-diagnose:nmap|nmap]]//             | Netzwerk-Scanner zur Netzwerkerkundung und Sicherheitsprüfung  | -sS (SYN-Scan), -O (Betriebssystem ermitteln), -p (Ports angeben) |
+| //[[anhang:cli:netzwerk-diagnose:nslookup|nslookup]]//     | DNS-Abfrage-Tool                                               | -type (Typ der DNS-Abfrage), server (verwendeter DNS-Server) |
+| //[[anhang:cli:netzwerk-diagnose:tcpdump|tcpdump]]//       | Netzwerkpaket-Analyse                                          | -i (Netzwerkschnittstelle), -n (verhindert DNS-Auflösung), -v (detailliertere Ausgabe) |
+| //[[anhang:cli:netzwerk-diagnose:traceroute|traceroute]]// | Netzwerkpfad-Verfolgung                                        | -m (maximale Anzahl an Hops), -n (keine DNS-Auflösung) |
+| //[[anhang:cli:netzwerk-diagnose:tracepath|tracepath]]//   | Einfaches Netzwerkpfad-Verfolgungstool                         | Keine zusätzlichen Parameter |
+| //[[anhang:cli:netzwerk-diagnose:netstat|netstat]]//       | Zeigt Netzwerkverbindungen und Statistiken an                  | -t (nur TCP), -u (nur UDP), -l (nur wartende Verbindungen) |
+| //[[anhang:cli:netzwerk-diagnose:nc|nc]]//                 | Netcat – Netzwerkverbindung und Test                           | -l (Listenmodus), -v (detaillierte Ausgabe), -z (Port-Scan) |

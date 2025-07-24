@@ -1,0 +1,75 @@
+====== mkdir - Verzeichnisse erstellen ======
+(2025)
+
+Der Befehl **mkdir** (Make Directory) wird verwendet, um neue Verzeichnisse zu erstellen. Es ist ein einfaches, aber sehr nützliches Tool, um Verzeichnisse auf dem Dateisystem anzulegen.
+
+===== Syntax =====
+<code>
+mkdir [Optionen] Verzeichnisname
+</code>
+
+-----
+
+===== Wichtige Optionen =====
+Der Befehl **mkdir** bietet einige nützliche Optionen:
+
+^ Option ^ Beschreibung ^
+| `-p`                  | Erstellt alle übergeordneten Verzeichnisse, die noch nicht existieren. |
+| `-v`                  | Zeigt an, dass ein Verzeichnis erstellt wurde (Verbose-Modus). |
+| `-m`                  | Setzt die Berechtigungen für das neu erstellte Verzeichnis. |
+| `--mode=MODE`         | Ein alternativer Weg, um die Berechtigungen für das Verzeichnis festzulegen. |
+| `--help`              | Zeigt die Hilfe und eine kurze Beschreibung der verfügbaren Optionen. |
+
+-----
+
+===== Beispiele =====
+Hier sind einige praktische Beispiele zur Verwendung von **mkdir**:
+
+  *  **Erstellen eines Verzeichnisses**:
+<code>
+mkdir verzeichnis1
+</code>
+Dieser Befehl erstellt das Verzeichnis `verzeichnis1` im aktuellen Verzeichnis.
+
+  *  **Erstellen von Verzeichnissen mit spezifischen Berechtigungen**:
+<code>
+mkdir -m 755 verzeichnis2
+</code>
+Dieser Befehl erstellt das Verzeichnis `verzeichnis2` mit den Berechtigungen `755`.
+
+  *  **Erstellen eines Verzeichnisses inklusive aller übergeordneten Verzeichnisse**:
+<code>
+mkdir -p /home/user/unterverzeichnis1/unterverzeichnis2
+</code>
+Dieser Befehl erstellt das Verzeichnis `unterverzeichnis2` im angegebenen Pfad und stellt sicher, dass alle übergeordneten Verzeichnisse (`/home/user/unterverzeichnis1`) ebenfalls erstellt werden, falls sie nicht existieren.
+
+  *  **Verbose-Modus**:
+<code>
+mkdir -v verzeichnis3
+</code>
+Dieser Befehl erstellt das Verzeichnis `verzeichnis3` und zeigt an, dass es erfolgreich erstellt wurde.
+
+-----
+
+===== Beispiel-Ausgabe =====
+Ein typischer **mkdir**-Befehl mit der Option `-v` könnte eine Ausgabe wie folgt haben:
+<code>
+mkdir: created directory 'verzeichnis3'
+</code>
+Dies zeigt an, dass das Verzeichnis `verzeichnis3` erfolgreich erstellt wurde.
+
+-----
+
+===== Hinweis =====
+  *  Der Befehl **mkdir** benötigt Schreibberechtigungen im Zielverzeichnis, um neue Verzeichnisse zu erstellen. Andernfalls wird der Befehl fehlschlagen.
+  *  Um mehrere Verzeichnisse gleichzeitig zu erstellen, können mehrere Verzeichnisnamen hintereinander angegeben werden, z.B. `mkdir verzeichnis1 verzeichnis2`.
+
+-----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über den Befehl **mkdir** und die verfügbaren Optionen:
+<code>
+man mkdir
+</code>
+
+Weitere Informationen und Dokumentation zu **mkdir** findest du auf der [[https://man7.org/linux/man-pages/|Linux Man-Pages]].

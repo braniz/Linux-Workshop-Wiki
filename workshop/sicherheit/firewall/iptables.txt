@@ -1,0 +1,94 @@
+====== iptables - Verwaltung von Firewall-Regeln unter Linux ======
+(2025.02)
+
+**iptables** ist ein Kommandozeilenprogramm zur Verwaltung der Netzwerkfilter-Regeln auf Linux-Systemen. Es ermöglicht das Erstellen, Ändern und Löschen von Regeln, die den Netzwerkverkehr auf der Grundlage von IP-Adressen, Ports und anderen Parametern steuern. **iptables** wird häufig verwendet, um Firewalls zu konfigurieren und den Zugriff auf Netzwerke und Dienste zu steuern.
+
+===== Syntax =====
+<code bash>
+iptables [Optionen] [Kette] [Aktion] [Bedingungen] [Ziel]
+</code>
+
+===== Wichtige Optionen =====
+^ Option             ^ Beschreibung                                               ^
+| `-A`               | Fügt eine Regel am Ende einer Kette hinzu.                   |
+| `-D`               | Löscht eine Regel aus einer Kette.                           |
+| `-I`               | Fügt eine Regel an einer bestimmten Position in der Kette ein. |
+| `-L`               | Listet die aktuellen Regeln einer Kette auf.                 |
+| `-F`               | Löscht alle Regeln einer Kette.                              |
+| `-P`               | Setzt die Standardpolitik einer Kette.                        |
+| `-s <IP>`          | Gibt die Quell-IP-Adresse an.                                |
+| `-d <IP>`          | Gibt die Ziel-IP-Adresse an.                                 |
+| `--sport <Port>`   | Gibt den Quellport an.                                       |
+| `--dport <Port>`   | Gibt den Zielport an.                                        |
+| `-j <Ziel>`        | Gibt das Ziel für den Verkehr an (z.B. ACCEPT, DROP).        |
+
+===== Verzeichnisse =====
+^ Verzeichnis                          ^ Beschreibung                                                                 ^
+| `/etc/iptables/`                      | Hauptverzeichnis für die **iptables**-Konfiguration.                          |
+| `/etc/iptables/rules.v4`              | Datei, die die **iptables**-Regeln für IPv4 speichert.                       |
+| `/etc/iptables/rules.v6`              | Datei, die die **iptables**-Regeln für IPv6 speichert.                       |
+| `/var/lib/iptables/`                  | Verzeichnis, in dem temporäre **iptables**-Daten gespeichert werden.         |
+| `/usr/sbin/iptables`                  | Hauptprogramm für die Verwaltung der **iptables**-Firewall.                  |
+| `/etc/iptables/iptables.rules`        | Datei, in der die persistenten **iptables**-Regeln gespeichert sind.         |
+| `/etc/sysconfig/iptables`             | Verzeichnis für die Konfiguration von **iptables** bei älteren Systemen.      |
+| `/var/log/iptables.log`               | Log-Datei, in der **iptables**-Verbindungen und Blockierungen protokolliert werden. |
+
+===== Beispiele =====
+**Aktuelle Regeln anzeigen:**
+<code bash>
+iptables -L
+</code>
+Zeigt alle aktuellen Regeln in der Standardkette (INPUT, FORWARD, OUTPUT) an.
+
+**Regel hinzufügen, um eingehenden SSH-Verkehr zu erlauben:**
+<code bash>
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+</code>
+Erlaubt eingehenden TCP-Verkehr auf Port 22 (SSH).
+
+**Regel hinzufügen, um eingehenden HTTP-Verkehr zu erlauben:**
+<code bash>
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+</code>
+Erlaubt eingehenden TCP-Verkehr auf Port 80 (HTTP).
+
+**Regel löschen, um eingehenden SSH-Verkehr zu blockieren:**
+<code bash>
+iptables -D INPUT -p tcp --dport 22 -j ACCEPT
+</code>
+Löscht die Regel, die eingehenden SSH-Verkehr auf Port 22 erlaubt.
+
+**Alle Regeln löschen:**
+<code bash>
+iptables -F
+</code>
+Löscht alle Regeln in allen Ketten.
+
+**Standardpolitik für die INPUT-Kette auf DROP setzen:**
+<code bash>
+iptables -P INPUT DROP
+</code>
+Setzt die Standardpolitik der INPUT-Kette auf DROP, wodurch alle eingehenden Verbindungen standardmäßig blockiert werden.
+
+**Regel hinzufügen, um den Verkehr von einer bestimmten IP zu blockieren:**
+<code bash>
+iptables -A INPUT -s 192.168.1.100 -j DROP
+</code>
+Blockiert den gesamten eingehenden Verkehr von der IP-Adresse `192.168.1.100`.
+
+**Regel hinzufügen, um den Verkehr von einer bestimmten IP zu erlauben:**
+<code bash>
+iptables -A INPUT -s 192.168.1.100 -j ACCEPT
+</code>
+Erlaubt den gesamten eingehenden Verkehr von der IP-Adresse `192.168.1.100`.
+
+===== Hinweis =====
+- **iptables** arbeitet mit sogenannten **Ketten**, die die Regeln enthalten. Die häufigsten Ketten sind `INPUT`, `OUTPUT` und `FORWARD`. Jede Kette enthält Regeln, die den Netzwerkverkehr basierend auf verschiedenen Kriterien (z.B. Quell-IP, Ziel-IP, Protokoll) filtern.
+- **iptables** ist sehr mächtig und erfordert eine sorgfältige Handhabung. Eine falsche Konfiguration kann dazu führen, dass legitimer Netzwerkverkehr blockiert wird, oder dass das System aus dem Netzwerk gesperrt wird.
+- Änderungen an **iptables** sind nicht permanent, es sei denn, sie werden mit einem Tool wie `service iptables save` oder durch das Speichern in einer Konfigurationsdatei (z.B. `/etc/sysconfig/iptables`) gesichert.
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen:
+<code bash>
+man iptables
+</code>

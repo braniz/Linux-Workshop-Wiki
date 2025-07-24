@@ -1,0 +1,74 @@
+====== journalctl - Systemd-Journal anzeigen ======
+(2025)
+
+Das Kommando **journalctl** ist ein Werkzeug, mit dem die Protokolle (Logs) aus dem **systemd**-Journal angezeigt werden können. Mit **journalctl** können Systemadministratoren auf einfache Weise die Logdaten eines Systems durchsuchen, analysieren und anzeigen, die von Systemd-Diensten und dem Kernel erzeugt wurden.
+
+===== Syntax =====
+<code>
+journalctl [OPTIONEN]
+</code>
+
+----
+
+===== Wichtige Optionen =====
+Die häufig verwendeten Optionen für **journalctl** sind:
+
+^ Option ^ Beschreibung ^
+|  -u <Dienstname>    | Zeigt nur die Logeinträge für den angegebenen Dienst an. |
+|  -f                 | Zeigt die neuesten Logeinträge und aktualisiert diese in Echtzeit (ähnlich wie `tail -f`). |
+|  -n <Anzahl>        | Zeigt die letzten <Anzahl> Zeilen der Logdatei an. |
+|  -p <Priorität>     | Filtert die Logeinträge nach Priorität (z.B. `-p err` zeigt nur Fehler an). |
+|  --since <Zeit>     | Zeigt Logeinträge ab einem bestimmten Zeitpunkt an (z.B. `--since "2025-03-01"`) |
+|  --until <Zeit>     | Zeigt Logeinträge bis zu einem bestimmten Zeitpunkt an (z.B. `--until "2025-03-02"`) |
+|  -x                 | Zeigt zusätzliche Details zu den Logeinträgen an, wie z.B. JSON-Daten. |
+
+----
+
+===== Beispiele =====
+Einige Beispiele für die Verwendung von **journalctl**:
+
+  *  Zeigt die letzten Logeinträge an:
+<code>
+journalctl -n 10
+</code>
+
+  *  Zeigt die Logeinträge eines bestimmten Dienstes, z.B. `nginx`, an:
+<code>
+journalctl -u nginx
+</code>
+
+  *  Zeigt alle Logeinträge der letzten 10 Minuten an:
+<code>
+journalctl --since "10 minutes ago"
+</code>
+
+  *  Zeigt Logeinträge in Echtzeit an (ähnlich wie `tail -f`):
+<code>
+journalctl -f
+</code>
+
+  *  Zeigt nur Fehler (Level `err`) an:
+<code>
+journalctl -p err
+</code>
+
+  *  Zeigt Logeinträge bis zu einem bestimmten Zeitpunkt an:
+<code>
+journalctl --until "2025-03-01"
+</code>
+
+----
+
+===== Hinweis =====
+  *  **journalctl** zeigt standardmäßig alle Logeinträge seit dem letzten Systemstart an. Dies kann zu einer sehr großen Ausgabe führen. Verwenden Sie daher Filteroptionen, um die Ausgabe zu verfeinern.
+  *  Für den Zugriff auf Systemprotokolle können Administratorrechte erforderlich sein. Verwenden Sie gegebenenfalls `sudo`.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **journalctl**:
+<code>
+man journalctl
+</code>
+
+Weitere Informationen über das **systemd Journal** finden Sie in der offiziellen Dokumentation: [[https://www.freedesktop.org/software/systemd/man/journalctl.html|journalctl Manual Page]]

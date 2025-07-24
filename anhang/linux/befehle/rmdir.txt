@@ -1,0 +1,67 @@
+====== rmdir - Leere Verzeichnisse löschen ======
+(2025)
+
+Der Befehl **rmdir** (Remove Directory) wird verwendet, um leere Verzeichnisse zu löschen. Im Gegensatz zu **rm** löscht **rmdir** nur Verzeichnisse, die leer sind, d.h. ohne Dateien oder Unterverzeichnisse.
+
+===== Syntax =====
+<code>
+rmdir [Optionen] Verzeichnisname
+</code>
+
+-----
+
+===== Wichtige Optionen =====
+Der Befehl **rmdir** bietet einige nützliche Optionen:
+
+^ Option ^ Beschreibung ^
+| `-p`                  | Löscht ein Verzeichnis und alle übergeordneten Verzeichnisse, wenn diese leer sind. |
+| `--ignore-fail-on-non-empty` | Ignoriert das Löschen von Verzeichnissen, die nicht leer sind, und gibt keine Fehlermeldung aus. |
+| `--help`              | Zeigt die Hilfe und eine kurze Beschreibung der verfügbaren Optionen. |
+
+-----
+
+===== Beispiele =====
+Hier sind einige praktische Beispiele zur Verwendung von **rmdir**:
+
+  *  **Löschen eines leeren Verzeichnisses**:
+<code>
+rmdir verzeichnis1
+</code>
+Dieser Befehl löscht das leere Verzeichnis `verzeichnis1`, wenn es keine Dateien oder Unterverzeichnisse enthält.
+
+  *  **Löschen eines leeren Verzeichnisses und seiner leeren übergeordneten Verzeichnisse**:
+<code>
+rmdir -p /home/user/unterverzeichnis1/unterverzeichnis2
+</code>
+Dieser Befehl löscht das Verzeichnis `unterverzeichnis2` und, falls sie leer sind, auch das übergeordnete Verzeichnis `unterverzeichnis1` und das Verzeichnis `/home/user`.
+
+  *  **Löschen eines leeren Verzeichnisses ohne Fehlermeldung, wenn das Verzeichnis nicht leer ist**:
+<code>
+rmdir --ignore-fail-on-non-empty verzeichnis2
+</code>
+Dieser Befehl versucht, das Verzeichnis `verzeichnis2` zu löschen. Falls es nicht leer ist, wird keine Fehlermeldung ausgegeben und der Befehl läuft ohne Fehler weiter.
+
+-----
+
+===== Beispiel-Ausgabe =====
+Ein typischer **rmdir**-Befehl könnte eine Ausgabe wie folgt haben:
+<code>
+rmdir: failed to remove 'verzeichnis1': Directory not empty
+</code>
+Dies zeigt an, dass das Verzeichnis `verzeichnis1` nicht gelöscht werden konnte, weil es nicht leer ist.
+
+-----
+
+===== Hinweis =====
+  *  Der Befehl **rmdir** funktioniert nur mit leeren Verzeichnissen. Um ein Verzeichnis mit Inhalt zu löschen, muss der Befehl **rm** verwendet werden.
+  *  Verwende die Option `-p`, um ein ganzes Verzeichnisbaum zu löschen, wenn alle Verzeichnisse im Baum leer sind.
+
+-----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über den Befehl **rmdir** und die verfügbaren Optionen:
+<code>
+man rmdir
+</code>
+
+Weitere Informationen und Dokumentation zu **rmdir** findest du auf der [[https://man7.org/linux/man-pages/|Linux Man-Pages]].

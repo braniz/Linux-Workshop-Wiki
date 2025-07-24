@@ -1,0 +1,123 @@
+====== 00 Linux-Paketmanagement: Grundlagen und Praxis ======
+(2025) | //Softwareinstallation, Updates und Repository-Verwaltung unter Linux//
+
+Das Paketmanagement ist das Herzstück jeder Linux-Distribution. Dieser Artikel erklärt Konzepte, Tools und Best Practices für den effizienten Umgang mit Softwarepaketen – von der Installation bis zur Fehlerbehebung.
+
+===== Grundkonzepte =====
+^ Begriff             ^ Beschreibung                                           ^
+| **Paket**           | Binärdatei mit Software + Metadaten (z.B. .deb, .rpm)  |
+| **Repository**      | Zentrale Paketquelle (offiziell/community)             |
+| **Abhängigkeiten**  | Benötigte Bibliotheken/Programme für ein Paket         |
+| **Paketmanager**    | Tool zur Automatisierung (APT, DNF, Pacman, etc.)      |
+| **Signatur**        | Digitale Prüfsumme gegen Manipulation (GPG-Keys)       |
+
+===== Paketmanager im Überblick =====
+^ Distribution       ^ Paketmanager  ^ Dateiformat ^ Konfig-Dateien           ^
+| **Debian/Ubuntu**  | APT           | .deb        | `/etc/apt/sources.list`  |
+| **Fedora/RHEL**    | DNF/YUM       | .rpm        | `/etc/yum.repos.d/`      |
+| **Arch/Manjaro**   | Pacman        | .pkg.tar.zst| `/etc/pacman.conf`       |
+| **openSUSE**       | Zypper        | .rpm        | `/etc/zypp/repos.d/`     |
+
+===== Basisbefehle =====
+**Debian/Ubuntu (APT)**:  
+<code>
+sudo apt update                 # Paketlisten aktualisieren  
+sudo apt install nginx          # Installieren  
+sudo apt remove --purge nginx   # Vollständig deinstallieren  
+apt search ^python3-            # Regex-Suche  
+apt show nginx                  # Paketdetails anzeigen  
+</code>
+
+**Fedora/RHEL (DNF)**:  
+<code>
+sudo dnf check-update           # Updates prüfen  
+sudo dnf install httpd          # Installieren  
+sudo dnf autoremove             # Unbenutzte Abhängigkeiten löschen  
+</code>
+
+**Arch (Pacman)**:  
+<code>
+sudo pacman -Syu                # Vollständiges Systemupdate  
+sudo pacman -S tmux             # Installieren  
+pacman -Qs neovim               # Lokale Pakete durchsuchen  
+</code>
+
+===== Praxisbeispiele =====
+**1. Defekte Pakete reparieren (Debian)**:  
+<code>
+sudo apt clean  
+sudo dpkg --configure -a  
+sudo apt install -f  
+</code>
+
+**2. Eigenes Repository erstellen**:  
+<code>
+# Mit reprepro (Debian):  
+mkdir -p repo/conf  
+echo "Origin: MyRepo  
+Architectures: amd64  
+Components: main" > repo/conf/distributions  
+reprepro includedeb bullseye *.deb  
+</code>
+
+**3. Verwaiste Pakete löschen (Arch)**:  
+<code>
+pacman -Qtdq | sudo pacman -Rns -  
+</code>
+
+===== Sicherheit =====
+  * **Automatische Updates (Debian)**:<code>
+  sudo apt install unattended-upgrades  
+  sudo dpkg-reconfigure unattended-upgrades</code>
+
+  * **GPG-Schlüssel verwalten**:<code>
+  sudo apt-key list                # Schlüssel anzeigen (Debian)  
+  sudo dnf config-manager --import key.pub  # Fedora</code>
+
+===== Troubleshooting =====
+**Fehler: „404 Repository nicht gefunden“**  
+<code>
+sudo rm /var/lib/apt/lists/*    # Debian-Cache löschen  
+sudo apt update --fix-missing  
+</code>
+
+**Fehler: „Ungültige GPG-Signatur“**  
+<code>
+sudo apt-key adv --refresh-keys  
+sudo dnf clean all              # Fedora  
+</code>
+
+===== Best Practices =====
+  - **Testing-Repos gezielt nutzen** (Beispiel für Debian-Pinning):  
+    <code>
+    # /etc/apt/preferences:  
+    Package: nodejs  
+    Pin: release a=testing  
+    Pin-Priority: 500  
+    </code>
+
+  - **Paketlisten sichern**:  
+    <code>
+    dpkg --get-selections > pkg_backup.txt  # Debian  
+    pacman -Qqe > arch_pkglist.txt          # Arch  
+    </code>
+
+  - **Containerisierung für Tests**:  
+    <code>
+    podman run -it ubuntu:22.04 /bin/bash  
+    </code>
+
+===== Weiterführende Ressourcen =====
+  * [[https://wiki.debian.org/Packaging|Debian Packaging Guide]]  
+  * [[https://rpm-packaging-guide.github.io/|RPM Packaging Handbook]]  
+  * [[https://wiki.archlinux.org/title/Pacman|Arch Linux Pacman Wiki]]  
+
+**Wichtige Dateien**:  
+  - `/etc/apt/sources.list` (Debian)  
+  - `/var/log/dnf.log` (Fedora)  
+  - `/etc/pacman.d/mirrorlist` (Arch)  
+
+===== Letzter Tipp =====
+Nutzen Sie **`man`-Seiten** (z.B. `man apt`) und führen Sie regelmäßige Updates durch – die beste Sicherheitsvorkehrung!
+
+//Hinweis: Alle Befehle erfordern Root-Rechte (via **sudo**). Testen Sie kritische Aktionen immer in einer Sandbox!//

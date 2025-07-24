@@ -1,0 +1,60 @@
+====== pvcreate – Erstellen eines Physical Volumes ======
+(2025)
+
+Der Befehl **pvcreate** wird verwendet, um eine Festplatte oder Partition als **Physical Volume (PV)** für den **Logical Volume Manager (LVM)** zu initialisieren. Ein Physical Volume ist die unterste Ebene im LVM und dient als Basis für **Volume Groups (VGs)** und **Logical Volumes (LVs)**.
+
+===== Syntax =====
+<code>
+pvcreate [Optionen] <Gerät>
+</code>
+
+**Wichtige Optionen:**  
+
+^ Option ^ Beschreibung ^
+| **-ff**   | Erzwingt das Erstellen eines PVs, auch wenn bereits eine Signatur vorhanden ist. |
+| **-y**    | Automatische Bestätigung aller Abfragen. |
+| **-n**    | Führt einen Testlauf durch, ohne Änderungen vorzunehmen. |
+| **--metadatasize=<Größe>** | Legt die Größe des Metadatenbereichs fest. |
+| **--dataalignment=<Wert>** | Bestimmt die Daten-Ausrichtung für Performance-Optimierungen. |
+
+-----
+
+===== Beispiele =====
+
+**Eine gesamte Festplatte als Physical Volume einrichten**  
+<code>
+sudo pvcreate /dev/sdb
+</code>
+
+**Eine Partition als Physical Volume initialisieren**  
+<code>
+sudo pvcreate /dev/sdb1
+</code>
+
+**Ein Physical Volume mit spezifischer Metadatengröße erstellen**  
+<code>
+sudo pvcreate --metadatasize=2M /dev/sdb
+</code>
+
+-----
+
+===== Hinweis =====
+  * **Alle vorhandenen Daten auf dem Gerät werden gelöscht!** Stelle sicher, dass keine wichtigen Daten darauf gespeichert sind.
+  * Falls das Gerät bereits als PV verwendet wurde, kann der Befehl `wipefs -a /dev/sdb` helfen, alte Metadaten zu entfernen.
+
+-----
+
+===== Alternativen =====
+  * `vgcreate` – Erstellt eine **Volume Group** aus einem oder mehreren Physical Volumes.  
+  * `pvs` – Zeigt eine kompakte Übersicht aller vorhandenen Physical Volumes.  
+  * `pvremove` – Entfernt ein Physical Volume aus dem LVM.
+
+-----
+
+===== Weitere Informationen =====
+Für detaillierte Informationen siehe die Man-Page:  
+<code>
+man pvcreate
+</code>
+
+Weitere Dokumentation findest du unter [[https://man7.org/linux/man-pages/man8/pvcreate.8.html|pvcreate Man-Page]].

@@ -1,0 +1,59 @@
+====== df - Festplattennutzung anzeigen ======
+(2025)
+
+Der Befehl **df** zeigt die Festplattennutzung für alle eingehängten Dateisysteme auf einem Linux-System an. Es gibt Informationen zu verfügbaren und verwendeten Speicherplätzen für die verschiedenen Partitionen und Dateisysteme.
+
+===== Syntax =====
+<code>
+df [OPTIONEN] [DATEISYSTEM]
+</code>
+
+----
+
+===== Wichtige Optionen =====
+^ Option ^ Beschreibung ^
+| `-h`, `--human-readable`   | Gibt die Größen in einem für Menschen lesbaren Format aus, z.B. in Kilobytes (K), Megabytes (M) oder Gigabytes (G). |
+| `-T`, `--print-type`       | Zeigt den Typ jedes Dateisystems an. |
+| `-a`, `--all`              | Zeigt alle Dateisysteme an, auch solche, die 0 Blöcke enthalten. |
+| `-l`, `--local`            | Zeigt nur lokale Dateisysteme an, d.h. keine gemounteten Netzwerkdateisysteme. |
+| `-i`, `--inodes`           | Zeigt die Anzahl der Inodes statt der Blocknutzung an. |
+| `--total`                  | Zeigt eine Zusammenfassung der Speichernutzung aller Dateisysteme an. |
+
+----
+
+===== Beispiele =====
+Hier sind einige Beispiele für die Verwendung von **df**:
+
+  *  Anzeigen der Festplattennutzung für alle Dateisysteme:
+<code>
+df
+</code>
+
+  *  Anzeigen der Festplattennutzung in einem menschenlesbaren Format:
+<code>
+df -h
+</code>
+
+  *  Anzeigen des Typs der Dateisysteme:
+<code>
+df -T
+</code>
+
+  *  Anzeigen der Festplattennutzung für ein bestimmtes Dateisystem:
+<code>
+df /home
+</code>
+
+----
+
+===== Hinweis =====
+  *  Die Anzeige der Festplattennutzung basiert auf dem aktuellen Mount-Status der Dateisysteme. Bei dynamischen Änderungen der Dateisysteme (z.B. während des Mountens oder Entfernens) wird **df** nicht automatisch aktualisiert.
+  *  Für detailliertere Informationen zur Inode-Nutzung können Sie die Option `-i` verwenden.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **df**:
+<code>
+man df
+</code>

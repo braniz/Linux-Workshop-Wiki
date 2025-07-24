@@ -1,0 +1,100 @@
+====== vsftpd - Systemd-Service-Dateien ======
+(2025)
+
+Die **vsftpd**-Systemd-Service-Dateien sind entscheidend für die Verwaltung des **vsftpd**-FTP-Servers auf einem Linux-System. Sie steuern das Starten, Stoppen und die Verwaltung des **vsftpd**-Dämonen sowie das Festlegen von Zielen und Instanzen für den Dienst.
+
+===== Syntax =====
+<code bash>
+/usr/lib/systemd/system/vsftpd.service
+/usr/lib/systemd/system/vsftpd@.service
+/usr/lib/systemd/system/vsftpd.target
+</code>
+
+----
+
+===== Erklärung der Dateien =====
+Die drei wichtigen Systemd-Service-Dateien für **vsftpd** sind:
+
+^ Datei ^ Beschreibung ^
+| `/usr/lib/systemd/system/vsftpd.service`    | Die Haupt-Service-Datei, die den vsftpd-Dienst definiert und von systemd verwendet wird, um den FTP-Server zu starten und zu verwalten. |
+| `/usr/lib/systemd/system/vsftpd@.service`   | Eine Template-Service-Datei, die es ermöglicht, mehrere Instanzen von vsftpd mit unterschiedlichen Konfigurationen zu starten. |
+| `/usr/lib/systemd/system/vsftpd.target`     | Ein Systemd-Target, das als Ziel für den Start des vsftpd-Dienstes dient und mit anderen Systemdiensten integriert werden kann. |
+
+----
+
+===== /usr/lib/systemd/system/vsftpd.service =====
+Die Datei **vsftpd.service** ist die Haupt-Service-Datei, die den **vsftpd**-Dienst für das System definiert. Diese Datei wird von **systemd** verwendet, um den FTP-Server zu starten und zu verwalten.
+
+Typische Inhalte dieser Datei sind:
+^ Abschnitt ^ Beschreibung ^
+| `[Unit]`             | Hier werden grundlegende Informationen zum Dienst angegeben, z.B. Name und Beschreibung des Dienstes. |
+| `[Service]`          | Dieser Abschnitt enthält Details zum Dienst, wie den Befehl, der beim Starten des Dienstes ausgeführt wird (normalerweise `/usr/sbin/vsftpd`), sowie zusätzliche Optionen. |
+| `[Install]`          | Hier wird festgelegt, wie der Dienst in den Systemstart integriert wird (z.B. wann und wie er aktiviert wird). |
+
+Ein Beispiel für eine **vsftpd.service**-Datei könnte so aussehen:
+<code>
+[Unit]
+Description=Very Secure FTP Daemon
+After=network.target
+
+[Service]
+ExecStart=/usr/sbin/vsftpd /etc/vsftpd.conf
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+</code>
+
+----
+
+===== /usr/lib/systemd/system/vsftpd@.service =====
+Die Datei **vsftpd@.service** ist eine **Template-Service-Datei**, die verwendet wird, um mehrere Instanzen von **vsftpd** zu starten. Der `@`-Platzhalter ermöglicht das Starten von Instanzen mit unterschiedlichen Konfigurationsdateien oder Umgebungen. Diese Datei wird in der Regel verwendet, wenn du mehrere Instanzen von **vsftpd** mit unterschiedlichen Konfigurationen betreiben möchtest.
+
+Beispiel:
+<code>
+[Unit]
+Description=vsftpd FTP server for %i
+After=network.target
+
+[Service]
+ExecStart=/usr/sbin/vsftpd /etc/vsftpd-%i.conf
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+</code>
+In diesem Beispiel wird der Platzhalter `%i` durch den angegebenen Instanznamen ersetzt, was es ermöglicht, verschiedene Konfigurationen wie `/etc/vsftpd-instance1.conf` oder `/etc/vsftpd-instance2.conf` zu verwenden.
+
+----
+
+===== /usr/lib/systemd/system/vsftpd.target =====
+Die Datei **vsftpd.target** ist ein **Systemd-Target**, das verwendet wird, um spezifische Ziele für den **vsftpd**-Dienst zu definieren. Targets in Systemd sind eine Art von Metadaten, die eine Gruppe von Diensten oder Einheiten definieren, die gemeinsam gestartet oder gestoppt werden können.
+
+Beispiel für eine **vsftpd.target**-Datei:
+<code>
+[Unit]
+Description=vsftpd FTP daemon target
+Requires=vsftpd.service
+After=vsftpd.service
+
+[Install]
+WantedBy=multi-user.target
+</code>
+
+Das **vsftpd.target**-Target stellt sicher, dass der **vsftpd.service**-Dienst gestartet wird, wenn das System in den **multi-user.target**-Modus wechselt, der für normale Mehrbenutzer-Betriebszustände verwendet wird.
+
+----
+
+===== Hinweis =====
+- Diese Service-Dateien sind wichtig, um **vsftpd** korrekt mit **systemd** zu integrieren und zu verwalten.
+- Die Haupt-Service-Datei (vsftpd.service) ist für den allgemeinen Betrieb verantwortlich, während die Template-Datei (vsftpd@.service) für spezielle Instanzen von **vsftpd** genutzt wird. Das Target (vsftpd.target) sorgt dafür, dass der Dienst zusammen mit anderen erforderlichen Systemdiensten gestartet wird.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über systemd und die zugehörigen Kommandos:
+<code bash>
+man systemd.service
+</code>
+
+

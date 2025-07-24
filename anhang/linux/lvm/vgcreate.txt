@@ -1,0 +1,64 @@
+====== vgcreate – Erstellen einer Volume Group ======
+(2025)
+
+Der Befehl **vgcreate** wird verwendet, um eine **Volume Group (VG)** im Logical Volume Manager (LVM) zu erstellen. Eine Volume Group ist eine Sammlung von Physical Volumes (PVs), die als eine einzige logische Einheit behandelt wird, um Logical Volumes (LVs) zu erstellen und zu verwalten.
+
+===== Syntax =====
+<code>
+vgcreate [Optionen] <Volume-Group-Name> <Physical-Volume>...
+</code>
+
+**Wichtige Optionen:**  
+
+^ Option ^ Beschreibung ^
+| **-s**, **--stripesize** <Größe>   | Legt die Striping-Größe für die Volume Group fest (nur bei mehreren PVs nützlich). |
+| **-l**, **--maxlvs** <Anzahl>      | Legt die maximale Anzahl an Logical Volumes fest, die in der Volume Group erstellt werden können. |
+| **-n**, **--name** <Name>          | Definiert den Namen der Volume Group (wird direkt nach der VG-Erstellung verwendet). |
+| **-f**, **--force**                | Erzwingt die Erstellung der Volume Group, auch wenn die angegebene Volume Group bereits existiert. |
+| **-v**, **--verbose**              | Zeigt detaillierte Informationen während der Ausführung des Befehls an. |
+
+-----
+
+===== Beispiele =====
+
+  *  **Erstellen einer Volume Group mit einem Physical Volume**  
+<code>
+sudo vgcreate vg01 /dev/sdb
+</code>
+
+  *  **Erstellen einer Volume Group mit mehreren Physical Volumes**  
+<code>
+sudo vgcreate vg01 /dev/sdb /dev/sdc
+</code>
+
+  *  **Erstellen einer Volume Group mit Striping und einer festgelegten Größe**  
+<code>
+sudo vgcreate -s 64k vg01 /dev/sdb /dev/sdc
+</code>
+
+  *  **Erstellen einer Volume Group und Festlegen der maximalen Anzahl von Logical Volumes**  
+<code>
+sudo vgcreate -l 100 vg01 /dev/sdb
+</code>
+
+-----
+
+===== Hinweis =====
+  *  Die Volume Group kann aus einer oder mehreren Physical Volumes bestehen. Wenn du mehrere PVs verwendest, kannst du eine größere und flexiblere VG erstellen.
+  *  Eine VG kann nicht mehr verändert werden, nachdem sie erstellt wurde, ohne zusätzliche Schritte wie das Hinzufügen oder Entfernen von PVs vorzunehmen.
+
+-----
+
+===== Alternativen =====
+  *  `vgextend` – Fügt einer bestehenden Volume Group zusätzliche Physical Volumes hinzu.  
+  *  `vgrename` – Ändert den Namen einer bestehenden Volume Group.  
+
+-----
+
+===== Weitere Informationen =====
+Für detaillierte Informationen siehe die Man-Page:  
+<code>
+man vgcreate
+</code>
+
+Weitere Dokumentation findest du unter [[https://man7.org/linux/man-pages/man8/vgcreate.8.html|vgcreate Man-Page]].

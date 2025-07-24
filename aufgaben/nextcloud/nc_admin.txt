@@ -1,0 +1,272 @@
+====== 03 - Nextcloud nach der Installation ======
+(2025.02)
+
+Mögliche Meldungen nach der Grundinstallation. Dies sind nur Beispile welche Fehler auftreten können und wie diese zu beheben sind.
+
+Die komplette [[https://docs.nextcloud.com/|Nextcloud Dokumentation]].
+
+===== ToDo nach der INstallation =====
+
+Unter Admiministrationseinstellungen -> Übersicht gibt es einige Fehler welche man bereingen sollte.
+
+{{:aufgaben:nextcloud:nc_sysconfig.png| }}
+
+
+**Ihr Datenverzeichnis und Ihre Dateien sind wahrscheinlich vom Internet aus erreichbar. Die .htaccess-Datei funktioniert nicht. Es wird dringend empfohlen, Ihren Webserver dahingehend zu konfigurieren, dass das Datenverzeichnis nicht mehr vom Internet aus erreichbar ist oder dass Sie es aus dem Document-Root-Verzeichnis des Webservers herausverschieben.**
+<code>
+Editiren der Datei: /etc/apache2/sites-enabled/000-default.conf
+
+<VirtualHost *:80>
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/html
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+<Directory /var/www/>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+</Directory>
+
+</VirtualHost>
+</code>
+
+Die Kommentarzeilen können entfernt werden und die "Directory" Direktive muss eingtragen werden.
+
+**Unsicherer Zugriff auf die Website über HTTP. Es wird dringend empfohlen, Ihren Server so einzurichten, dass HTTPS erforderlich ist. Ohne HTTPS funktionieren einige wichtige Webfunktionen wie "Kopieren in die Zwischenablage" oder "Service Worker" nicht! Weitere Informationen finden Sie in der Dokumentation.**
+
+SSL Zertifikate sollte eingerichtet werden.
+
+
+**Das PHP-Speicherllmit liegt unterhalb des empfohlenen Wertes von 512 MB.**
+<code>
+Editiren der Datei: /etc/php/8.3/apache2/php.ini
+
+ALT:
+memory_limit = 128M
+
+NEU:
+memory_limit = 1024M
+</code>
+
+Sollte es zu performance Problemen kommen so kann der Wert in kleinen Schritte erhöht werden.
+
+**Die PHP-Konfigurationsoption "output_buffering“ muss deaktiviert sein**
+
+<code>
+Editiren der Datei: /etc/php/8.3/apache2/php.ini
+
+ALT:
+output_buffering = 4096
+
+NEU:
+output_buffering = off
+</code>
+
+
+----
+
+
+{{:aufgaben:nextcloud:nc_fehler2.png| }}
+
+**Ihr Webserver ist nicht ordnungsgemäß für die Auflösung von `.well-known`-URLs eingerichtet. Fehler bei: `/.well-known/webfinger` Weitere Informationen finden Sie in der Dokumentation.**
+<code>
+Editiren der Datei: /etc/apache2/sites-available/000-default.conf
+
+<IfModule mod_headers.c>
+      Redirect 301 /.well-known/carddav /nextcloud/remote.php/dav
+      Redirect 301 /.well-known/caldav /nextcloud/remote.php/dav
+      Redirect 301 /.well-known/webfinger /nextcloud/index.php/.well-known/webfinger
+      Redirect 301 /.well-known/nodeinfo /nextcloud/index.php/.well-known/nodeinfo
+  </IfModule>
+</code>
+Ergänze in der IfModule Section.
+
+**Der Server hat keine konfigurierte Startzeit für das Wartungsfenster. Das bedeutet, dass ressourcenintensive tägliche Hintergrundaufgaben auch während Ihrer Hauptnutzungszeit ausgeführt werden. Wir empfehlen, das Wartungsfenster auf eine Zeit mit geringer Nutzung festzulegen, damit Benutzer weniger von der Belastung durch diese umfangreichen Aufgaben beeinträchtigt werden. Weitere Informationen finden Sie in der Dokumentation.**
+<code>
+Editiren der Datei: /var/www/html/nextcloud/confi/config.php
+
+'maintenance_window_start' => '1'
+</code>
+Dies Meldung lässt sich abstellen, in dem man in der Nextcloud-Konfigurationsdatei config.php den Parameter maintenance_window_start ergänzt. Als Wert gibt man dann eine volle Stunde (0 bis 23) an. Ab diesem Zeitpunkt werden in den nächsten vier Stunden diese o.g. Hintergrundaufgaben durchgeführt.
+
+
+
+**One or more mimetype migrations are available. Occasionally new mimetypes are added to better handle certain file types. Migrating the mimetypes take a long time on larger instances so this is not done automatically during upgrades. Use the command `occ maintenance:repair --include-expensive` to perform the migrations.**
+<code>
+root@nc:/var/www/html/nextcloud# sudo -u www-data php occ maintenance:repair --include-expensive
+</code>
+
+**Einige Header sind in Ihrer Instanz nicht richtig eingestellt - Der `Strict-Transport-Security`-HTTP-Header ist nicht gesetzt (er sollte mindestens `15552000` Sekunden betragen). Für erhöhte Sicherheit wird empfohlen, HSTS zu aktivieren. Weitere Informationen finden Sie in der Dokumentation**
+<code>
+Editiren der Datei: /etc/apache2/sites-available/000-default.conf
+
+<IfModule mod_headers.c>
+      Header always set Strict-Transport-Security "max-age=15552000; includeSubDomains"
+</IfModule>
+</code>
+Hinzufügen zur 000-default.conf
+
+Im anschluss.
+<code>
+a2enmod headers
+systemctl restart apache2
+</code>
+
+**Einige fehlende optionale Indizes wurden erkannt. Gelegentlich werden neue Indizes hinzugefügt (von Nextcloud oder installierten Anwendungen), um die Datenbankleistung zu verbessern. Das Hinzufügen von Indizes kann manchmal eine Weile dauern und die Leistung vorübergehend beeinträchtigen, daher wird dies bei Upgrades nicht automatisch durchgeführt. Sobald die Indizes hinzugefügt wurden, sollten Abfragen an diese Tabellen schneller sein. Verwenden Sie den Befehl `occ db:add-missing-indices`, um sie hinzuzufügen.Fehlende Indizes: "systag_by_objectid" in Tabelle "systemtag_object_mapping". Weitere Informationen finden Sie in der Dokumentation.**
+<code>
+root@nc:/var/www/html/nextcloud# sudo -u www-data php occ db:add-missing-indices
+</code>
+Auf Kommandozeile den occ Befehl ausführen.
+----
+{{:aufgaben:nextcloud:nc_fehler3.png| }}
+
+**3 Warnungen in den Protokollen seit 4. Januar 2025, 17:04:08**
+
+
+**Die Datenbank wird für transaktionale Dateisperren verwendet. Um die Leistung zu verbessern, konfigurieren Sie bitte Memcache, falls verfügbar. Weitere Informationen finden Sie in der Dokumentation.**
+<code>
+root@nc:~# apt install redis-server php-redis
+
+root@nc:~# usermod -a -G redis www-data
+</code>
+
+<code>
+'memcache.locking' => '\\OC\Memcache\\Redis',
+'redis' => [
+'host' => 'localhost',
+'port' => 6379,
+  ],
+</code>
+
+**Es wurde kein Speichercache konfiguriert. Um die Leistung zu verbessern, konfigurieren Sie bitte Memcache, sofern verfügbar. Weitere Informationen finden Sie in der Dokumentation.**
+<code>
+root@nc:~# apt install php-apcu
+</code>
+
+<code>
+Editiren der Datei: /etc/php/8.3/mods-available/apcu.ini
+
+extension=apcu.so
+apc.enable_cli=1
+
+systectl restart apache2
+</code>
+
+<code>
+Editiren der Datei: /var/www/nextcloud/config/config.php
+
+....
+letzte Zeile:
+'memcache.local' => '\\OC\\Memcache\\APCu', 
+</code>
+
+**Für Ihre Installation ist keine Standard-Telefonregion festgelegt. Dies ist erforderlich, um Telefonnummern in den Profileinstellungen ohne Ländervorwahl zu überprüfen. Um Nummern ohne Ländervorwahl zuzulassen, fügen Sie bitte „default_phone_region“ mit dem entsprechenden ISO 3166-1-Code der Region zu Ihrer Konfigurationsdatei hinzu. Weitere Informationen finden Sie in der Dokumentation.**
+<code>
+Editiren der Datei: /var/www/http/nextcloud/config/config.php
+
+'default_phone_region' => 'DE',
+</code>
+
+**Sie haben Ihre E-Mail-Serverkonfiguration noch nicht festgelegt oder überprüft. Gehen Sie bitte zu den „Grundeinstellungen“, um diese festzulegen. Benutzen Sie anschließend den Button „E-Mail senden“ unterhalb des Formulars, um Ihre Einstellungen zu überprüfen. Weitere Informationen finden Sie in der Dokumentation.**
+
+Administrationseinstellungen -> Grundeinstellungn
+
+{{ :aufgaben:nextcloud:nc_email.png?600 | }}
+
+Hier kann ein Email-Accont eingetragen werden für den Versan von Emails.
+
+**Dieser Instanz fehlen einige empfohlene PHP-Module. Für eine verbesserte Leistung und bessere Kompatibilität wird dringend empfohlen, diese zu installieren: - bcmath für WebAuthn passwortlose Anmeldung - gmp für WebAuthn passwortlose Anmeldung und SFTP-Speicher - intl Erhöht die Sprach-Übersetzungsleistung und behebt ein Problem mit der Sortierung von Nicht-ASCII-Zeichen Weitere Informationen finden Sie in der Dokumentation.**
+<code>
+apt install php-intl php-bcmath php-gmp php-imagick -y
+
+systemctl restart apache2
+</code>
+
+**Das PHP OPcache-Modul ist nicht ordnungsgemäß konfiguriert. Der "OPcache interned strings"-Puffer ist fast voll. Um sicherzustellen, dass sich wiederholende Strings effektiv zwischengespeichert werden können, wird empfohlen, "opcache.interned_strings_buffer" mit einem Wert größer als "8" in der PHP-Konfiguration zu setzen.. Weitere Informationen finden Sie in der Dokumentation.**
+<code>
+Editiren der Datei: /etc/php/8.3/apache2/php.ini
+opcache.interned_strings_buffer=16
+</code>
+
+**Das PHP-Modul "imagick" ist nicht aktiviert, die Theming-App hingegen schon. Damit die Favicon-Generierung korrekt funktioniert, müssen Sie dieses Modul installieren und aktivieren. Weitere Informationen finden Sie in der Dokumentation.**
+
+<code>
+php -r "phpinfo();" | grep format
+Es fehlt das SVG Modul
+
+apt install libmagickcore-6.q16-6-extra
+systemctl restart apache2
+</code>
+
+----
+
+<WRAP center round important 60%>
+**Nach der Anpassung muss der Webserver neu gestartet werden.**
+<code>
+systemctl restart apache2
+</code>
+</WRAP>
+
+<hidden conf Dateien>
+<code - Apache conf Datei>
+ root@nc:~# cat /etc/apache2/sites-available/000-default.conf
+<VirtualHost *:80>
+	ServerAdmin webmaster@localhost
+	DocumentRoot /var/www/html
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+  <Directory /var/www/>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+  </Directory>
+
+  <IfModule mod_headers.c>
+        Header always set Strict-Transport-Security "max-age=15552000; includeSubDomains"
+        Redirect 301 /.well-known/carddav /nextcloud/remote.php/dav
+        Redirect 301 /.well-known/caldav /nextcloud/remote.php/dav
+        Redirect 301 /.well-known/webfinger /nextcloud/index.php/.well-known/webfinger
+        Redirect 301 /.well-known/nodeinfo /nextcloud/index.php/.well-known/nodeinfo
+  </IfModule>
+</VirtualHost>
+</code>
+
+<code - Nextcloud conf Datei>
+root@nc:~# cat /var/www/html/nextcloud/config/config.php
+<?php
+$CONFIG = array (
+  'instanceid' => 'ocwfjx3qq6yo',
+  'passwordsalt' => 'oS+DeRToSvt6v4ZHsQ2+Pp80HTqG6g',
+  'secret' => 'vhFXGQS11MPSGB1iNGR+CEtEkhJcUrnxMNKY4u2ipMYtVQ2N',
+  'trusted_domains' =>
+  array (
+    0 => '192.168.0.245',
+  ),
+  'datadirectory' => '/var/www/html/nextcloud/data',
+  'dbtype' => 'mysql',
+  'version' => '30.0.4.1',
+  'overwrite.cli.url' => 'http://192.168.0.245/nextcloud',
+  'dbname' => 'nextcloud',
+  'dbhost' => 'localhost',
+  'dbport' => '',
+  'dbtableprefix' => 'oc_',
+  'mysql.utf8mb4' => true,
+  'dbuser' => 'nc_user',
+  'dbpassword' => 'nc_pass',
+  'installed' => true,
+  'default_phone_region' => 'DE',
+  'maintenance_window_start' => '1',
+  'memcache.local' => '\\OC\\Memcache\\APCu',
+  'memcache.locking' => '\\OC\\Memcache\\Redis',
+  'redis' =>
+  array (
+    'host' => 'localhost',
+    'port' => 6379,
+  ),
+  'maintenance' => false,
+);
+</code>
+</hidden>
+

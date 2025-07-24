@@ -1,0 +1,12 @@
+====== 12 - ssh ======
+
+**SSH (Secure Shell)** ist ein Netzwerkprotokoll, das eine sichere, verschlüsselte Verbindung zu entfernten Computern über ein unsicheres Netzwerk ermöglicht.
+Es wird hauptsächlich verwendet, um sich per Kommandozeile auf Servern einzuloggen und entfernte Befehle auszuführen.
+
+{{page>snippets:sshd_config}}
+{{page>workshop:sicherheit:ssh-key}}
+{{page>workshop:sicherheit:ssh-copy-id}}
+{{page>snippets:ssh_config}}
+{{page>snippets:ssh_motd}}
+
+

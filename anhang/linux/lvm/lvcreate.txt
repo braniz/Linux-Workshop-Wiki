@@ -1,0 +1,61 @@
+====== lvcreate – Erstellen eines Logischen Volumes ======
+(2025)
+
+Der Befehl **lvcreate** wird verwendet, um ein neues logisches Volume (LV) in einer bestehenden Volume Group (VG) zu erstellen. Dies ermöglicht die Verwaltung und Verwendung von Speicherplatz innerhalb einer Volume Group.
+
+===== Syntax =====
+<code>
+lvcreate [Optionen] -n <Name> -L <Größe> <VolumeGroup>
+</code>
+
+**Wichtige Optionen:**
+
+^ Option ^ Beschreibung ^
+| **-n <Name>**       | Gibt den Namen des zu erstellenden logischen Volumes an. |
+| **-L <Größe>**      | Legt die Größe des neuen logischen Volumes fest (z. B. 10G für 10 Gigabyte). |
+| **-l <Anzahl>**     | Gibt die Anzahl der physikalischen Extents an, die für das logische Volume verwendet werden (z. B. 100%FREE, um den gesamten freien Speicher zu verwenden). |
+| **--size <Größe>**  | Eine alternative Möglichkeit zur Festlegung der Größe (z. B. 1T für 1 Terabyte). |
+| **-i <Anzahl>**     | Legt die Anzahl der Stripe-Einheiten für ein Volume mit Striping fest. |
+| **--name <Name>**   | Gibt einen benutzerdefinierten Namen für das logische Volume an. |
+| **-d**              | Erstellt ein volles Snapshot-Volume (nur verfügbar, wenn die VG dies unterstützt). |
+
+-----
+
+===== Beispiele =====
+
+  *  **Erstelle ein logisches Volume mit 10 GB in der Volume Group "vg01"**  
+<code>
+sudo lvcreate -n mylv -L 10G vg01
+</code>
+
+  *  **Erstelle ein logisches Volume, das den gesamten freien Speicher in der Volume Group verwendet**  
+<code>
+sudo lvcreate -n mylv -l 100%FREE vg01
+</code>
+
+  *  **Erstelle ein logisches Volume mit 1 TB Speicher und 4 Stripe-Einheiten**  
+<code>
+sudo lvcreate -n mylv -L 1T -i 4 vg01
+</code>
+
+-----
+
+===== Hinweis =====
+  *  Das logische Volume wird in der angegebenen Volume Group erstellt. Stelle sicher, dass genug freier Speicherplatz vorhanden ist.
+  *  Um die Verwendung des erstellten logischen Volumes zu formatieren und zu mounten, muss es mit einem Dateisystem versehen und dann gemountet werden.
+
+-----
+
+===== Alternativen =====
+  *  `lvextend` – Erweiterung eines bestehenden logischen Volumes.
+  *  `lvremove` – Entfernen eines logischen Volumes.
+
+-----
+
+===== Weitere Informationen =====
+Für detaillierte Informationen siehe die Man-Page:  
+<code>
+man lvcreate
+</code>
+
+Weitere Dokumentation findest du unter [[https://man7.org/linux/man-pages/man8/lvcreate.8.html|lvcreate Man-Page]].

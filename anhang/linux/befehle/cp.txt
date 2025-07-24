@@ -1,0 +1,61 @@
+====== cp - Dateien und Verzeichnisse kopieren ======
+(2025)
+
+Der Befehl **cp** wird verwendet, um Dateien und Verzeichnisse in Linux und Unix-ähnlichen Systemen zu kopieren. Es bietet viele Optionen, um den Kopiervorgang zu steuern, wie das Erhalten von Berechtigungen, das Kopieren von Verzeichnissen und das Verhindern von Überschreibungen.
+
+===== Syntax =====
+  cp [Optionen] Quelle Ziel
+
+----
+
+===== Wichtige Optionen =====
+^ Option ^ Beschreibung ^
+| -r, --recursive  | Kopiert Verzeichnisse rekursiv, d.h. auch alle darin enthaltenen Dateien und Unterverzeichnisse. |
+| -i, --interactive | Fordert eine Bestätigung an, bevor eine Datei überschrieben wird. |
+| -u, --update     | Kopiert nur Dateien, die neuer sind als die Ziel-Dateien oder wenn die Ziel-Datei nicht existiert. |
+| -v, --verbose    | Zeigt eine detaillierte Ausgabe während des Kopiervorgangs an. |
+| -f, --force      | Erzwingt das Überschreiben von schreibgeschützten Dateien ohne Rückfrage. |
+| -a, --archive    | Kopiert Dateien und Verzeichnisse rekursiv und behält die meisten Dateiattribute wie Berechtigungen, Zeitstempel und Symbolische Links bei. |
+| -p, --preserve=MODE | Bewahrt die Datei-Modi, Eigentümer und Zeitstempel beim Kopieren. |
+
+----
+
+===== Beispiel =====
+  *  Eine einzelne Datei kopieren:
+<code>
+cp file1.txt file2.txt
+</code>
+
+  *  Ein Verzeichnis rekursiv kopieren:
+<code>
+cp -r /source_dir /destination_dir
+</code>
+
+  *  Dateien mit einer Bestätigung vor dem Überschreiben kopieren:
+<code>
+cp -i file1.txt file2.txt
+</code>
+
+  *  Alle Dateien aus einem Verzeichnis in ein anderes Verzeichnis kopieren:
+<code>
+cp /source_dir/* /destination_dir/
+</code>
+
+  *  Detaillierte Ausgabe während des Kopierens anzeigen:
+<code>
+cp -v file1.txt file2.txt
+</code>
+
+----
+
+===== Hinweis =====
+  *  Der Befehl **cp** überschreibt standardmäßig die Ziel-Datei, wenn sie bereits existiert, es sei denn, es wird die Option `-i` (interaktiv) verwendet.
+  *  Wenn Sie ein Verzeichnis kopieren möchten, müssen Sie die Option `-r` verwenden, um alle darin enthaltenen Dateien und Unterverzeichnisse zu kopieren.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **cp**:
+<code>
+man cp
+</code>

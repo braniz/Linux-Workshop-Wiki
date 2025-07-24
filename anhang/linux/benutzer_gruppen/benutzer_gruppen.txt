@@ -1,0 +1,75 @@
+====== 00 Benutzer und Gruppen Verwaltung ======
+(2025)
+
+Effektive Verwaltung von Benutzern und Gruppen ist essenziell für Sicherheit und Zugriffskontrolle in Linux-Systemen. Dieser Artikel erklärt die grundlegenden Tools zur Erstellung, Modifikation und Organisation von Konten.
+
+===== Syntax =====
+Grundlegende Befehle und Konfigurationsdateien:
+<code>
+useradd [Optionen] Benutzer   # Benutzerkonto erstellen
+usermod [Optionen] Benutzer   # Benutzerkonto ändern
+passwd [Benutzer]             # Passwort setzen/ändern
+groupadd [Optionen] Gruppe    # Gruppe erstellen
+/etc/passwd                   # Benutzerkonfiguration
+/etc/group                    # Gruppenkonfiguration
+</code>
+
+===== Wichtige Optionen =====
+^ Befehl    ^ Option        ^ Beschreibung                            ^
+| useradd   | -m            | Erstellt Home-Verzeichnis (/home/)      |
+|           | -s /bin/bash  | Standard-Shell festlegen                |
+|           | -g 1001       | Primäre Gruppe zuweisen                 |
+|           | -G wheel      | Sekundäre Gruppen hinzufügen            |
+| groupadd  | -r            | Systemgruppe erstellen (GID < 1000)     |
+| usermod   | -aG           | Benutzer zu Gruppe hinzufügen (append)  |
+| passwd    | -l            | Benutzerkonto sperren                   |
+
+===== Beispiele =====
+Benutzer mit Home-Verzeichnis erstellen:
+<code>
+useradd -m -s /bin/bash alice
+passwd alice  # Passwort vergeben
+</code>
+
+Benutzer zur Gruppe "sudo" hinzufügen:
+<code>
+usermod -aG sudo alice
+</code>
+
+Systemgruppe für Docker erstellen:
+<code>
+groupadd -r docker
+</code>
+
+Dateiberechtigungen für Gruppe setzen:
+<code>
+chown :developers /opt/code
+chmod 770 /opt/code
+</code>
+
+===== Hinweis =====
+  * **UID/GID nicht willkürlich ändern**: Kann Dateibesitzer-Bezüge brechen
+  * Systembenutzer (UID < 1000) nicht ohne Grund löschen – werden oft von Diensten genutzt
+  * Immer `usermod -aG` statt nur `-G` verwenden, um bestehende Gruppen nicht zu überschreiben
+  * Regelmäßig /etc/passwd und /etc/group sichern
+  * Für Multi-User-Systeme **quota**-Tools zur Speicherkontingentierung nutzen
+
+===== Alternativen =====
+  * **adduser** (Debian) – Interaktives Frontend für useradd
+  * **Cockpit** – Web-basierte Administrationsoberfläche
+  * **LDAP/FreeIPA** – Zentrale Benutzerverwaltung für Netzwerke
+  * **Ansible** – Automatisierte Benutzerkonfiguration per Playbook
+  * **Webmin** – Legacy-Webinterface für Systemadministration
+
+===== Weitere Informationen =====
+Offizielle Man-Pages:
+<code>
+man useradd
+man groupadd
+man 5 passwd
+</code>
+
+Praktische Guides:
+  * [[https://wiki.archlinux.org/title/Users_and_groups|Arch Linux Benutzerverwaltung]]
+  * [[https://ubuntu.com/server/docs/security-users|Ubuntu User Management Guide]]
+  * [[https://www.redhat.com/sysadmin/linux-user-group-management|Red Hat User/Group Deep Dive]]

@@ -1,0 +1,68 @@
+====== SystemD - Init-System und Dienst-Manager ======
+(2025)
+
+**SystemD** ist ein Init-System und Dienst-Manager für Linux. Es wird verwendet, um das System zu starten, Dienste zu verwalten und die gesamte Systemumgebung zu kontrollieren. SystemD ist in vielen modernen Linux-Distributionen standardmäßig integriert und übernimmt die Verwaltung von Diensten, Systemprozessen und der Systemstart-Sequenz.
+
+===== Syntax =====
+<code bash>
+systemd [Optionen] [Befehl] [Dienst]
+</code>
+
+===== Wichtige Optionen =====
+^ Option             ^ Beschreibung                                                    ^
+| `--help`           | Zeigt Hilfe-Informationen zu den verfügbaren Optionen und Befehlen.|
+| `--version`        | Gibt die aktuelle Version von SystemD aus.                         |
+| `--quiet`          | Reduziert die Ausgaben von SystemD auf das Minimum.                 |
+| `--no-pager`       | Verhindert die Verwendung eines Pagers (z.B. `less`) für die Ausgabe.|
+| `--user`           | Führt SystemD-Kommandos für den aktuellen Benutzer aus (anstatt systemweit). |
+
+===== Wichtige SystemD-Kommandos =====
+
+^ SystemD Verwaltungskommandos ^ Beschreibung                                       ^ **Optionale Parameter** ^
+| //[[anhang:cli:systemd:systemd|systemd]]// | Init-System und Dienstmanager für Linux | `--system`, `--user` |
+
+^ System- und Hardware-Informationen ^ ^ ^
+| //[[anhang:cli:systemd:hostnamectl|hostnamectl]]// | Abfrage und Konfiguration des Hostnamens | `set-hostname`, `status` |
+| //[[anhang:cli:systemd:localectl|localectl]]//     | Verwaltung von Sprache und Tastaturbelegung | `status`, `set-locale` |
+| //[[anhang:cli:systemd:timedatectl|timedatectl]]// | Zeitzonen- und Zeitdienstverwaltung | `status`, `set-timezone` |
+
+^ Dienst- und Prozessverwaltung ^ ^ ^
+| //[[anhang:cli:systemd:systemctl|systemctl]]//     | Steuerung von systemd-Units | `start`, `stop`, `restart`, `status` |
+| //[[anhang:cli:systemd:unit|unit]]//              | Verwaltung von systemd-Units | `start`, `stop`, `restart`, `status` |
+| //[[anhang:cli:systemd:systemd-run|systemd-run]]// | Starten von Prozessen mit systemd | `--scope`, `--user` |
+
+^ Systemüberwachung und Analyse ^ ^ ^
+| //[[anhang:cli:systemd:journalctl|journalctl]]//   | Abfrage und Verwaltung des Systemprotokolls | `-f`, `--since`, `--unit` |
+| //[[anhang:cli:systemd:systemd-analyze|systemd-analyze]]// | Analyse des Systemstarts | `blame`, `critical-chain` |
+| //[[anhang:cli:systemd:systemd-cgtop|systemd-cgtop]]// | Anzeige der CPU-, Speicher- und E/A-Nutzung | `--depth`, `--iterations` |
+| //[[anhang:cli:systemd:systemd-cgls|systemd-cgls]]// | Anzeige der Steuergruppenhierarchie | `--all`, `--depth` |
+
+^ Benutzer- und Sitzungsverwaltung ^ ^ ^
+| //[[anhang:cli:systemd:loginctl|loginctl]]//       | Verwaltung von Benutzeranmeldungen | `list-sessions`, `show-session` |
+| //[[anhang:cli:systemd:machinectl|machinectl]]//   | Verwaltung von virtuellen Maschinen und Containern | `list`, `shell` |
+
+^ Container- und Dateisystemverwaltung ^ ^ ^
+| //[[anhang:cli:systemd:systemd-nspawn|systemd-nspawn]]// | Starten von Containern | `--directory`, `--boot` |
+| //[[anhang:cli:systemd:systemd-tmpfiles|systemd-tmpfiles]]// | Verwaltung temporärer Dateien | `--create`, `--clean` |
+| //[[anhang:cli:systemd:systemd-mount|systemd-mount]]// | Dynamische Mount-Verwaltung | `--no-block`, `--automount` |
+
+^ Weitere Werkzeuge ^ ^ ^
+| //[[anhang:cli:systemd:busctl|busctl]]//           | Kommunikation mit dem D-Bus-System | `list`, `monitor` |
+| //[[anhang:cli:systemd:systemd-ask-password|systemd-ask-password]]// | Abfrage von Passwörtern über systemd | `--timeout`, `--no-output` |
+| //[[anhang:cli:systemd:systemd-inhibit|systemd-inhibit]]// | Verhindern von Systemaktionen | `--what`, `--who` |
+| //[[anhang:cli:systemd:systemd-container|systemd-container]]// | Verwaltung von systemd-Containern | `--machine`, `--network-veth` |
+| //[[anhang:cli:systemd:systemd-delta|systemd-delta]]// | Vergleich geänderter Konfigurationsdateien | `--type`, `--no-pager` |
+| //[[anhang:cli:systemd:systemd-notify|systemd-notify]]// | Kommunikation mit systemd-Diensten | `--ready`, `--status` |
+| //[[anhang:cli:systemd:systemd-resolve|systemd-resolve]]// | Verwaltung der Namensauflösung | `--status`, `--flush-caches` |
+| //[[anhang:cli:systemd:systemd-socket-activate|systemd-socket-activate]]// | Testen und Starten von Diensten über Sockets | `--listen`, `--port` |
+
+===== Zusammenfassung =====
+  * **SystemD** ist ein leistungsfähiges und flexibles Init-System, das die Verwaltung von Systemdiensten und Prozessen übernimmt.
+  * Mit **systemctl** können alle wichtigen Operationen an Diensten und Prozessen ausgeführt werden.
+  * **journalctl** ermöglicht das Durchsuchen und Überwachen der System-Logs, die von SystemD verwaltet werden.
+  * **SystemD** ist für moderne Linux-Distributionen der Standard, um die Startsequenz und Systemprozesse zu steuern.
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen zu SystemD und seinen Komponenten:
+<code bash>
+man systemd
+</code>

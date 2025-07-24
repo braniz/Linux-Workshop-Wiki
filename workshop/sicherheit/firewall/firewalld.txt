@@ -1,0 +1,59 @@
+====== firewalld - Verwaltung von Firewalls in Linux ======
+(2025.02)
+
+**firewalld** ist ein Firewall-Management-Tool für Linux, das die Verwaltung von Netzwerksicherheitsrichtlinien vereinfacht. Es verwendet Zonen, um Netzwerkverbindungen zu definieren, und ermöglicht die dynamische Anpassung der Firewall-Konfiguration zur Laufzeit. **firewalld** ist in vielen modernen Linux-Distributionen als Standardlösung integriert.
+
+===== Syntax =====
+<code bash>
+firewall-cmd [Optionen] [Befehl] [Argumente]
+</code>
+
+===== Wichtige Optionen =====
+^ Option         ^ Beschreibung                                                ^
+| `--zone`       | Gibt die Zone an, für die die Regel gelten soll.              |
+| `--add-port`   | Fügt einen Port zur Firewall-Regel hinzu.                     |
+| `--remove-port`| Entfernt einen Port aus der Firewall-Regel.                    |
+| `--permanent`  | Wendet die Änderungen dauerhaft an (ohne Neustart verloren).  |
+| `--reload`     | Lädt die Firewall-Konfiguration neu.                          |
+| `--list-all`   | Zeigt alle aktuellen Regeln und Einstellungen an.             |
+
+===== Beispiele =====
+**Aktive Zonen anzeigen:**
+<code bash>
+firewall-cmd --get-active-zones
+</code>
+Zeigt die aktuell aktiven Zonen der Firewall an.
+
+**Port für die aktuelle Sitzung öffnen:**
+<code bash>
+firewall-cmd --zone=public --add-port=80/tcp
+</code>
+Öffnet den Port 80 für TCP-Verbindungen in der Zone `public`.
+
+**Port dauerhaft öffnen:**
+<code bash>
+firewall-cmd --zone=public --add-port=443/tcp --permanent
+</code>
+Öffnet den Port 443 für TCP-Verbindungen in der Zone `public` dauerhaft.
+
+**Änderungen übernehmen:**
+<code bash>
+firewall-cmd --reload
+</code>
+Lädt die aktuellen Firewall-Regeln neu.
+
+**Alle Regeln anzeigen:**
+<code bash>
+firewall-cmd --list-all
+</code>
+Zeigt alle aktuellen Konfigurationen und aktiven Regeln der Firewall an.
+
+===== Hinweis =====
+- **firewalld** verwendet Zonen, um die Vertrauenswürdigkeit von Verbindungen zu definieren. Zonen können für bestimmte Netzwerkschnittstellen oder IP-Adressen konfiguriert werden.
+- Um sicherzustellen, dass die Änderungen dauerhaft bleiben, muss der `--permanent`-Parameter verwendet werden, andernfalls gelten die Änderungen nur für die aktuelle Sitzung.
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen:
+<code bash>
+man firewall-cmd
+</code>

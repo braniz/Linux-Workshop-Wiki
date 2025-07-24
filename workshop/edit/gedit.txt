@@ -1,0 +1,79 @@
+====== gedit - Texteditor für GNOME ======
+(2025)
+
+**gedit** ist der Standard-Texteditor für die GNOME-Desktopumgebung. Es ist ein benutzerfreundlicher Editor, der für einfache Textbearbeitung gedacht ist, aber auch durch Erweiterungen und Plugins erweitert werden kann. gedit eignet sich gut für die Bearbeitung von Textdateien, Quellcode und Konfigurationsdateien.
+
+===== Syntax =====
+<code bash>
+gedit [Optionen] [Datei]
+</code>
+
+----
+
+===== Wichtige Optionen =====
+^ Option ^ Beschreibung ^
+| `--new-window`     | Öffnet gedit in einem neuen Fenster. |
+| `--wait`           | Wartet, bis das gedit-Fenster geschlossen wurde, bevor die Shell fortfährt. |
+| `--background`     | Startet gedit im Hintergrund, ohne das Fenster sofort anzuzeigen. |
+| `--preferences`    | Öffnet das Fenster für die gedit-Einstellungen. |
+| `--help`           | Zeigt eine Hilfe mit den verfügbaren Optionen an. |
+
+----
+
+===== Beispiele =====
+**Eine Datei mit gedit öffnen:**
+<code bash>
+gedit dateiname
+</code>
+Öffnet die angegebene Datei in gedit. Wenn die Datei nicht existiert, wird sie neu erstellt.
+
+**Ein neues gedit-Fenster öffnen:**
+<code bash>
+gedit --new-window
+</code>
+Öffnet gedit in einem neuen Fenster, unabhängig von anderen offenen Instanzen.
+
+**Auf die Datei warten, bevor die Shell fortfährt:**
+<code bash>
+gedit --wait dateiname
+</code>
+Öffnet die Datei und wartet darauf, dass gedit geschlossen wird, bevor die Shell fortfährt.
+
+**Einstellungen von gedit öffnen:**
+<code bash>
+gedit --preferences
+</code>
+Öffnet das Fenster für die gedit-Einstellungen, in dem man das Verhalten des Editors anpassen kann.
+
+----
+
+===== Wichtige Funktionen =====
+^ Funktion ^ Beschreibung ^
+| Syntaxhervorhebung | Hervorhebung von Programmcode in verschiedenen Sprachen (z.B. Python, HTML, C). |
+| Plugins            | Erweiterungen, die zusätzliche Funktionen wie Formatierung, Rechtschreibprüfung und mehr hinzufügen. |
+| Automatische Speicherung | gedit speichert Änderungen automatisch, wenn die Datei noch nicht gespeichert wurde. |
+| Mehrere Fenster    | Unterstützt das Öffnen mehrerer Dateien in verschiedenen Fenstern. |
+| Such- und Ersetz-Funktion | Ermöglicht das Suchen und Ersetzen von Text innerhalb der geöffneten Datei. |
+
+----
+
+===== Hinweis =====
+  * **gedit** ist besonders für Benutzer geeignet, die eine einfache und benutzerfreundliche Textbearbeitung benötigen. Es bietet alle grundlegenden Funktionen, die für die Arbeit mit Textdateien erforderlich sind, und lässt sich leicht durch Plugins erweitern.
+  * gedit kann direkt über das GNOME-Menü oder durch das Kommando `gedit` in der Konsole geöffnet werden.
+
+----
+
+===== Alternativen =====
+  * **Nano**: Ein einfacher Texteditor für die Kommandozeile, der für Anfänger geeignet ist.
+  * **Vim**: Ein leistungsstarker Texteditor mit umfangreichen Funktionen für fortgeschrittene Benutzer.
+  * **Emacs**: Ein weiterer leistungsstarker und anpassbarer Texteditor mit einer steilen Lernkurve.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen:
+<code bash>
+man gedit
+</code>
+
+

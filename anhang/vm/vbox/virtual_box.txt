@@ -1,0 +1,64 @@
+~~NOTOC~~
+(2025.02)
+====== Virtual Box ======
+
+===== Eine Schritt für Schritt ToDo ======
+
+  * ”Neu” auswählen
+  * ”Name” Vergeben
+  * ”Ornder der virtuellen Maschine” lassen wie es ist 4. ”Typ” Linux
+  * ”Version” Ubuntu(64-bit)
+  * ”Speichergröße” Minimum 2048MB
+  * ”CPU” 1-2
+  * ”Festplatte erzeugen” 100GB Virtuelle HDD
+  * ”Erzeugen”
+  * Datentyp der Festplatte ”VDI (VirtualBox Disk Image)” 11. Weiter
+  * Art der Speicherung ”dynamisch alloziert”
+  * ”Dateipfad” lassen wie es ist
+  * ”Dateigröße” 100GB
+  * ”Fertigstellen”
+  * ”Massenspeicher”
+  * ”Controller:IDE - leer”
+  * ”Optisches Laufwerk” ISO des Linux auswählen ”Netzwerk”
+  * ”Angeschlosse an:” Netzwerkbrücke
+  * ”Anzeige” Grafikspeicher 64MB
+  * ”Anzeige” Grafik-Controller: VMSVGA->VBoxVGA nach der Installation wieder umstellen auf VMSVGA
+  * Installation Starten
+
+----
+
+**VBox Manage**
+
+{{:workshop:vbox:vbox-01.png?600|}}
+
+
+----
+
+**VBox - Allgemein**
+
+{{:workshop:vbox:vbox_einstellungen.png?600|}}
+
+----
+
+**VBox Eerweiterungen**
+
+{{:workshop:vbox:vbox_extension.png?600|}}
+
+----
+
+**VBox DatenTräger**
+
+{{:workshop:vbox:vbox_daten.png?600|}}
+
+----
+
+**VBox Netzwerk**
+
+{{:workshop:vbox:vbox_netzwerk.png?600|}}
+
+----
+
+**Snapshots**
+
+{{:workshop:vbox:vboxsnapshot.png?600|}}
+

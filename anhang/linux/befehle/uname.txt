@@ -1,0 +1,76 @@
+====== uname - Systeminformationen anzeigen ======
+(2025)
+
+Der Befehl **uname** wird in Linux verwendet, um grundlegende Systeminformationen wie den Namen des Betriebssystems, die Kernel-Version und die Architektur des Systems abzurufen. Dieser Befehl ist hilfreich, um mehr über die Systemumgebung zu erfahren, insbesondere über die verwendete Kernel-Version und die Architektur des Rechners.
+
+===== Syntax =====
+<code bash>
+uname [OPTION]...
+</code>
+
+-----
+
+===== Wichtige Optionen =====
+Der Befehl **uname** bietet verschiedene Optionen, um spezifische Systeminformationen zu erhalten. Die wichtigsten Optionen sind:
+
+^ Option ^ Beschreibung ^
+| `-s`             | Gibt den Kernel-Namen des Systems aus. |
+| `-n`             | Zeigt den Hostnamen des Systems an. |
+| `-r`             | Zeigt die Version des Kernels an. |
+| `-v`             | Gibt die Versionsnummer des Kernels aus. |
+| `-m`             | Zeigt die Maschinenarchitektur des Systems an (z.B. x86_64). |
+| `-p`             | Gibt den Prozessor-Typ aus (nicht immer verfügbar). |
+| `-i`             | Zeigt die Plattform des Systems an (nicht immer verfügbar). |
+| `-o`             | Gibt das Betriebssystem aus. |
+| `-a`             | Zeigt alle verfügbaren Informationen in einer einzigen Ausgabe an. |
+
+-----
+
+===== Beispiele =====
+Hier sind einige Beispiele zur Verwendung von `uname`:
+
+- **Kernel-Name anzeigen**:
+<code>
+uname -s
+</code>
+Dieser Befehl gibt den Namen des Kernels des Systems aus (z.B. `Linux`).
+
+- **Hostname des Systems anzeigen**:
+<code>
+uname -n
+</code>
+Dieser Befehl zeigt den Hostnamen des Systems an (z.B. `localhost`).
+
+- **Kernel-Version anzeigen**:
+<code>
+uname -r
+</code>
+Zeigt die genaue Version des laufenden Kernels an (z.B. `5.10.0-8-amd64`).
+
+- **Architektur des Systems anzeigen**:
+<code>
+uname -m
+</code>
+Gibt die Architektur des Systems aus (z.B. `x86_64` für ein 64-Bit-System).
+
+- **Alle Informationen anzeigen**:
+<code>
+uname -a
+</code>
+Dieser Befehl zeigt alle verfügbaren Systeminformationen an, wie Kernel-Name, Hostname, Kernel-Version, Maschinenarchitektur, Prozessor, Plattform und Betriebssystem.
+
+-----
+
+===== Hinweis =====
+- Der Befehl `uname -a` ist besonders nützlich, da er eine umfassende Übersicht über das System in einer einzigen Ausgabe bietet.
+- Einige Optionen wie `-p` und `-i` sind möglicherweise auf bestimmten Systemen nicht verfügbar, da sie nicht immer ausgefüllt sind.
+
+-----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über den Befehl `uname` und alle verfügbaren Optionen:
+<code bash>
+man uname
+</code>
+
+Für weitere Informationen zu verschiedenen Unix-Kommandos findest du die [[https://man7.org/linux/man-pages/|Linux Man-Pages]].

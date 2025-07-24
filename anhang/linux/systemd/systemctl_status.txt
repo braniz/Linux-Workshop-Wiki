@@ -1,0 +1,89 @@
+====== systemctl status ======
+(2025)
+
+Das Kommando `systemctl status` ist eines der wichtigsten Werkzeuge in systemd zur Überwachung und Verwaltung von Systemdiensten. Es zeigt den aktuellen Status eines bestimmten Dienstes oder einer anderen systemd-Einheit an. Mit diesem Befehl kannst du schnell herausfinden, ob ein Dienst läuft, ob es Fehler gibt oder wie der Dienst derzeit arbeitet.
+
+===== Syntax =====
+<code>systemctl status <dienstname></code>
+
+- `<dienstname>`: Der Name des Dienstes, dessen Status du abfragen möchtest (z. B. `nginx.service`, `apache2.service`, `sshd.service`).
+
+===== Wichtige Optionen =====
+^Option ^Beschreibung ^
+| `-l` | Zeigt die vollständigen Protokolle und Statusmeldungen an, anstatt sie zu kürzen. |
+| `--no-pager` | Verhindert die Verwendung eines Pagers wie `less` und zeigt die Ausgabe direkt im Terminal an. |
+| `-n <Anzahl>` | Zeigt nur die letzten `<Anzahl>` Zeilen der Log-Ausgabe an. Standardmäßig werden nur die letzten 10 Zeilen angezeigt. |
+
+===== Beispiele =====
+* Überprüfe den Status des `nginx`-Dienstes:
+<code>
+systemctl status nginx
+</code>
+**Möglicher Output:**
+<code>
+● nginx.service - The nginx web server
+   Loaded: loaded (/etc/systemd/system/nginx.service; enabled; vendor preset: enabled)
+   Active: active (running) since Wed 2025-03-02 14:32:19 UTC; 1h 30min ago
+     Docs: man:nginx(8)
+ Main PID: 12345 (nginx)
+    Tasks: 3 (limit: 4915)
+   Memory: 10.5M
+   CGroup: /system.slice/nginx.service
+           ├─12345 nginx: master process /usr/sbin/nginx
+           ├─12346 nginx: worker process
+           └─12347 nginx: worker process
+
+Mar 02 14:32:19 server systemd[1]: Started The nginx web server.
+</code>
+
+* Überprüfe den Status des `sshd`-Dienstes und zeige alle verfügbaren Logs:
+<code>
+systemctl status sshd -l
+</code>
+**Möglicher Output:**
+<code>
+● sshd.service - OpenSSH server daemon
+   Loaded: loaded (/etc/systemd/system/sshd.service; enabled; vendor preset: enabled)
+   Active: active (running) since Wed 2025-03-02 14:32:19 UTC; 1h 30min ago
+     Docs: man:sshd(8)
+ Main PID: 12350 (sshd)
+    Tasks: 1 (limit: 4915)
+   Memory: 3.5M
+   CGroup: /system.slice/sshd.service
+           └─12350 /usr/sbin/sshd -D
+
+Mar 02 14:32:19 server systemd[1]: Started OpenSSH server daemon.
+</code>
+
+* Überprüfe den Status des `apache2`-Dienstes und zeige nur die letzten 5 Logeinträge:
+<code>
+systemctl status apache2 -n 5
+</code>
+**Möglicher Output:**
+<code>
+● apache2.service - The Apache HTTP Server
+   Loaded: loaded (/etc/systemd/system/apache2.service; enabled; vendor preset: enabled)
+   Active: failed (Result: exit-code) since Wed 2025-03-02 14:32:19 UTC; 1h 30min ago
+     Docs: man:apache2(8)
+  Process: 12355 ExecStart=/usr/sbin/apache2 -k start (code=exited, status=1/FAILURE)
+ Main PID: 12355 (code=exited, status=1/FAILURE)
+
+Mar 02 14:32:19 server systemd[1]: apache2.service: Main process exited, code=exited, status=1/FAILURE
+Mar 02 14:32:19 server systemd[1]: Failed to start The Apache HTTP Server.
+</code>
+
+===== Hinweis =====
+  * Wenn der Dienst nicht läuft, zeigt `systemctl status` detaillierte Informationen zum letzten Fehler oder Absturz an.
+  * Ein grüner Hinweis bedeutet, dass der Dienst aktiv ist, während ein rotes "Failed" anzeigt, dass der Dienst nicht ordnungsgemäß läuft.
+  * Es wird auch angezeigt, wie lange der Dienst läuft und ob er beim Systemstart aktiviert ist.
+  * 
+===== Alternativen =====
+  * `journalctl`: Du kannst auch `journalctl -u <dienstname>` verwenden, um die Protokolle eines bestimmten Dienstes anzusehen, was detailliertere Informationen bietet, besonders bei Abstürzen oder Fehlern.
+  * `ps aux`: Dies ist ein anderes Kommando, um die aktuell laufenden Prozesse anzuzeigen, aber es bietet keine so spezifischen Details wie `systemctl status`.
+  * 
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen:
+
+<code>man systemctl</code>
+
+Weitere Informationen und Dokumentation zu systemctl findest du auf [[https://www.freedesktop.org/wiki/Software/systemd/|Freedesktop.org systemd]].

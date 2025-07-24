@@ -1,0 +1,63 @@
+====== Virtual Box Netzwerk ======
+(2025.02)
+
+Netzwerk Kombinationen bei VirtualBox.
+
+^  Netzwerktyp                       ^ Gast -> andere Gäste ^ Host -> Gast ^ Gast -> externes Netzwerk ^
+| nicht Angeschlossen                | -  | -  | -  |
+|  Network Address Translation (NAT) | -  | -  | ok |
+| NAT-Netzwerk                       | ok | -  | ok |
+| Bridged networking                 | ok | ok | ok |
+| Internal networking                | ok | -  | -  |
+| Host-only networking               | ok | ok | -  |
+
+**nicht Angeschlossen** In diesem Modus sieht das Gastsystem eine Netzwerkkarte, bei der das (virtuelle) Netzwerkkabel abgesteckt ist.
+
+**NAT** Network Address Translation (NAT) ist die einfachste Möglichkeit aus dem Gastsystem heraus auf externe Netze zuzugreifen. Ein Zugriff von außen in das Gastsystem hinein (z.B. auf einem im Gastsystem installierten Webserver) ist nicht möglich.
+
+**NAT-Netzwerk** Network Address Translation Service 5 ist eine neue NAT Variante, die mit VirtualBox 4.3 neu eingeführt wurde (experimentell).
+
+**Netzwerkbrücke** In diesem Modus bekommt das Gastsystem direkten Zugriff auf das Netzwerk, an dem auch das Host-System angeschlossen ist.
+
+**Internes Netzwerk** Bei der Konfiguration eines internen Netzwerks können nur Gastsysteme, die an das gleiche interne Netzwerk angeschlossen werden, miteinander kommunizieren. Eine Kommunikation mit dem Host System oder anderen Netzen außerhalb von VirtualBox ist nicht möglich.
+
+**Host-only** Adapter In diesem Modus ist eine Kommunikation zwischen angeschlossenen Gastsystemen und dem Host-System möglich.
+
+
+----
+
+{{:workshop:vbox:network-manager-1.png?600|}}
+
+----
+
+{{:workshop:vbox:network-manager-2.png?600|}}
+
+----
+
+{{:workshop:vbox:network-manager-3.png?600|}}
+
+----
+
+
+{{:workshop:vbox:network-manager-4.png?600|}}
+
+----
+
+
+{{:workshop:vbox:network-manager-5.png?600|}}
+
+----
+
+
+{{:workshop:vbox:network-manager-6.png?600|}}
+
+----
+
+
+{{:workshop:vbox:network-manager-7.png?600|}}
+
+
+
+
+
+

@@ -1,0 +1,83 @@
+====== Linux-Dateisystembaum ======
+(2025)
+
+Das Linux-Dateisystem folgt einer hierarchischen Struktur, die als **Filesystem Hierarchy Standard (FHS)** definiert ist. Dieses standardisierte Layout erleichtert die Organisation von System-, Benutzer- und Anwendungsdaten.
+
+===== Verzeichnisstruktur =====
+
+Die folgende Tabelle gibt einen Überblick über die wichtigsten Verzeichnisse im Linux-Dateisystem:
+
+^ Verzeichnis                     ^ Beschreibung                                                                                       ^
+| `/`                             | Wurzel des Dateisystems, von der alle anderen Verzeichnisse ausgehen.                              |
+| `/bin/`                         | Wichtige Systemprogramme und ausführbare Dateien, die für den Betrieb des Systems notwendig sind.  |
+| `/boot/`                        | Startdateien des Systems, einschließlich des Kernels und des Bootloaders.                          |
+| `/dev/`                         | Gerätedateien für Hardware (z. B. Festplatten, USB-Geräte, Terminals).                             |
+| `/etc/`                         | Systemweite Konfigurationsdateien und Skripte.                                                     |
+| `/home/`                        | Persönliche Daten und Einstellungen der Benutzer.                                                  |
+| `/lib/`                         | Wichtige Systembibliotheken, die für die Ausführung von Programmen erforderlich sind.              |
+| `/mnt/`                         | Temporäre Einhängepunkte für externe oder manuell gemountete Dateisysteme.                         |
+| `/opt/`                         | Zusatzsoftware, die nicht zur Standardinstallation gehört.                                         |
+| `//[[anhang:cli:proc|proc]]//`  | Virtuelles Dateisystem für Kernel- und Prozessinformationen.                                       |
+| `/root/`                        | Heimatverzeichnis des Superusers (Root).                                                           |
+| `/run/`                         | Temporäre Laufzeitdaten, die nach einem Neustart verloren gehen.                                   |
+| `/sbin/`                        | Systemadministrative Programme, die meist nur Root ausführen kann.                                 |
+| `/srv/`                         | Daten für Dienste wie Web- oder FTP-Server.                                                        |
+| `/sys/`                         | Virtuelles Dateisystem mit Kernel- und Hardware-Informationen.                                     |
+| `/tmp/`                         | Temporäre Dateien, die von Programmen während der Laufzeit erstellt werden.                        |
+| `/usr/`                         | Benutzerprogramme, Bibliotheken und Dokumentationen.                                               |
+| `/var/`                         | Variable Daten wie Logs, Spool-Dateien oder zwischengespeicherte Daten.                            |
+
+----
+
+===== Wichtige Unterverzeichnisse =====
+
+Die folgende Tabelle beschreibt einige wichtige Unterverzeichnisse in `/usr/` und `/var/`:
+
+^ Verzeichnis          ^ Beschreibung                                      ^
+| `/usr/bin/`         | Programme für alle Benutzer. |
+| `/usr/sbin/`        | Administrative Programme für Root. |
+| `/usr/lib/`         | Bibliotheken für installierte Programme. |
+| `/usr/local/`       | Programme, die nicht über die Paketverwaltung installiert wurden. |
+| `/var/log/`         | Log-Dateien des Systems und der Dienste. |
+| `/var/spool/`       | Warteschlangen für Druckaufträge und andere Spool-Dienste. |
+
+----
+
+===== Beispiele =====
+
+**Liste der wichtigsten Verzeichnisse anzeigen:**
+<code bash>
+ls /
+</code>
+
+**Größe der einzelnen Verzeichnisse prüfen:**
+<code bash>
+du -sh /*
+</code>
+
+**Aktive Geräte im `/dev/`-Verzeichnis anzeigen:**
+<code bash>
+ls /dev/
+</code>
+
+----
+
+===== Hinweis =====
+  * Die **Verzeichnisstruktur** variiert je nach Linux-Distribution leicht.
+  * Änderungen an **systemkritischen Verzeichnissen** wie `/etc/`, `/bin/` oder `/lib/` sollten mit Vorsicht vorgenommen werden.
+  * Programme und Daten von Drittanbietern sollten idealerweise in `/opt/` oder `/usr/local/` installiert werden.
+
+----
+
+===== Alternativen =====
+Einige alternative Systeme nutzen abweichende Strukturen, z. B.:
+- **macOS** verwendet ein ähnliches UNIX-Dateisystem mit zusätzlichen Verzeichnissen wie `/System/`.
+- **BSD-Systeme** haben oft `/usr/local/` als Hauptverzeichnis für Software.
+
+----
+
+===== Weitere Informationen =====
+Mehr Details zur Verzeichnisstruktur sind in der Man-Page zu finden:
+<code bash>
+man hier
+</code>

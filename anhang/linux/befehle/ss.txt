@@ -1,0 +1,67 @@
+====== ss - Socket Statistiken anzeigen ======
+(2025)
+
+Das Kommando **ss** wird verwendet, um Socket-Verbindungen und deren Status anzuzeigen. Es bietet eine detaillierte Ansicht von Netzwerksockets und ist eine schnellere und flexiblere Alternative zu **netstat**.
+
+===== Syntax =====
+<code>
+ss [OPTIONEN] [FILTER]
+</code>
+
+----
+
+===== Wichtige Optionen =====
+Die wichtigsten Optionen und Argumente für **ss** sind:
+
+^ Option ^ Beschreibung ^
+| `-t`               | Zeigt nur TCP-Verbindungen an. |
+| `-u`               | Zeigt nur UDP-Verbindungen an. |
+| `-l`               | Zeigt nur Sockets, die auf Verbindungen warten (Listening). |
+| `-p`               | Zeigt die Prozesse an, die die Sockets verwenden. |
+| `-a`               | Zeigt alle Sockets an, sowohl verbundene als auch wartende. |
+| `-n`               | Zeigt IP-Adressen und Portnummern numerisch an, anstatt sie aufzulösen. |
+| `-r`               | Zeigt Routing-Informationen für die Sockets an. |
+
+----
+
+===== Beispiele =====
+Hier sind einige Beispiele für die Verwendung von **ss**:
+
+  *  Zeigt alle TCP-Verbindungen an:
+<code>
+ss -t
+</code>
+
+  *  Zeigt alle offenen UDP-Verbindungen an:
+<code>
+ss -u
+</code>
+
+  *  Zeigt alle wartenden (Listening) Sockets an:
+<code>
+ss -l
+</code>
+
+  *  Zeigt alle Verbindungen an, einschließlich der Prozesse, die sie verwenden:
+<code>
+ss -p
+</code>
+
+  *  Zeigt alle Sockets an, aber ohne die Auflösung von Hostnamen:
+<code>
+ss -n
+</code>
+
+----
+
+===== Hinweis =====
+  *  **ss** bietet eine schnellere und detailliertere Ausgabe als **netstat** und ist standardmäßig auf den meisten modernen Linux-Systemen verfügbar.
+  *  Um **ss** zu verwenden, sind in der Regel keine Administratorrechte erforderlich, aber um alle Sockets und die zugehörigen Prozesse zu sehen, müssen Sie möglicherweise **sudo** verwenden.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **ss**:
+<code>
+man ss
+</code>

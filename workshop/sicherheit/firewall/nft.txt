@@ -1,0 +1,78 @@
+====== nftables - Verwaltung von Firewalls in Linux ======
+(2025.02)
+
+**nftables** ist ein Framework zur Verwaltung von Netzwerkfilter-Regeln unter Linux, das **iptables** ersetzt und eine flexiblere und leistungsstärkere Lösung bietet. Es ermöglicht die Verwaltung von Firewall-Regeln, die Steuerung von Netzwerkpaketen und die Definition von Regeln für NAT, Filtering und Mangle. **nftables** ist die neue Firewall-Lösung, die ab Linux 3.13 eingeführt wurde und die Vorteile von **iptables** vereint, dabei aber die Komplexität reduziert.
+
+===== Syntax =====
+<code bash>
+nft [Optionen] [Befehl] [Tabelle] [Kette] [Aktion] [Bedingungen] [Ziel]
+</code>
+
+===== Wichtige Optionen =====
+^ Option               ^ Beschreibung                                              ^
+| `-f`                  | Lädt die Regeln aus einer Datei.                          |
+| `-a`                  | Zeigt die Regelnummern an.                                |
+| `-v`                  | Gibt detaillierte Ausgaben.                               |
+| `list`                | Listet die bestehenden Regeln und Konfigurationen auf.    |
+| `add`                 | Fügt eine Regel hinzu.                                    |
+| `delete`              | Löscht eine Regel.                                        |
+| `flush`               | Löscht alle Regeln einer Tabelle.                         |
+| `reset`               | Setzt eine Tabelle auf den Anfangszustand zurück.         |
+| `insert`              | Fügt eine Regel an einer bestimmten Position hinzu.       |
+| `replace`             | Ersetzt eine bestehende Regel.                            |
+
+===== Verzeichnisse =====
+^ Verzeichnis                          ^ Beschreibung                                                                 ^
+| `/etc/nftables/`                      | Hauptverzeichnis für die **nftables**-Konfiguration.                          |
+| `/etc/nftables.conf`                  | Konfigurationsdatei, in der die **nftables**-Regeln gespeichert sind.         |
+| `/usr/sbin/nft`                       | Hauptprogramm zur Verwaltung der **nftables**-Firewall.                       |
+| `/var/lib/nftables/`                  | Verzeichnis für temporäre Daten, die von **nftables** verwendet werden.        |
+| `/etc/sysconfig/nftables`             | Konfigurationsdatei für die **nftables**-Firewall bei älteren Systemen.       |
+| `/var/log/nftables.log`               | Log-Datei für Protokolle, die durch **nftables** generiert werden.            |
+
+===== Beispiele =====
+**Aktuelle Konfiguration anzeigen:**
+<code bash>
+nft list ruleset
+</code>
+Zeigt die gesamte Konfiguration und alle Regeln von **nftables** an.
+
+**Regel hinzufügen, um den eingehenden SSH-Verkehr zu erlauben:**
+<code bash>
+nft add rule inet filter input tcp dport ssh accept
+</code>
+Erlaubt eingehenden TCP-Verkehr auf Port 22 (SSH) in der Tabelle `filter`, Kette `input`.
+
+**Regel hinzufügen, um den eingehenden HTTP-Verkehr zu erlauben:**
+<code bash>
+nft add rule inet filter input tcp dport http accept
+</code>
+Erlaubt eingehenden TCP-Verkehr auf Port 80 (HTTP) in der Tabelle `filter`, Kette `input`.
+
+**Alle Regeln einer Tabelle löschen:**
+<code bash>
+nft flush ruleset
+</code>
+Löscht alle Regeln aus der aktuellen **nftables**-Konfiguration.
+
+**Tabelle zurücksetzen:**
+<code bash>
+nft reset table inet filter
+</code>
+Setzt die Tabelle `filter` zurück.
+
+**Regel zum Blockieren des Zugriffs einer bestimmten IP hinzufügen:**
+<code bash>
+nft add rule inet filter input ip saddr 192.168.1.100 drop
+</code>
+Blockiert den eingehenden Verkehr von der IP-Adresse `192.168.1.100` in der Tabelle `filter`, Kette `input`.
+
+**Regel zum Zulassen von Verbindungen von einer bestimmten IP hinzufügen:**
+<code bash>
+nft add rule inet filter input ip saddr 192.168.1.100 accept
+</code>
+Erlaubt den eingehenden Verkehr von der IP-Adresse `192.168.1.100` in der Tabelle `filter`, Kette `input`.
+
+===== Hinweis =====
+- **nftables** verwendet Tabellen, Ketten und Regeln, um den Netzwerkverkehr zu steuern. Die häufigsten Tabellen sind `filter` (für das Filtering von Paketen), `nat` (für Network Address Translation) und `mangle` (für die Modifikation von Paketen).
+- **nftables** ermöglicht die V

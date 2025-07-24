@@ -1,0 +1,87 @@
+====== systemctl - Systemd-Dienste verwalten ======
+(2025)
+
+Das Kommando **systemctl** ist das zentrale Steuerungstool für **systemd**, das System- und Dienst-Manager unter Linux. Mit **systemctl** können Dienste gestartet, gestoppt, neu geladen oder neu gestartet werden. Außerdem können Sie den Status von Diensten abfragen, die Systemd-Units verwalten und die Systeminitialisierung konfigurieren.
+
+===== Syntax =====
+<code>
+systemctl [OPTIONEN] <Befehl> [Dienstname]
+</code>
+
+----
+
+===== Wichtige Optionen =====
+Die häufig verwendeten Optionen für **systemctl** sind:
+
+^ Option        ^ Beschreibung                                                                                 ^
+| --status      | Zeigt den Status eines Systems oder eines Dienstes an.                                       |
+| --start       | Startet einen Dienst.                                                                        |
+| --stop        | Stoppt einen Dienst.                                                                         |
+| --restart     | Startet einen Dienst neu.                                                                    |
+| --reload      | Lädt die Konfiguration eines Dienstes neu.                                                   |
+| --enable      | Aktiviert einen Dienst, damit er beim Systemstart automatisch gestartet wird.                |
+| --disable     | Deaktiviert einen Dienst, sodass er nicht mehr automatisch beim Systemstart gestartet wird.  |
+| --is-active   | Überprüft, ob ein Dienst aktiv ist.                                                          |
+| --is-enabled  | Überprüft, ob ein Dienst für den automatischen Start beim Systemstart aktiviert ist.         |
+| --list-units  | Zeigt eine Liste aller geladenen Units an.                                                   |
+
+----
+
+===== Beispiele =====
+Einige Beispiele für die Verwendung von **systemctl**:
+
+  *  Startet den Dienst `nginx`:
+<code>
+systemctl start nginx
+</code>
+
+  *  Stoppt den Dienst `nginx`:
+<code>
+systemctl stop nginx
+</code>
+
+  *  Startet den Dienst `nginx` neu:
+<code>
+systemctl restart nginx
+</code>
+
+  *  Überprüft den Status des Dienstes `nginx`:
+<code>
+systemctl status nginx
+</code>
+
+  *  Aktiviert den Dienst `nginx`, sodass er beim Systemstart automatisch gestartet wird:
+<code>
+systemctl enable nginx
+</code>
+
+  *  Deaktiviert den Dienst `nginx`, sodass er beim Systemstart nicht mehr gestartet wird:
+<code>
+systemctl disable nginx
+</code>
+
+  *  Überprüft, ob der Dienst `nginx` aktiv ist:
+<code>
+systemctl is-active nginx
+</code>
+
+  *  Zeigt alle aktiven Dienste im System an:
+<code>
+systemctl list-units --type=service
+</code>
+
+----
+
+===== Hinweis =====
+  *  **systemctl** erfordert häufig Administratorrechte, insbesondere zum Starten, Stoppen und Aktivieren von Diensten. Verwenden Sie gegebenenfalls `sudo`.
+  *  Achten Sie darauf, dass das Beenden oder Deaktivieren von Systemdiensten Auswirkungen auf die Systemstabilität haben kann. Vergewissern Sie sich, dass Sie die Auswirkungen eines Befehls kennen, bevor Sie ihn ausführen.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **systemctl**:
+<code>
+man systemctl
+</code>
+
+Weitere Informationen zu **systemd** und seinen Optionen finden Sie in der offiziellen Dokumentation: [[https://www.freedesktop.org/wiki/Software/systemd/|Systemd Wiki]]

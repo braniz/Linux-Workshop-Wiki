@@ -1,0 +1,128 @@
+====== 00 Backup und Wiederherstellung in Linux ======
+(2025) | //Strategien und Tools für Datensicherung & Disaster Recovery//
+
+Ein durchdachtes Backup-Konzept ist die letzte Verteidigungslinie gegen Datenverlust. Dieser Artikel erklärt Methoden, Tools und Best Practices für zuverlässige Sicherungen und effiziente Wiederherstellung.
+
+===== Grundkonzepte =====
+^ Backup-Typ            ^ Beschreibung                                         ^
+| **Vollsicherung**     | Komplette Kopie aller Daten (hoher Speicherbedarf)  |
+| **Inkrementell**      | Sichert nur Änderungen seit letztem Backup          |
+| **Differenziell**     | Sichert alle Änderungen seit letzter Vollsicherung  |
+| **Snapshot**          | Punkt-in-Zeit-Kopie (z.B. LVM/Btrfs)               |
+| **Offsite-Backup**    | Externe Speicherung (Cloud, Band, entferntes NAS)  |
+
+===== Wichtige Tools =====
+**Lokale Sicherungen**:
+- **rsync**            # Delta-Kopien mit Hardlinks (`--link-dest`)
+- **tar**              # Archivierung mit Kompression (gzip, xz)
+- **dd**               # Low-Level-Datenträgerkopie (für ganze Partitionen)
+- **BorgBackup**       # Deduplizierte, verschlüsselte Backups
+
+**Cloud/Remote**:
+- **Rclone**           # Synchronisation zu 40+ Cloud-Diensten
+- **Duplicati**        # Client mit Web-UI und AES-256-Verschlüsselung
+- **Bacula**           # Enterprise-Lösung mit zentraler Verwaltung
+
+**Snapshot-Tools**:
+- **LVM-Snapshots**    # COW-Snapshots für Blockgeräte
+- **Btrfs/ZFS**        # Dateisystem-native Snapshots
+- **Timeshift**        # Benutzerfreundliche Systemwiederherstellung
+
+===== Praxisbeispiele =====
+**1. Inkrementelles Backup mit rsync**:
+<code>
+rsync -a --delete --link-dest=/backup/last_full /data/ /backup/$(date +%F)
+ln -snf /backup/$(date +%F) /backup/last_full
+</code>
+
+**2. Verschlüsseltes Archiv erstellen**:
+<code>
+tar czvpf - /home | openssl enc -aes-256-cbc -out backup_$(date +%F).tar.gz.enc
+# Wiederherstellung:
+openssl enc -d -aes-256-cbc -in backup.tar.gz.enc | tar xzvf -
+</code>
+
+**3. BorgBackup-Setup**:
+<code>
+borg init --encryption=repokey /backup/repo  # Repository erstellen
+borg create --stats --progress /backup/repo::'{hostname}-{now}' /data
+borg list /backup/repo                       # Backups anzeigen
+borg extract /backup/repo::backup-name       # Daten extrahieren
+</code>
+
+**4. LVM-Snapshot für sichere Updates**:
+<code>
+lvcreate -L 10G -s -n db_snapshot /dev/vg00/db_volume
+# Nach Update-Test:
+lvconvert --merge /dev/vg00/db_snapshot      # Snapshot zurückspielen
+</code>
+
+===== Wiederherstellungsszenarien =====
+**Dateiebene**:
+<code>
+# Aus rsync-Backup:
+cp -a /backup/2024-01-01/document.pdf /home/user/
+
+# Aus Borg-Archiv:
+borg mount /backup/repo::backup-name /mnt/backup
+</code>
+
+**Systemwiederherstellung**:
+  - **Boot-Live-USB** → Partitionen neu formatieren → Backup einspielen
+  - **Timeshift** → System-Snapshot über GRUB-Menü auswählen
+
+**Datenbank-Recovery** (MySQL/MariaDB):
+<code>
+mysqlcheck --repair --all-databases
+zcat backup.sql.gz | mysql -u root -p
+</code>
+
+===== Sicherheitshinweise =====
+  * **3-2-1-Regel**: 
+    - 3 Kopien, 2 Medien, 1 extern
+  * **Verschlüsselung**: 
+    - Immer für Offsite-Backups (Borg/Rclone mit AES)
+    - GPG für Archivdateien
+  * **Integritätsprüfung**: 
+  - SHA256-Checksums nach dem Backup
+  - Regelmäßige Test-Wiederherstellungen
+  * **Zugriffskontrolle**:
+   - Backups mit `chmod 600` schützen
+   - Separate Backup-Benutzerkonten
+
+===== Automatisierung =====
+**Cron-Job für nächtliche Backups**:
+<code>
+0 2 * * * /usr/bin/borg create --stats /backup/repo::'{hostname}-{now}' /data
+</code>
+
+**Systemd-Timer** (/etc/systemd/system/backup.service):
+<code>
+[Unit]
+Description=Nightly Backup
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/borg create --stats /backup/repo::auto-$(date +%%F) /data
+</code>
+
+**Überwachung**:
+<code>
+# Letztes Backup-Datum prüfen
+find /backup -name "*.tar" -mtime +3 -exec echo "ALERT: Stale backup" \;
+</code>
+
+===== Alternativen =====
+^ Lösung               ^ Einsatzgebiet                     ^
+| **Restic**          # Modernes dedupliziertes Backup     |
+| **Kopia**           # Client-Server-Architektur mit Caching |
+| **Proxmox Backup**  # VM/Container-Sicherungen           |
+| **UrBackup**        # Cross-Platform mit Web-Interface   |
+| **Veeam**           # Enterprise-Lösung für Linux/Windows |
+
+===== Weiterführende Links =====
+  * [[https://borgbackup.readthedocs.io|BorgBackup Dokumentation]]
+  * [[https://rsync.samba.org|Rsync Offizielle Website]]
+  * [[https://wiki.archlinux.org/title/System_backup|Arch Linux Backup Guide]]
+  * [[https://www.cgsecurity.org/wiki/TestDisk|TestDisk (Datenrettung)]]
+  * [[https://ubuntu.com/server/docs/backups|Ubuntu Server Backup Guide]]

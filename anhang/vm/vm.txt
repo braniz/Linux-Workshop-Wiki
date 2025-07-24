@@ -1,0 +1,12 @@
+~~NOTOC~~
+~~NOCACHE~~ 
+
+<WRAP centeralign center round box 80%> 
+====== Virtualisirung ======
+</WRAP>
+
+<WRAP center round box 80%> 
+{{page>anhang:vm:vbox:vbox}}
+
+{{page>anhang:vm:lxd:lxd}}
+</WRAP>

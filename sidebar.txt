@@ -1,0 +1,19 @@
+<WRAP round box>
+
+{{indexmenu>:#1| js#thread navbar tsort nsort notoc
+  skipfile=/sidebar|info:impressum|info:quellen|global_template|linux:*|8020:*|vm:*/ 
+  skipns=/linux:|8020:|vm:/}}
+
+----
+
+</WRAP>
+
+----
+
+<WRAP round box>
+
+[[info:quellen|Quellen]]
+
+[[info:impressum|Impressum]]
+
+</WRAP>

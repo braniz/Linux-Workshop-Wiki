@@ -1,0 +1,19 @@
+====== Firewall ======
+(2025.02)
+
+Firewalls sind essenzielle Sicherheitskomponenten, die den ein- und ausgehenden Datenverkehr in einem Netzwerk regulieren. Sie schützen Systeme vor unerlaubten Zugriffen und Angriffen, indem sie Regeln zur Kontrolle des Datenflusses anwenden.
+
+Es gibt verschiedene Arten von Firewalls, die je nach Anwendungsfall auf Software oder Hardware basieren. Während einige Firewalls speziell für Unternehmensnetzwerke entwickelt wurden, sind andere für den persönlichen Gebrauch optimiert.
+
+Die folgende Tabelle gibt einen Überblick über bekannte Firewalls, ihre Typen und unterstützten Plattformen:
+
+^ Firewall         ^ Typ      ^ Distributionen            ^ Wrapper? (Basis)      ^ Beschreibung                                ^
+| iptables    | Stateful | Alle Linux-Distributionen | Nein                | Klassische Linux-Firewall, direkt über Netfilter steuerbar. |
+| nftables    | Stateful | Alle Linux-Distributionen | Nein                | Nachfolger von iptables, moderner und leistungsfähiger. |
+| UFW         | Stateful | Ubuntu, Debian, andere    | Ja (iptables)       | Benutzerfreundliches Frontend für iptables, häufig in Ubuntu. |
+| Firewalld   | Stateful | Fedora, RHEL, CentOS, openSUSE | Ja (nftables/iptables) | Dynamische Firewall, nutzt nftables (ab RHEL 8) oder iptables. |
+| fail2ban    | Stateful | Alle Linux-Distributionen | Ja (iptables/nftables) | Blockiert IPs nach zu vielen fehlerhaften Anmeldeversuchen. |
+| Shorewall   | Stateful | Debian, Ubuntu, andere    | Ja (iptables)       | Wrapper für iptables, erleichtert Regelverwaltung. |
+| CSF         | Stateful | Ubuntu, CentOS, Debian    | Ja (iptables)       | Sicherheitsorientierte Firewall für Webserver, inkl. Login-Überwachung. |
+| ipfw        | Stateful | FreeBSD, macOS            | Nein                | Eigene Firewall für FreeBSD/macOS, nicht primär für Linux. |
+| nft         | Stateful | Arch, Fedora, andere      | Nein                | Direkte Konfigurationsschnittstelle für nftables. |

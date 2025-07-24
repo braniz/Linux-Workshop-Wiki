@@ -1,0 +1,137 @@
+====== 00 Linux-Sicherheit, Berechtigungen & Monitoring ======
+(2025)
+
+===== Grundkonzepte =====
+^ Sicherheitsschicht             ^ Beschreibung                                         ^
+| **Benutzer/Gruppen**           | Basis-Isolation durch POSIX-Konten                   |
+| **Dateiberechtigungen**         | rwx-System für Dateien/Verzeichnisse                 |
+| **ACLs**                        | Erweiterte Zugriffsregeln pro Datei                   |
+| **SELinux/AppArmor**            | Mandatory Access Control (MAC) für Prozesse          |
+| **Systemd Journal**             | Zentralisiertes Logging mit Metadaten               |
+| **Firewall/Netzwerkfilter**     | UFW/iptables/nftables für Netzwerkzugriffskontrolle |
+
+===== Benutzerverwaltung =====
+<code>
+# Benutzer mit eingeschränkten Rechten erstellen
+useradd -m -s /bin/bash -G developers,sudo alice
+passwd alice  # Passwort setzen
+chage -M 90 alice  # Passwortablauf nach 90 Tagen
+
+# Sudo-Rechte granular vergeben
+visudo  # → "alice ALL=(webadmin) NOPASSWD: /usr/bin/systemctl restart nginx"
+</code>
+
+**Sicherheits-Check**:
+<code>
+awk -F: '(\$2 == "" )' /etc/shadow  # Leere Passwörter finden
+sudo -l                             # Verfügbare Sudo-Rechte anzeigen
+</code>
+
+===== Dateisystem-Sicherheit =====
+**Klassische Berechtigungen**:
+<code>
+chmod 750 /opt/sensitive_data           # rwxr-x---
+chown root:admins /opt/backup           # Besitzübertragung
+find / -perm -4000 -type f 2>/dev/null  # SUID-Dateien finden
+</code>
+
+**ACL-Beispiel**:
+<code>
+setfacl -m u:auditor:r-x /var/log/sensitive
+setfacl -d -m g:backup:r-X /archive  # Vererbungsregel
+getfacl /etc/nginx/ssl  # Gespeicherte Regeln prüfen
+</code>
+
+===== Prozessisolierung & MAC =====
+**SELinux Grundlagen**:
+<code>
+sestatus  # Status prüfen
+chcon -t httpd_sys_content_t /webcontent     # Kontext setzen
+setsebool -P httpd_can_network_connect_db 1  # Boolean anpassen
+ausearch -m AVC -ts today                    # SELinux-Denials analysieren
+</code>
+
+**Sandboxing mit Firejail**:
+<code>
+firejail --net=none --private /opt/untrusted_app
+ps aux | grep firejail  # Aktive Sandboxes anzeigen
+</code>
+
+===== Monitoring & Logging =====
+**Live-Überwachung**:
+<code>
+htop  # Ressourcennutzung
+iftop -i eth0  # Netzwerkverkehr
+journalctl -f -u sshd  # SSH-Logs verfolgen
+</code>
+
+**Automatisierte Log-Analyse**:
+<code>
+# Fehlgeschlagene SSH-Logins pro IP zählen
+grep "Failed password" /var/log/auth.log | awk '{print \$11}' | sort | uniq -c
+
+# Speichernutzung der Log-Partition
+df -h /var/log | awk '{print \$5}' | grep -oE '[0-9]+%'
+</code>
+
+**Logrotation** (/etc/logrotate.d/custom):
+<code>
+/var/log/app/*.log {
+  daily
+  rotate 14
+  compress
+  delaycompress
+  missingok
+  create 640 root adm
+}
+</code>
+
+===== Netzwerksicherheit =====
+**UFW Firewall**:
+<code>
+ufw allow proto tcp from 192.168.1.0/24 to any port 22
+ufw limit 80/tcp  # Bruteforce-Schutz
+ufw enable
+</code>
+
+**SSH-Härtung** (/etc/ssh/sshd_config):
+<code>
+PermitRootLogin no
+PasswordAuthentication no
+AllowUsers alice@192.168.1.*
+X11Forwarding no
+</code>
+
+===== Sicherheitsaudit =====
+**Automatisierte Checks**:
+<code>
+# Weltweit schreibbare Dateien finden
+find / -xdev -perm -0002 -type f -exec ls -l {} \;
+
+# Ungewöhnliche SUID/SGID-Dateien
+find / -xdev \( -perm -4000 -o -perm -2000 \) -type f -ls
+</code>
+
+**Integritätsprüfung**:
+<code>
+# Datei-Hashes für kritische Binärdateien
+sha256sum /bin/* /usr/bin/* /sbin/* > /root/bin_hashes.txt
+
+# Vergleich bei Verdacht
+sha256sum -c /root/bin_hashes.txt 2>/dev/null | grep FAILED
+</code>
+
+===== Enterprise-Tools =====
+^ Tool              ^ Zweck                                ^
+| **Auditd**        | Kernel-Level-Überwachung              |
+| **Prometheus**    | Metrik-Sammler mit Alertmanager      |
+| **Osquery**       | SQL-basierte Systemabfragen           |
+| **Wazuh**         | SIEM mit EDR-Funktionen               |
+| **Lynis**         | Automatisierte Security Audits        |
+
+===== Weiterführende Links =====
+  * [[https://wiki.archlinux.org/title/Security|Arch Linux Security Guide]]
+  * [[https://linux-audit.com/|Linux Audit & Hardening Blog]]
+  * [[https://www.sshaudit.com/hardening_guides.html|SSH Server Hardening]]
+  * [[https://github.com/trimstray/sandmap|Sandmap – System Hardening Tool]]
+  * [[https://www.cisecurity.org/cis-benchmarks/|CIS Benchmarks for Linux]]

@@ -1,0 +1,111 @@
+===== 01 - Nextcloud Installation =====
+(2025.02)
+
+Getestet mit **Ubuntu 2404 LTS**
+
+<WRAP center round info 60%>
+
+  GUI User/Passwörter:
+    Anmelden: Admin
+    Passwort: Start1234
+
+    Datenbankkonto:     nc_user
+    Datenbank-Passwort: nc_pass
+    Datenbank-Name:     nextcloud
+    Datenbank-Host:     localhost
+
+</WRAP>
+
+
+==== Vorbereiten ====
+
+**System Update**
+<code>
+apt update && apt upgrade
+</code>
+
+**Benötigte Pakete**
+<code>
+apt install -y apache2  mariadb-server openssl php wget curl zip unzip
+</code>
+
+^ Paket ^ Funktion ^
+| apache2 | Apache Hypertext Transfer Protocol Server |
+| mariadb-server | the MariaDB command-line tool |
+| openssl | OpenSSL command line tool |
+| php | PHP Command Line Interface ‚CLI‘ |
+| wget | The non-interactive network downloader |
+| curl | tool for transferring data from or to a server |
+| zip | package and compress (archive) files |
+| unzip | list, test and extract compressed files in a ZIP archive |
+
+=== MaiaDB Einrichten ===
+<code>
+Switch to unix_socket authentication [Y/n]             - Y Auswählen
+Change the root password? [Y/n]                        - Y Auswählen (PW merken)
+Remove anonymous users? [Y/n]                          - Y Auswählen
+Disallow root login remotely? [Y/n]                    - Y Auswählen
+Remove test database and access to it? [Y/n]           - Y Auswählen
+Reload privilege tables now? [Y/n]                     - Y Auswählen
+</code>
+
+**DB für die Nextcloud Einrichten**
+
+Es wird eine MySQL Datenbank für die Nextcloud Eingerichtet.\\
+Datenbank Name: nextcloud\\
+DB_User: nc_user\\
+Passwort von nc_user: nc_pass
+
+<code>
+root@nc:~# mysql
+
+MariaDB [(none)]> create database nextcloud; 
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [(none)]> create user 'nc_user'@'localhost' identified by 'nc_pass';
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [(none)]> grant all privileges on nextcloud.* to 'nc_user'@'localhost' identified by 'nc_pass';
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [(none)]> flush privileges;
+Query OK, 0 rows affected (0.001 sec)
+
+MariaDB [(none)]> exit;
+Bye
+root@nc:~#
+</code>
+
+**Testen**
+<code>
+root@nc:~# mysql -u nc_user -p
+Enter password:
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| nextcloud          |
++--------------------+
+2 rows in set (0.001 sec)
+
+MariaDB [(none)]> exit;
+</code>
+
+
+
+==== Nextcloud Installairen ====
+
+Download URL der Aktuellen Version https://nextcloud.com/de/install/#instructions-server
+
+Login auf den eigenen Server
+
+<code>
+cd /var/www/html/
+root@nc:# wget https://download.nextcloud.com/server/releases/latest.zip (kann unter Umständen auch ein wenig anders heißen.)
+root@nc:# unzip latest.zip
+root@nc:# chown -R www-data:www-data nextcloud/
+</code>
+
+Weiter in der GUI [[aufgaben:nextcloud:fehler|]]

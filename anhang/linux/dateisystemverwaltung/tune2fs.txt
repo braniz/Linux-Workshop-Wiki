@@ -1,0 +1,113 @@
+====== tune2fs – Attribute eines ext2/ext3/ext4-Dateisystems anpassen ======
+(2025)
+
+`tune2fs` ist ein Kommandozeilenwerkzeug zur Änderung der Parameter eines ext2-, ext3- oder ext4-Dateisystems. Es erlaubt das Anpassen von Journaling-Optionen, reservierten Blöcken und weiteren Dateisystemeigenschaften, ohne das Dateisystem neu formatieren zu müssen.
+
+===== Syntax =====
+
+^ Befehl ^ Beschreibung ^
+| //tune2fs [Optionen] <Gerät>// | Ändert die Eigenschaften des angegebenen Dateisystems. |
+
+-----
+
+===== Wichtige Optionen =====
+
+^ Option ^ Beschreibung ^
+| `-l`            | Zeigt die aktuellen Einstellungen des Dateisystems an. |
+| `-m <Prozent>`  | Setzt den Anteil reservierter Blöcke für Root (Standard: 5%). |
+| `-L <Label>`    | Ändert das Label des Dateisystems. |
+| `-O <Feature>`  | Aktiviert oder deaktiviert bestimmte Dateisystem-Features. |
+| `-c <Anzahl>`   | Setzt die maximale Anzahl von Einhängungen, bevor `fsck` erzwungen wird. |
+| `-i <Zeit>`     | Legt fest, in welchen Abständen `fsck` automatisch durchgeführt wird. |
+| `-e <Verhalten>`| Bestimmt das Verhalten des Dateisystems bei einem Fehler (z.B. `continue`, `remount-ro`, `panic`). |
+| `-r <Blöcke>`   | Legt die Anzahl der für Root reservierten Blöcke explizit fest. |
+
+-----
+
+===== Anzeige der Dateisystemparameter =====
+Um die aktuellen Parameter eines ext4-Dateisystems anzuzeigen, verwende:
+
+<code>
+sudo tune2fs -l /dev/sda1
+</code>
+
+Dies gibt eine Liste aller Dateisystemoptionen und -einstellungen aus.
+
+-----
+
+===== Ändern des Dateisystem-Labels =====
+Um das Label eines Dateisystems zu ändern, nutze:
+
+<code>
+sudo tune2fs -L "NeuesLabel" /dev/sda1
+</code>
+
+Nach dem Ändern kann das neue Label mit `lsblk -f` überprüft werden.
+
+-----
+
+===== Reservierten Speicherplatz ändern =====
+Standardmäßig reserviert ext4 5% des Speicherplatzes für den Root-Benutzer. Dies kann auf 2% reduziert werden:
+
+<code>
+sudo tune2fs -m 2 /dev/sda1
+</code>
+
+Alternativ kann die Anzahl der reservierten Blöcke direkt festgelegt werden:
+
+<code>
+sudo tune2fs -r 10000 /dev/sda1
+</code>
+
+-----
+
+===== Automatische Dateisystemprüfung steuern =====
+Die Anzahl der Einhängungen, nach denen eine Überprüfung (`fsck`) erzwungen wird, kann geändert werden:
+
+<code>
+sudo tune2fs -c 30 /dev/sda1
+</code>
+
+Dies erzwingt `fsck` nach 30 Einhängungen. Zum Deaktivieren:
+
+<code>
+sudo tune2fs -c 0 /dev/sda1
+</code>
+
+-----
+
+===== Maximale Zeit zwischen `fsck`-Prüfungen setzen =====
+Um sicherzustellen, dass ein Dateisystem regelmäßig überprüft wird, kann eine maximale Zeitspanne festgelegt werden:
+
+<code>
+sudo tune2fs -i 30d /dev/sda1
+</code>
+
+Dies erzwingt `fsck` alle 30 Tage.
+
+-----
+
+===== Verhalten bei Fehlern festlegen =====
+Falls ein ext4-Dateisystem Fehler feststellt, kann das Verhalten mit `tune2fs` geändert werden:
+
+<code>
+sudo tune2fs -e remount-ro /dev/sda1
+</code>
+
+Mögliche Werte für `-e`:
+  * `continue` – Fehler ignorieren und fortfahren.
+  * `remount-ro` – Dateisystem auf nur-lesbar setzen.
+  * `panic` – Systemabsturz auslösen.
+
+-----
+
+===== Hinweise =====
+  * Änderungen mit `tune2fs` werden sofort übernommen und erfordern kein erneutes Formatieren.
+  * Einige Optionen, wie das Aktivieren neuer Features, können ein nicht eingehängtes Dateisystem erfordern.
+  * Eine fehlerhafte Konfiguration kann zu Datenverlust führen. Stelle sicher, dass du ein Backup hast, bevor du Änderungen vornimmst.
+
+===== Weitere Informationen =====
+Für detaillierte Informationen kannst du die Man-Page aufrufen:
+<code>
+man tune2fs
+</code>

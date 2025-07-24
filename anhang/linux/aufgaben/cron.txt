@@ -1,0 +1,80 @@
+====== cron - Zeitgesteuerte Aufgabenverwaltung ======
+(2025)
+
+**cron** ist ein Dienst, der auf Unix-ähnlichen Systemen verwendet wird, um zeitgesteuerte Aufgaben (auch Cronjobs genannt) auszuführen. Mit **cron** können wiederkehrende Aufgaben wie das Sichern von Dateien, das Ausführen von Systemwartungsaufgaben oder das Versenden von E-Mails zu festgelegten Zeiten automatisiert werden.
+
+===== Syntax =====
+  cron
+
+----
+
+===== Wichtige Optionen =====
+Es gibt zwei Hauptarten, mit denen **cron** Aufgaben definiert werden: die Systemweite **crontab** und die Benutzerbezogene **crontab**.
+
+^ Option ^ Beschreibung ^
+| -e            | Öffnet den Crontab-Editor, um Aufgaben zu bearbeiten oder hinzuzufügen. |
+| -l            | Listet die aktuellen Cronjobs des Benutzers auf. |
+| -r            | Entfernt die Crontab-Datei des Benutzers. |
+| -i            | Bestätigt das Löschen der Crontab-Datei (Interaktiv). |
+
+----
+
+===== Crontab-Dateiformat =====
+Die Crontab-Datei ist eine Textdatei, in der die zeitgesteuerten Aufgaben definiert werden. Jede Zeile repräsentiert eine Aufgabe und folgt diesem Format:
+
+<code>
+*     *     *     *     *  Befehl der ausgeführt werden soll
+-     -     -     -     -
+|     |     |     |     |
+|     |     |     |     +----- Wochentag (0 - 7) (Sonntag ist 0 und 7; oder Namen, siehe unten)
+|     |     |     +------- Monat (1 - 12)
+|     |     +--------- Tag (1 - 31)
+|     +----------- Stunde (0 - 23)
++------------- Minute (0 - 59; oder Namen, siehe unten)
+</code>
+
+^ Platzhalter ^ Beschreibung ^
+| * (Minuten)   | Gibt die Minute an, in der der Befehl ausgeführt werden soll (0–59). |
+| * (Stunden)   | Gibt die Stunde an, in der der Befehl ausgeführt werden soll (0–23). |
+| * (Tag)       | Gibt den Tag des Monats an, an dem der Befehl ausgeführt werden soll (1–31). |
+| * (Monat)     | Gibt den Monat an, in dem der Befehl ausgeführt werden soll (1–12). |
+| * (Wochentag) | Gibt den Wochentag an, an dem der Befehl ausgeführt werden soll (0–6, wobei 0 für Sonntag steht). |
+
+Zum Beispiel bedeutet die Zeile:
+<code>
+30 2 * * 1 /path/to/script.sh
+</code>
+dass das Skript **script.sh** jeden Montag um 2:30 Uhr ausgeführt wird.
+
+----
+
+===== Beispiele =====
+  *  Cronjob für tägliche Sicherung um 3:00 Uhr:
+<code>
+0 3 * * * /usr/bin/backup.sh
+</code>
+
+  *  Cronjob für monatliche Bereinigung am ersten Tag des Monats:
+<code>
+0 0 1 * * /usr/bin/cleanup.sh
+</code>
+
+  *  Cronjob für wöchentliche Systemwartung am Sonntag um 4:00 Uhr:
+<code>
+0 4 * * 0 /usr/bin/system_maintenance.sh
+</code>
+
+----
+
+===== Hinweis =====
+  *  Die Crontab-Datei muss korrekt formatiert sein, andernfalls wird der Cronjob nicht ausgeführt. Es empfiehlt sich, den Befehl `crontab -l` zu verwenden, um zu überprüfen, ob die Cronjobs wie erwartet eingerichtet sind.
+  *  Der **cron**-Dienst muss aktiv sein, damit Cronjobs ausgeführt werden können. Überprüfe den Status mit `systemctl status cron`.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **cron** und **crontab**:
+<code>
+man cron
+man crontab
+</code>

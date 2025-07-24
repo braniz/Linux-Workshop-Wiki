@@ -1,0 +1,40 @@
+====== Server Einrichten ======
+(2025.02)
+
+===== Info =====
+
+<code>
+Server IP 192.168.178.112
+UserName = user01
+Passwort = Start123
+
+DNS IP  - 192.168.178.1
+Gateway - 192.168.178.1
+</code>
+
+==== Aufgabe ====
+
+Importiren der OVA von Ubuntu Server in die VirtualBox
+1 zusätzliche HDD in der VirtualBox dem Server bereitstellen
+
+  * Netzwerk von DHCP auf Statische IP Umstellen
+
+  * Apache Webserver auf dem System installieren
+
+  * HDD1 normal Formatieren und unter /mnt/<NameFrei> mounten
+  * Reboot fest einrichten
+
+----
+
+  * Benutzer Erstellen (Name frei wählbar)
+  * User in die Sudo Gruppe aufnehmen
+  * SSH-Key für den Benutzer Erstellen
+  * Denn neuen User auf Server IP 192.168.178.112 erstellen
+  * Pbulic Key auf Server IP 192.168.178.112 kopieren
+
+
+
+Bitte auf dem Server IP 192.168.178.110 unter /tmp/ eine Datei mit euerem Namen ablegen
+
+
+

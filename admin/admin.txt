@@ -1,0 +1,27 @@
+~~NOTOC~~
+
+<WRAP center centeralign round box 60%>
+====== 00 - Admin ======
+</WRAP>
+
+<WRAP column 50% centeralign round box 45%>
+====== Workshop ======
+{{NEWPAGE[>workshop]}}
+</WRAP>
+
+
+<WRAP column 50% centeralign center round box 45%>
+====== Aufgabe ======
+{{NEWPAGE[>aufgaben]}}
+</WRAP>
+
+<WRAP column 50% centeralign round box 45%>
+
+====== Snippets ======
+{{NEWPAGE[>snippets]}}
+</WRAP>
+
+<WRAP column 50% centeralign center round box 45%>
+====== Anhang ======
+{{NEWPAGE[>anhang]}}
+</WRAP>

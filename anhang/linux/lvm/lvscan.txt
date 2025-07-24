@@ -1,0 +1,41 @@
+====== lvscan - Scannen nach logischen Volumes ======
+Der Befehl `lvscan` wird verwendet, um alle **logischen Volumes (LV)** im System zu scannen und anzuzeigen. Dies hilft dabei, eine Übersicht über die existierenden logischen Volumes zu erhalten, auch wenn sie derzeit nicht aktiv sind.
+
+===== Syntax =====
+<code>
+lvscan
+</code>
+
+===== Optionen =====
+
+^ Option ^ Beschreibung ^
+| **-v, --verbose**   | Gibt detailliertere Informationen zu den logischen Volumes aus. |
+
+===== Ausgabe =====
+Die Ausgabe von `lvscan` zeigt alle logischen Volumes an, die im System vorhanden sind, mit Informationen wie:
+
+^ Feld ^ Beschreibung ^
+| **LV Path**         | Der Pfad zum logischen Volume. |
+| **VG Name**         | Der Name der Volume Group, zu der das logische Volume gehört. |
+| **LV Name**         | Der Name des logischen Volumes. |
+| **LV Status**       | Zeigt den Status des logischen Volumes an, z. B. `active` oder `inactive`. |
+| **LV Size**         | Die Größe des logischen Volumes. |
+
+Beispiel für die Ausgabe:
+<code>
+/dev/vgname/lvname: [aktiv] 10.00 GiB
+</code>
+
+===== Beispiel: Scannen nach logischen Volumes =====
+<code>
+lvscan
+</code>
+Dieser Befehl listet alle logischen Volumes im System auf.
+
+===== Weitere Informationen =====
+Für detailliertere Informationen zu den verfügbaren Optionen und zur Verwendung von `lvscan` kannst du die Man-Page aufrufen:
+<code>
+man lvscan
+</code>
+
+Weitere Dokumentationen zu LVM und der Verwaltung von logischen Volumes findest du auf [[https://linux.die.net/|Die.net Linux Documentation]].

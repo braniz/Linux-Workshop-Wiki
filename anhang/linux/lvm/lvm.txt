@@ -1,0 +1,59 @@
+====== 00 LVM – Verwaltung von Logical Volume Manager ======
+(2025)
+
+LVM (Logical Volume Manager) ist eine flexible Methode zur Verwaltung von Festplatten und Partitionen in Linux. Es ermöglicht die dynamische Anpassung der Speichergrößen, Snapshots und das einfache Hinzufügen oder Entfernen von Speicherplatz.
+
+===== LVM-Basisbefehle =====
+Die folgenden LVM-Befehle dienen zur Verwaltung von Physical Volumes (PV), Volume Groups (VG) und Logical Volumes (LV):
+
+^ LVM-Befehl ^ Beschreibung ^
+| //[[anhang:linux:lvm:pvcreate|pvcreate]]//  | Erstellt ein neues Physical Volume (PV) aus einer Partition oder einer ganzen Festplatte. |
+| //[[anhang:linux:lvm:pvdisplay|pvdisplay]]// | Zeigt Details über vorhandene Physical Volumes an. |
+| //[[anhang:linux:lvm:pvscan|pvscan]]//      | Durchsucht das System nach vorhandenen Physical Volumes. |
+| //[[anhang:linux:lvm:vgcreate|vgcreate]]//  | Erstellt eine neue Volume Group (VG) aus einem oder mehreren Physical Volumes. |
+| //[[anhang:linux:lvm:vgextend|vgextend]]//  | Fügt einer bestehenden Volume Group neue Physical Volumes hinzu. |
+| //[[anhang:linux:lvm:vgdisplay|vgdisplay]]// | Zeigt Details über vorhandene Volume Groups an. |
+| //[[anhang:linux:lvm:vgscan|vgscan]]//      | Durchsucht das System nach vorhandenen Volume Groups. |
+| //[[anhang:linux:lvm:lvcreate|lvcreate]]//  | Erstellt ein neues Logical Volume (LV) innerhalb einer Volume Group. |
+| //[[anhang:linux:lvm:lvextend|lvextend]]//  | Erweitert die Größe eines Logical Volumes. |
+| //[[anhang:linux:lvm:lvreduce|lvreduce]]//  | Verringert die Größe eines Logical Volumes. |
+| //[[anhang:linux:lvm:lvdisplay|lvdisplay]]// | Zeigt Details über vorhandene Logical Volumes an. |
+| //[[anhang:linux:lvm:lvscan|lvscan]]//      | Durchsucht das System nach vorhandenen Logical Volumes. |
+| //[[anhang:linux:lvm:vgreduce|vgreduce]]//  | Entfernt ein Physical Volume aus einer Volume Group. |
+| //[[anhang:linux:lvm:vgremove|vgremove]]//  | Löscht eine bestehende Volume Group. |
+| //[[anhang:linux:lvm:pvremove|pvremove]]//  | Entfernt die LVM-Signatur von einem Physical Volume. |
+| //[[anhang:linux:lvm:lvremove|lvremove]]//  | Löscht ein bestehendes Logical Volume. |
+
+-----
+
+===== Speicherverwaltung mit LVM =====
+Diese LVM-Befehle helfen bei der Speicherverwaltung und Anpassung der LVM-Struktur:
+
+^ LVM-Befehl ^ Beschreibung ^
+| //[[anhang:linux:lvm:pvs|pvs]]//  | Zeigt eine kompakte Übersicht über alle Physical Volumes an. |
+| //[[anhang:linux:lvm:vgs|vgs]]//  | Zeigt eine kompakte Übersicht über alle Volume Groups an. |
+| //[[anhang:linux:lvm:lvs|lvs]]//  | Zeigt eine kompakte Übersicht über alle Logical Volumes an. |
+| //[[anhang:linux:lvm:lvresize|lvresize]]// | Erweitert oder verkleinert ein Logical Volume. |
+| //[[anhang:linux:lvm:lvconvert|lvconvert]]// | Konvertiert ein Logical Volume, z. B. in ein gespiegeltes oder gestriptes Volume. |
+| //[[anhang:linux:lvm:lvchange|lvchange]]// | Ändert Attribute eines Logical Volumes, z. B. Sperren oder Entsperren. |
+
+-----
+
+===== Snapshots mit LVM =====
+LVM bietet eine Snapshot-Funktion, um einen bestimmten Zustand eines Logical Volumes zu speichern:
+
+^ LVM-Befehl ^ Beschreibung ^
+| //[[anhang:linux:lvm:lvcreate -s|lvcreate -s]]// | Erstellt einen Snapshot eines Logical Volumes. |
+| //[[anhang:linux:lvm:lvremove|lvremove]]//  | Löscht einen bestehenden Snapshot. |
+| //[[anhang:linux:lvm:lvconvert --merge|lvconvert --merge]]// | Führt einen Snapshot mit dem ursprünglichen Logical Volume zusammen. |
+
+-----
+
+===== Weitere Informationen =====
+Für detaillierte Informationen zu den einzelnen LVM-Befehlen kannst du die Man-Pages verwenden:
+
+<code>
+man <LVM-Befehl>
+</code>
+
+Weitere Dokumentationen zu LVM findest du auf [[https://man7.org/linux/man-pages/man8/lvm.8.html|man7.org – LVM Handbuch]].

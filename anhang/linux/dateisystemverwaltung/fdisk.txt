@@ -1,0 +1,80 @@
+====== fdisk – Partitionstabellen verwalten und Partitionen erstellen ======
+(2025)
+
+`fdisk` ist ein weit verbreitetes Kommandozeilenwerkzeug zur Partitionierung von Festplatten. Es wird häufig verwendet, um Partitionen auf Festplatten zu erstellen, zu löschen und zu bearbeiten. `fdisk` unterstützt die Master Boot Record (MBR)-Partitionstabelle und ist für die Verwaltung von Festplatten im MBR-Format gedacht.
+
+===== Syntax =====
+
+^ Befehl ^ Beschreibung ^
+| //fdisk /dev/sdX//  | Startet `fdisk` auf der angegebenen Festplatte (z.B. /dev/sda). |
+
+-----
+
+===== Wichtige Optionen =====
+
+^ Option ^ Beschreibung ^
+| `-l`    | Listet alle Partitionen auf allen Festplatten des Systems auf. |
+| `-t` <Typ>  | Setzt den Partitionstyp (z.B. `-t ext4` für eine ext4-Partition). |
+| `-u`    | Ändert die Anzeigeeinheit für die Sektoren in Bytes (standardmäßig sind sie in Sektoren). |
+| `-v`    | Aktiviert den detaillierten Modus, der mehr Informationen anzeigt. |
+
+-----
+
+===== Interaktive Nutzung =====
+
+Nach dem Starten von `fdisk` ohne Optionen wird ein interaktives Menü angezeigt, in dem du die Partitionstabelle bearbeiten kannst. Die wichtigsten Befehle innerhalb von `fdisk` sind:
+
+^ Befehl ^ Beschreibung ^
+| `m`    | Zeigt die Hilfe an, die alle verfügbaren Befehle auflistet. |
+| `p`    | Zeigt die aktuelle Partitionstabelle an. |
+| `n`    | Erstellt eine neue Partition. |
+| `d`    | Löscht eine Partition. |
+| `t`    | Ändert den Typ einer Partition. |
+| `w`    | Speichert die Änderungen und verlässt `fdisk`. |
+| `q`    | Verlässt `fdisk` ohne Änderungen zu speichern. |
+
+-----
+
+===== Partitionen mit fdisk erstellen =====
+Um eine Partition mit `fdisk` zu erstellen, folge diesen Schritten:
+
+1. Starte `fdisk` auf der gewünschten Festplatte:
+<code>
+sudo fdisk /dev/sda
+</code>
+
+2. Gib den Befehl `n` ein, um eine neue Partition zu erstellen.
+
+3. Wähle den Partitionstyp (`primary` oder `logical`), die Start- und Endsektoren sowie die Größe der Partition.
+
+4. Nachdem die Partition erstellt wurde, kannst du den Befehl `w` verwenden, um die Änderungen zu speichern und `fdisk` zu verlassen.
+
+-----
+
+===== Partitionstyp ändern =====
+Wenn du den Partitionstyp ändern möchtest (z.B. von Linux zu Linux Swap), kannst du folgenden Befehl verwenden:
+
+1. Starte `fdisk`:
+<code>
+sudo fdisk /dev/sda
+</code>
+
+2. Gib den Befehl `t` ein, um den Partitionstyp zu ändern.
+
+3. Wähle die Partition, deren Typ du ändern möchtest, und gib den gewünschten Partitionstyp ein.
+
+4. Speichere die Änderungen mit dem Befehl `w`.
+
+-----
+
+===== Hinweise =====
+
+  *  **fdisk** unterstützt nur MBR-Partitionstabellen. Wenn du GPT (GUID Partition Table) verwenden möchtest, solltest du `gdisk` oder `parted` verwenden.
+  *  Änderungen an der Partitionstabelle sind in der Regel nach einem Neustart oder nach einer Neustartanforderung der betroffenen Partition wirksam.
+  *  Sei vorsichtig beim Löschen von Partitionen, da dies zu Datenverlust führen kann.
+
+===== Weitere Informationen =====
+Für detaillierte Informationen zum Befehl `fdisk` und seiner Verwendung kannst du die Man-Page aufrufen:
+<code>
+man fdisk
+</code>

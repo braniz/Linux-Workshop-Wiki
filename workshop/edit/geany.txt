@@ -1,0 +1,86 @@
+====== Geany - IDE-Editor ======
+(2025)
+
+**Geany** ist ein leichter und schneller integrierter Entwicklungs-Editor (IDE), der für die Bearbeitung von Quellcode in verschiedenen Programmiersprachen verwendet wird. Geany bietet Funktionen wie Syntaxhervorhebung, Code-Vervollständigung und viele weitere Funktionen, die Entwicklern helfen, produktiv zu bleiben, ohne einen vollständigen IDE-Komplex wie Eclipse oder IntelliJ zu benötigen.
+
+===== Syntax =====
+<code bash>
+geany [Optionen] [Datei]
+</code>
+
+----
+
+===== Wichtige Optionen =====
+^ Option ^ Beschreibung ^
+| `--new-window`     | Öffnet Geany in einem neuen Fenster. |
+| `--no-session`     | Verhindert das Laden der letzten geöffneten Dateien und Sitzung. |
+| `--help`           | Zeigt eine Hilfe mit den verfügbaren Optionen an. |
+| `--save-session`   | Speichert die aktuelle Sitzung für späteres Wiederöffnen. |
+| `--line=NUM`       | Springt direkt zu der angegebenen Zeilennummer. |
+| `--plugin=PLUGIN`  | Lädt das angegebene Plugin beim Start von Geany. |
+
+----
+
+===== Beispiele =====
+**Eine Datei mit Geany öffnen:**
+<code bash>
+geany dateiname
+</code>
+Öffnet die angegebene Datei in Geany. Wenn die Datei nicht existiert, wird sie neu erstellt.
+
+**Geany in einem neuen Fenster öffnen:**
+<code bash>
+geany --new-window
+</code>
+Öffnet Geany in einem neuen Fenster, unabhängig von anderen offenen Instanzen.
+
+**Geany ohne Sitzung öffnen:**
+<code bash>
+geany --no-session
+</code>
+Verhindert das Laden der letzten geöffneten Dateien und Sitzung.
+
+**Direkt zu einer Zeile in einer Datei springen:**
+<code bash>
+geany --line=42 dateiname
+</code>
+Öffnet die Datei und springt direkt zu Zeile 42.
+
+**Ein Plugin laden:**
+<code bash>
+geany --plugin=pluginname
+</code>
+Lädt das angegebene Plugin beim Start von Geany.
+
+----
+
+===== Wichtige Funktionen =====
+^ Funktion ^ Beschreibung ^
+| Syntaxhervorhebung | Hervorhebung von Programmcode in vielen verschiedenen Programmiersprachen (z.B. C, Python, HTML). |
+| Autovervollständigung | Bietet Code-Vervollständigung basierend auf dem eingegebenen Text. |
+| Projektverwaltung | Ermöglicht die Verwaltung von Projekten und die einfache Navigation durch Dateien. |
+| Debugging-Unterstützung | Integrierte Unterstützung für Debugging mit verschiedenen Plugins. |
+| Plugins            | Erweiterungen, die zusätzliche Funktionen wie Versionskontrolle, Tools zur Code-Analyse und mehr hinzufügen. |
+
+----
+
+===== Hinweis =====
+  * **Geany** ist ein leichter Editor, der sich gut für Entwickler eignet, die eine schnelle, aber funktionsreiche Entwicklungsumgebung wünschen, ohne die Komplexität und die Ressourcenanforderungen eines großen IDEs.
+  * Geany unterstützt zahlreiche Programmiersprachen und kann durch Plugins stark erweitert werden, sodass es sich für viele Entwicklungsaufgaben eignet.
+
+----
+
+===== Alternativen =====
+  * **Vim**: Ein leistungsstarker Texteditor mit einer steilen Lernkurve, der für Entwickler und fortgeschrittene Benutzer geeignet ist.
+  * **Atom**: Ein anpassbarer Texteditor, der mit vielen Plugins und Erweiterungen eine vollständige Entwicklungsumgebung bietet.
+  * **Visual Studio Code**: Ein populärer, leistungsfähiger und quelloffener Editor, der eine vollständige IDE-Erfahrung bietet, besonders für Webentwicklung.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen:
+<code bash>
+man geany
+</code>
+
+

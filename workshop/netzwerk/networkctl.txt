@@ -1,0 +1,70 @@
+====== networkctl - Verwaltung unter systemd ======
+(2025.02)
+
+**networkctl** ist ein Tool zur Verwaltung und Anzeige von Netzwerkverbindungen unter systemd. Es ermöglicht die Abfrage und Konfiguration von Netzwerkgeräten und -verbindungen, die durch `systemd-networkd` verwaltet werden. Mit `networkctl` können Administratoren den Status der Netzwerkverbindungen einsehen, Schnittstellen verwalten und Netzwerkdienste steuern.
+
+===== Syntax =====
+<code bash>
+networkctl [Optionen] [Befehl] [Argumente]
+</code>
+
+===== Wichtige Optionen =====
+^ Option               ^ Beschreibung                                               ^
+| `status`             | Zeigt den aktuellen Status der Netzwerkschnittstellen an.   |
+| `list`               | Listet alle bekannten Netzwerkschnittstellen auf.           |
+| `restart`            | Startet eine Netzwerkschnittstelle neu.                     |
+| `reload`             | Lädt die Netzwerkkonfiguration neu.                         |
+| `link`               | Zeigt Informationen zu den Netzwerk-Links an.               |
+
+===== Verwendete Befehle =====
+^ Befehl              ^ Beschreibung                                                    ^
+| `networkctl status` | Zeigt den aktuellen Status der Netzwerkschnittstellen an.        |
+| `networkctl list`   | Listet alle Netzwerkschnittstellen, die von `systemd-networkd` verwaltet werden. |
+| `networkctl restart [Schnittstelle]` | Startet eine Netzwerkschnittstelle neu.                    |
+| `networkctl reload` | Lädt die Netzwerkkonfiguration neu.                             |
+
+===== Verzeichnis =====
+^ Verzeichnis               ^ Beschreibung                                               ^
+| `/etc/systemd/network/`    | Hauptverzeichnis für `systemd-networkd` Konfigurationsdateien. |
+| `/var/log/`                | Logdateien, die Netzwerkereignisse und Fehler protokollieren.  |
+
+===== Beispiele =====
+**Status der Netzwerkschnittstellen anzeigen:**
+<code bash>
+networkctl status
+</code>
+Zeigt den Status aller Netzwerkinterfaces an, die durch `systemd-networkd` verwaltet werden.
+
+**Liste der Netzwerkschnittstellen anzeigen:**
+<code bash>
+networkctl list
+</code>
+Listet alle Schnittstellen auf, die von `systemd-networkd` verwaltet werden, mit Details zu deren Status.
+
+**Netzwerkschnittstelle neu starten:**
+<code bash>
+networkctl restart enp3s0
+</code>
+Startet die Netzwerkschnittstelle `enp3s0` neu.
+
+**Netzwerkkonfiguration neu laden:**
+<code bash>
+networkctl reload
+</code>
+Lädt die Netzwerkkonfiguration neu, um Änderungen ohne Neustart zu übernehmen.
+
+**Netzwerk-Links anzeigen:**
+<code bash>
+networkctl link
+</code>
+Zeigt detaillierte Informationen über alle verfügbaren Netzwerk-Links an, einschließlich der Schnittstellen-ID und ihrer aktuellen Konfiguration.
+
+===== Hinweis =====
+- **networkctl** wird von `systemd-networkd` verwendet, um Netzwerkschnittstellen zu verwalten. Wenn dein System `systemd` für die Netzwerkkonfiguration verwendet, kannst du `networkctl` verwenden, um den Status zu überprüfen und Schnittstellen zu verwalten.
+- Die Konfiguration von `systemd-networkd` erfolgt über YAML-Dateien im Verzeichnis `/etc/systemd/network/`. Änderungen an diesen Dateien erfordern ein Neustarten des Netzwerkdienstes oder eine Neuinstallation der betroffenen Schnittstellen.
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen:
+<code bash>
+man networkctl
+</code>

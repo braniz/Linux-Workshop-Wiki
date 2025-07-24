@@ -1,0 +1,71 @@
+====== nslookup - DNS-Abfragen durchführen ======
+(2025)
+
+Das Kommando **nslookup** ist ein weiteres nützliches Tool zur Durchführung von DNS-Abfragen. Es wird verwendet, um DNS-Einträge wie A-Records, MX-Records und andere Ressourceneinträge zu suchen. **nslookup** ist sowohl in interaktiver als auch in nicht-interaktiver Form verwendbar und bietet eine einfache Möglichkeit zur Fehlersuche bei DNS-Problemen.
+
+===== Syntax =====
+<code>
+nslookup [OPTIONEN] [<HOSTNAME> [<SERVER>]]
+</code>
+
+----
+
+===== Wichtige Optionen =====
+Die wichtigsten Optionen und Argumente für **nslookup** sind:
+
+^ Option ^ Beschreibung ^
+| `<HOSTNAME>`        | Der Name oder die IP-Adresse der Domain, die abgefragt werden soll. |
+| `<SERVER>`          | Der DNS-Server, der für die Abfrage verwendet werden soll. |
+| `-type=<TYP>`       | Gibt den Typ der DNS-Abfrage an (z.B. `A`, `MX`, `CNAME`). |
+| `-debug`            | Aktiviert den Debug-Modus, um detailliertere Ausgaben zu erhalten. |
+| `-timeout=<ZIEIT>`  | Setzt das Timeout für die Abfrage (in Sekunden). |
+| `-port=<PORT>`      | Gibt den Port an, der für die DNS-Abfrage verwendet werden soll (Standard ist Port 53). |
+
+----
+
+===== Beispiele =====
+Hier sind einige Beispiele für die Verwendung von **nslookup**:
+
+  *  Abfrage des A-Records für eine Domain:
+<code>
+nslookup example.com
+</code>
+
+  *  Abfrage des MX-Records für eine Domain:
+<code>
+nslookup -type=MX example.com
+</code>
+
+  *  Abfrage des CNAME-Records für eine Domain:
+<code>
+nslookup -type=CNAME example.com
+</code>
+
+  *  Verwendung eines bestimmten DNS-Servers (z.B. Google DNS):
+<code>
+nslookup example.com 8.8.8.8
+</code>
+
+  *  Aktivierung des Debug-Modus für detailliertere Ausgaben:
+<code>
+nslookup -debug example.com
+</code>
+
+  *  Festlegung eines spezifischen Timeouts für die DNS-Abfrage:
+<code>
+nslookup -timeout=5 example.com
+</code>
+
+----
+
+===== Hinweis =====
+  *  **nslookup** ist besonders nützlich, wenn du DNS-Einträge überprüfen oder bei Problemen mit der DNS-Auflösung eine Fehlerbehebung durchführen möchtest.
+  *  In modernen Systemen wird oft **dig** als bevorzugtes Tool empfohlen, aber **nslookup** ist immer noch weit verbreitet und benutzerfreundlich.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **nslookup**:
+<code>
+man nslookup
+</code>

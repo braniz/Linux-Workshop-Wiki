@@ -1,0 +1,44 @@
+====== groupdel - Gruppe löschen ======
+(2025)
+
+Der Befehl **groupdel** wird verwendet, um eine bestehende Gruppe aus dem System zu löschen. Dieser Befehl entfernt die Gruppe aus der Datei `/etc/group` und andere gruppenspezifische Daten.
+
+===== Syntax =====
+<code>
+groupdel GRUPPENNAME
+</code>
+
+----
+
+===== Wichtige Optionen =====
+**groupdel** hat keine zusätzlichen Optionen. Es benötigt lediglich den Namen der zu löschenden Gruppe.
+
+----
+
+===== Beispiele =====
+Hier ist ein Beispiel für die Verwendung von **groupdel**:
+
+  *  Löschen der Gruppe `developers`:
+<code>
+sudo groupdel developers
+</code>
+
+  *  Löschen einer Gruppe, die keine Mitglieder mehr hat:
+<code>
+sudo groupdel oldgroup
+</code>
+
+----
+
+===== Hinweis =====
+  *  **groupdel** kann nur von einem Administrator oder dem Root-Benutzer ausgeführt werden, da das Löschen einer Gruppe eine privilegierte Aktion ist.
+  *  Vor dem Löschen einer Gruppe sollten Sie sicherstellen, dass keine Benutzer mehr Mitglied dieser Gruppe sind. Andernfalls können Probleme mit den Benutzerrechten auftreten.
+  *  **groupdel** entfernt die Gruppe nur aus den entsprechenden Dateien. Benutzer, die Mitglied der gelöschten Gruppe sind, bleiben weiterhin Mitglieder ihrer anderen Gruppen.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **groupdel**:
+<code>
+man groupdel
+</code>

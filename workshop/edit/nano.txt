@@ -1,0 +1,97 @@
+====== Nano - Einfacher Texteditor ======
+(2025)
+
+**Nano** ist ein einfacher und benutzerfreundlicher Texteditor, der direkt in der Kommandozeile ausgeführt wird. Er ist auf vielen Unix/Linux-Distributionen vorinstalliert und bietet eine einfache Möglichkeit zur Bearbeitung von Textdateien, ohne die Komplexität von leistungsfähigeren Editoren wie Vim oder Emacs.
+
+===== Syntax =====
+<code bash>
+nano [Optionen] [Datei]
+</code>
+
+----
+
+===== Wichtige Optionen =====
+^ Option ^ Beschreibung ^
+| `-B`            | Erstellen einer Sicherheitskopie der Datei, bevor sie gespeichert wird. |
+| `-C`            | Gibt den Namen des Verzeichnisses an, in dem Sicherheitskopien gespeichert werden. |
+| `-E`            | Verwendet die Unix-Zeilenendungen (LF) anstelle der DOS-Zeilenendungen (CRLF). |
+| `-i`            | Aktiviert die automatische Rechtschreibprüfung. |
+| `-l`            | Zeigt die Zeilen- und Spaltenzahlen im Editor an. |
+| `-m`            | Zeigt die verfügbaren Tastenkürzel am unteren Rand des Editors an. |
+| `-T`            | Setzt den Tabulator-Abstand. |
+| `--help`        | Zeigt eine Hilfe mit den verfügbaren Optionen an. |
+
+----
+
+===== Beispiele =====
+**Eine Datei öffnen oder erstellen:**
+<code bash>
+nano dateiname
+</code>
+Öffnet die angegebene Datei im Nano-Editor. Wenn die Datei nicht existiert, wird sie erstellt.
+
+**Mit Nano eine Datei bearbeiten:**
+<code bash>
+nano dateiname
+</code>
+Bearbeitet den Inhalt der angegebenen Datei. Verwenden Sie die Tastenkürzel für Aktionen (siehe unten).
+
+**Datei im Hintergrund bearbeiten:**
+<code bash>
+nano +10 dateiname
+</code>
+Öffnet die angegebene Datei und springt direkt zur Zeile 10.
+
+**Datei mit Sicherheitskopie speichern:**
+<code bash>
+nano -B dateiname
+</code>
+Speichert die Datei und erstellt gleichzeitig eine Sicherheitskopie der Datei.
+
+**Nano mit aktiver Rechtschreibprüfung starten:**
+<code bash>
+nano -i dateiname
+</code>
+Aktiviert die automatische Rechtschreibprüfung während der Bearbeitung der Datei.
+
+**Zeilen- und Spaltenzahlen anzeigen:**
+<code bash>
+nano -l dateiname
+</code>
+Zeigt die Zeilen- und Spaltennummern während der Bearbeitung der Datei an.
+
+----
+
+===== Wichtige Tastenkürzel =====
+Die wichtigsten Tastenkürzel für die Verwendung von Nano sind am unteren Rand des Editors zu finden. Hier sind die wichtigsten:
+
+^ Tastenkürzel ^ Beschreibung ^
+| `Ctrl + O`     | Speichern der Datei. |
+| `Ctrl + X`     | Beenden von Nano. |
+| `Ctrl + W`     | Suchen innerhalb der Datei. |
+| `Ctrl + K`     | Markieren und Ausschneiden der aktuellen Zeile. |
+| `Ctrl + U`     | Einfügen der ausgeschnittenen Zeile. |
+| `Ctrl + G`     | Zeigt Hilfe an (mit einer Liste der wichtigsten Befehle). |
+| `Ctrl + C`     | Zeigt die aktuelle Zeilen- und Spaltennummer an. |
+| `Ctrl + J`     | Justiert den Text (Wortumbruch). |
+| `Ctrl + _`     | Gehe zu einer bestimmten Zeile und Spalte. |
+
+----
+
+===== Hinweis =====
+  * Nano ist besonders für Anfänger geeignet, die einen einfach zu bedienenden Texteditor suchen, ohne sich mit komplexeren Editoren wie Vim oder Emacs auseinanderzusetzen.
+  * **Nano** speichert automatisch Änderungen, wenn die Datei mit `Ctrl + O` gespeichert wird, was es zu einem sicheren und schnellen Editor macht.
+
+----
+
+===== Alternativen =====
+  * **Vim**: Ein leistungsstarker und anpassbarer Texteditor, der eine steilere Lernkurve hat, aber mehr Funktionen bietet.
+  * **Emacs**: Ein weiterer leistungsstarker Texteditor mit umfangreichen Anpassungs- und Erweiterungsmöglichkeiten.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen:
+<code bash>
+man nano
+</code>

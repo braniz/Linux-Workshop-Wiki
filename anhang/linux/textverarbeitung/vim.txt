@@ -1,0 +1,68 @@
+====== VIM - Vi IMproved ======
+(2025.02)
+
+**VIM** (Vi IMproved) ist ein fortschrittlicher Texteditor, der auf dem traditionellen `vi` basiert und viele zusätzliche Funktionen bietet. Er wird hauptsächlich in der Unix/Linux-Welt verwendet und ist besonders bei Programmierern sehr beliebt. VIM unterscheidet zwischen zwei Modi: dem **Eingabemodus** für die Texteingabe und dem **Kommandomodus**, um Befehle innerhalb des Textes auszuführen.
+
+===== Wichtige Befehle =====
+
+**Eingabemodus**
+<code>
+ESC Taste        # Umschalten von Eingabe- in Kommandomodus
+i                # Eingabe beginnt an Cursor Position
+a                # Eingabe beginnt hinter Cursor Position
+A                # Cursor springt zu Zeilenende
+r -> Zeichen     # Ersetzt das Zeichen unter dem Cursor durch ein neues Zeichen
+</code>
+
+**Kommandomodus**
+<code>
+:w               # Speichern
+:wq              # Speichern und verlassen
+:q               # Verlassen ohne Speichern
+:wq!             # Speichern und verlassen erzwingen
+:x               # Speichert und verlässt ohne Prüfung
+:Zahl            # Springt zu Zeile x
+
+:sort u          # Sortiert und entfernt doppelte Einträge
+:g/^\s*$/d       # Löscht leere Zeilen
+:set number      # Zeilen-Nummerierung einschalten
+:set nonumber    # Zeilen-Nummerierung ausschalten
+:yy              # Kopiert die aktuelle Zeile
+:yw              # Kopiert das Wort rechts vom Cursor
+:%s/ALT/NEU/gc   # Sucht und ersetzt im gesamten Dokument (mit Rückfrage)
+:%s/OLD/NEW/g    # Ersetzt im gesamten Dokument ohne Rückfrage
+
+/SuchMuster      # Sucht nach einem Muster im Text
+n                # Weitersuchen
+dd               # Löscht die aktuelle Zeile
+x                # Löscht das Zeichen unter dem Cursor
+u                # Macht die letzte Eingabe rückgängig
+U                # Stellt die aktuelle Zeile wieder her
+gg               # Springt zur ersten Zeile
+G                # Springt zum Ende des Textes
+h                # Cursor nach links bewegen
+j                # Cursor nach unten bewegen
+k                # Cursor nach oben bewegen
+l                # Cursor nach rechts bewegen
+</code>
+
+**Kurzbefehle**
+<code>
+egrep -v "(^$|^#)" <DateiName>   # Entfernt alle leeren Zeilen und Zeilen mit einer # aus der Datei
+grep -Ev '^(#|$)' <DateiName>
+</code>
+
+===== Wichtige Konfigurationsdateien für VIM =====
+
+Die folgende Tabelle zeigt wichtige Konfigurationsdateien und Verzeichnisse für VIM:
+
+^ Datei            ^ Beschreibung ^  
+| ~/.vimrc         | Benutzerdefinierte Vim-Konfiguration für den aktuellen Nutzer |  
+| /etc/vimrc       | Systemweite Vim-Konfiguration (kann von allen Nutzern verwendet werden) |  
+| ~/.vim/          | Verzeichnis für Plugins, Farben und zusätzliche Einstellungen |  
+| ~/.vim/colors/   | Enthält Farbschemata für Vim |  
+| ~/.vim/plugin/   | Verzeichnis für benutzerdefinierte Plugins |  
+| ~/.vim/autoload/ | Speichert automatische Plugin-Loader, z. B. für Pathogen |  
+| ~/.vim/syntax/   | Eigene Syntax-Highlighting-Definitionen |  
+| ~/.vim/ftplugin/ | Dateityp-spezifische Plugins und Einstellungen |  
+| ~/.vim/spell/    | Wörterbücher für die Rechtschreibprüfung |  

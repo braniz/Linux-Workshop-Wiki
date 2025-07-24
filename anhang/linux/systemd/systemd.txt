@@ -1,0 +1,28 @@
+====== 00 SystemD ======
+(2025)
+
+Systemd ist ein System- und Dienst-Manager für Linux, der eine effiziente Verwaltung von Systemprozessen und -diensten ermöglicht. Es ersetzt ältere Init-Systeme wie SysVinit und bietet eine schnellere Bootzeit, parallele Dienststarts und eine verbesserte Verwaltung von Systemressourcen. Systemd verwendet Konfigurationsdateien im sogenannten Unit-Format und bietet zusätzliche Funktionen wie Protokollierung (journalctl), Netzwerkmanagement und das Starten von Systemdiensten.
+
+Im Gegensatz zu den traditionellen Runleveln von SysVinit, die bestimmte Betriebszustände des Systems definieren (z. B. Single-User-Mode, Multi-User-Mode), verwendet Systemd sogenannte Targets, die ähnliche Aufgaben erfüllen, aber flexibler und erweiterbarer sind. Targets sind durch systemd spezifisch konzipierte Zustände des Systems, die je nach Bedarf mit einzelnen Diensten und Prozessen kombiniert werden können.
+
+===== Vergleich zwischen Systemd und SysVinit =====
+
+^Feature ^ Systemd ^ SysVinit ^
+| **Startzeit** | Schnellere Startzeit durch parallelen Start von Diensten. | Langsame Startzeit, da Dienste nacheinander gestartet werden. |
+| **Konfigurationsdateien** | Einheitliche Unit-Dateien für Dienste und Ziele. | Skripte für jeden Dienst, oft komplex und schwer zu warten. |
+| **Dienste** | Automatische Überwachung und Neustart von Diensten. | Keine eingebaute Überwachung, Dienste müssen manuell überwacht werden. |
+| **Zustände/Runlevel** | Targets wie `multi-user.target` oder `graphical.target`, die flexibler und erweiterbar sind. | Runlevel (0-6), jeder hat einen festen Zustand des Systems. |
+| **Protokollierung** | Integriertes Logging-System mit `journalctl`. | Keine zentrale Log-Verwaltung, nutzt oft separate Tools wie `syslog`. |
+| **Parallele Ausführung** | Ermöglicht paralleles Starten von Systemdiensten für schnellere Bootzeiten. | Dienste werden nacheinander gestartet, was zu längeren Bootzeiten führen kann. |
+
+===== Runlevel in SysVinit =====
+
+^Runlevel ^Beschreibung ^Entsprechendes Systemd-Target ^
+| 0        | System Herunterfahren | `poweroff.target` |
+| 1        | Single-User Mode (Wartung) | `rescue.target` |
+| 2        | Multi-User Mode (ohne Netzwerk) | `multi-user.target` |
+| 3        | Multi-User Mode mit Netzwerk (kein GUI) | `multi-user.target` |
+| 4        | Unbenutzt (kann für benutzerdefinierte Zwecke verwendet werden) | Keine Entsprechung |
+| 5        | Multi-User Mode mit grafischer Benutzeroberfläche | `graphical.target` |
+| 6        | Neustart | `reboot.target` |
+

@@ -1,0 +1,44 @@
+====== vgreduce - Reduzierung der Größe einer Volume-Gruppe ======
+  
+`vgreduce` ist ein Befehl, der verwendet wird, um physische Volumes (PVs) aus einer Volume-Gruppe (VG) zu entfernen. Diese Aktion wird normalerweise durchgeführt, wenn ein physisches Volume, das zu einer VG gehört, nicht mehr benötigt wird oder entfernt werden soll.
+
+===== Syntax =====
+<code>
+vgreduce [Optionen] <Volume-Group> <Physical-Volume>
+</code>
+
+===== Wichtige Optionen =====
+
+^ Option           ^ Beschreibung                                                            ^
+| `--test`         | Führt einen Testlauf durch, ohne Änderungen vorzunehmen.                   |
+| `-v`, `--verbose` | Zeigt detaillierte Ausgaben während der Ausführung des Befehls an.         |
+
+===== Beschreibung =====
+`vgreduce` entfernt ein angegebenes physisches Volume (PV) aus einer Volume-Gruppe (VG). Das PV muss jedoch ungenutzt sein, d. h., es dürfen keine logischen Volumes (LVs) auf diesem PV gespeichert sein oder das PV darf nicht als „aktiv“ verwendet werden. Wenn das PV noch Daten enthält, muss der Benutzer entweder die Daten verschieben oder löschen, bevor er das PV entfernt.
+
+Bevor Sie den Befehl ausführen, sollten Sie sicherstellen, dass keine LVs mehr auf dem PV existieren. Eine häufige Praxis ist, zuerst das betreffende PV zu deaktivieren und dann alle LVs darauf zu verschieben.
+
+===== Beispiele =====
+
+  * Entfernen eines physikalischen Volumes aus einer Volume-Gruppe:
+  <code>
+  vgreduce vgdata /dev/sdb
+  </code>
+  In diesem Beispiel wird das physische Volume `/dev/sdb` aus der Volume-Gruppe `vgdata` entfernt.
+
+  * Testen, was passieren würde, wenn das physische Volume entfernt wird:
+  <code>
+  vgreduce --test vgdata /dev/sdb
+  </code>
+  Dies zeigt nur die Auswirkungen des Befehls, ohne die tatsächlichen Änderungen vorzunehmen.
+
+===== Hinweis =====
+
+  *  Stellen Sie sicher, dass das physische Volume keine logischen Volumes mehr enthält, bevor Sie es entfernen.
+  *  Der Befehl `vgreduce` kann nicht verwendet werden, um das letzte physische Volume aus einer Volume-Gruppe zu entfernen. In diesem Fall muss die Volume-Gruppe selbst gelöscht oder reduziert werden.
+
+===== Weitere Informationen =====
+Weitere Details finden Sie in den Manpages des Befehls:
+<code>
+man vgreduce
+</code>

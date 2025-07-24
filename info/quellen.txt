@@ -1,0 +1,33 @@
+====== Quellen ======
+
+Die Infos und Texte basieren auf man Pages und diversen Quellen aus dem Internet. \\
+Ich danke allen Autoren für die Bereitstellung der Texte und Informationen.
+
+===== Web Seiten =====
+^ Thema               ^ Quelle                                                             ^
+| Tuxacademy          | https://www.tuxcademy.org                                          |
+| Webseitengestalten  | http://www.selfhtml.org                                            |
+| Anleitungen         | http://www.howtoforge.de                                           |
+| Style Anpassung     | http://forum.dokuwiki.org/thread/8224                              |
+| ToDo's              | http://dokuwiki.nausch.org/doku.php/start                          |
+| nixCraft            | http://www.cyberciti.biz/                                          |
+| UbuntuUsers         | http://wiki.ubuntuusers.de                                         |
+| CentOS              | http://centos.org                                                  |
+| Linux Praxis        | http://www.linux-praxis.de/                                        |
+| Linux.com           | www.linux.com/training-tutorials/understanding-and-using-systemd/  |
+| Netzwerk Simulator  | https://www.lernsoftware-filius.de/Startseite                      |
+|                     |                                                                    |
+|                     |                                                                    |
+
+  ***Übersichtsseite mit guten PlugIn's** \\ http://wiki.natenom.name/ueber/verwendete_plugins
+
+  ***Dokuwiki Home** \\ https://www.dokuwiki.org/plugin:addnewpage
+
+
+  ***Interessante Seiten zu Linux und LPI** \\ http://www.lpi-academy.de \\ http://www.linux-kurs.eu \\ http://linux-praxis.de
+
+===== Bücher =====
+In der Wiki sind Zitate und Ideen aus vielen Bücher. \\
+Hier all die Bücher, welche ich verwendet habe.
+
+ [[http://www.oreilly.de/catalog/esa3ger/index.html|O'Reilly - Unix System Administration 3. Auflage]]

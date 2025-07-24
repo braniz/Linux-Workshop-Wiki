@@ -1,0 +1,65 @@
+====== passwd - Benutzerpasswort ändern ======
+(2025)
+
+Der Befehl **passwd** wird verwendet, um das Passwort eines Benutzers zu ändern. Dies kann sowohl für den aktuellen Benutzer als auch für andere Benutzer (mit Administratorrechten) erfolgen.
+
+===== Syntax =====
+<code>
+passwd [OPTIONEN] [BENUTZERNAME]
+</code>
+
+----
+
+===== Wichtige Optionen =====
+Die wichtigsten Optionen für den **passwd**-Befehl sind:
+
+^ Option ^ Beschreibung ^
+| `-l`                         | Sperrt das Konto des angegebenen Benutzers, sodass sich dieser nicht mehr anmelden kann. |
+| `-u`                         | Entsperrt das Konto eines Benutzers, das mit `-l` gesperrt wurde. |
+| `-d`                         | Löscht das Passwort eines Benutzers und ermöglicht so eine Anmeldung ohne Passwort (nicht empfohlen). |
+| `-e`                         | Erzwingt, dass der Benutzer sein Passwort bei der nächsten Anmeldung ändern muss. |
+| `-S`                         | Zeigt den aktuellen Status des Passworts (gesperrt oder entsperrt) eines Benutzers an. |
+
+----
+
+===== Beispiele =====
+Hier sind einige Beispiele für die Verwendung von **passwd**:
+
+  *  Das Passwort für den aktuellen Benutzer ändern:
+<code>
+passwd
+</code>
+
+  *  Das Passwort für den Benutzer `alice` ändern (nur als Root oder mit Administratorrechten):
+<code>
+sudo passwd alice
+</code>
+
+  *  Den Benutzer `bob` zwingen, sein Passwort bei der nächsten Anmeldung zu ändern:
+<code>
+sudo passwd -e bob
+</code>
+
+  *  Das Konto von `carol` sperren:
+<code>
+sudo passwd -l carol
+</code>
+
+  *  Den Status des Passworts für den Benutzer `alice` anzeigen:
+<code>
+passwd -S alice
+</code>
+
+----
+
+===== Hinweis =====
+  *  Der **passwd**-Befehl kann nur vom Benutzer selbst oder von einem Administrator für andere Benutzer ausgeführt werden.
+  *  Ein Benutzer, dessen Konto gesperrt wurde (mit `-l`), kann sich nicht mehr anmelden, es sei denn, das Konto wird mit `-u` wieder entsperrt.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **passwd**:
+<code>
+man passwd
+</code>

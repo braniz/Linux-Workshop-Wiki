@@ -1,0 +1,66 @@
+====== fsck - Dateisystemüberprüfung und Reparatur ======
+(2025)
+
+Der Befehl **fsck** (File System Consistency Check) wird verwendet, um Dateisysteme auf Konsistenzfehler zu überprüfen und diese gegebenenfalls zu reparieren.
+
+===== Syntax =====
+<code>
+fsck [OPTIONEN] [DATEISYSTEM]
+</code>
+
+----
+
+===== Wichtige Optionen =====
+^ Option ^ Beschreibung ^
+| `-A`            | Überprüft alle Dateisysteme, die in der Datei `/etc/fstab` aufgeführt sind. |
+| `-C`            | Zeigt den Fortschritt der Überprüfung auf dem Terminal an. |
+| `-N`            | Zeigt nur an, was **fsck** tun würde, ohne Änderungen vorzunehmen (Trockenlauf). |
+| `-R`            | Überspringt die Überprüfung des Root-Dateisystems. |
+| `-T`            | Verwendet eine verkürzte Ausgabe (ohne detaillierte Informationen). |
+| `-y`            | Beantwortet alle Reparaturanfragen mit „Ja“ (automatische Reparatur). |
+| `-f`            | Erzwingt eine Überprüfung, auch wenn das Dateisystem als sauber gilt. |
+| `-p`            | Führt die Überprüfung ohne Benutzereingaben durch (automatische Reparatur). |
+
+----
+
+===== Beispiele =====
+Hier sind einige Beispiele für die Verwendung von **fsck**:
+
+  *  Überprüfen und Reparieren eines spezifischen Dateisystems:
+<code>
+fsck /dev/sda1
+</code>
+
+  *  Überprüfen aller Dateisysteme in `/etc/fstab`:
+<code>
+fsck -A
+</code>
+
+  *  Überprüfen des Dateisystems mit erzwungener Prüfung:
+<code>
+fsck -f /dev/sda1
+</code>
+
+  *  Durchführen einer automatischen Reparatur ohne Benutzereingaben:
+<code>
+fsck -p /dev/sda1
+</code>
+
+  *  Trockenlauf, um zu sehen, was **fsck** tun würde:
+<code>
+fsck -N /dev/sda1
+</code>
+
+----
+
+===== Hinweis =====
+  *  **fsck** sollte mit Vorsicht verwendet werden, da eine unsachgemäße Nutzung zu Datenverlust führen kann. Es wird empfohlen, vor der Verwendung von **fsck** ein vollständiges Backup der betroffenen Daten zu erstellen.
+  *  Einige Dateisysteme (z.B. **ext4**) können nach der Reparatur automatisch wiederhergestellt werden, aber bei anderen Dateisystemen sind möglicherweise manuelle Eingriffe erforderlich.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **fsck**:
+<code>
+man fsck
+</code>

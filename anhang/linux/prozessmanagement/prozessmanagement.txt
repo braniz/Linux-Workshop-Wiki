@@ -1,0 +1,64 @@
+====== 00 Prozessmanagement ======
+(2025)
+
+Techniken zur Steuerung und Überwachung von Prozessen in Unix/Linux-Systemen.
+
+===== Syntax =====
+Grundlegende Befehle für Prozessmanagement:
+<code>
+ps [Optionen]          # Prozessstatus anzeigen
+top                    # Echtzeit-Prozessmonitor
+kill [Signal] [PID]    # Prozess beenden
+&                      # Prozess im Hintergrund starten (z.B. befehl &)
+</code>
+
+===== Wichtige Optionen =====
+^ Option          ^ Befehl   ^ Beschreibung                        ^
+| -e              | ps       | Alle Prozesse anzeigen              |
+| -f              | ps       | Vollständige Formatierung           |
+| -u [Benutzer]   | ps       | Prozesse eines bestimmten Benutzers |
+| -d [Sekunden]   | top      | Aktualisierungsintervall ändern     |
+| -l              | kill     | Liste aller Signale anzeigen       |
+| -9              | kill     | SIGKILL-Signal erzwingen            |
+
+===== Beispiele =====
+Alle laufenden Prozesse anzeigen:
+<code>
+ps -ef
+</code>
+
+Prozess im Hintergrund starten:
+<code>
+sleep 30 &  # Prozess-ID wird ausgegeben (z.B.  12345)
+</code>
+
+Prozess gewaltsam beenden:
+<code>
+kill -9 12345              # Mit PID
+pkill -9 firefox           # Mit Prozessnamen
+</code>
+
+===== Hinweis =====
+  * **Vorsicht bei kill -9**: Kann Datenverlust verursachen, da keine Aufräumaktionen möglich sind
+  * Prozessabhängigkeiten prüfen, bevor Elternprozesse beendet werden
+  * Regelmäßige Überwachung mit **top** oder **htop** empfohlen
+
+===== Alternativen =====
+  * [[https://htop.dev|htop]] - Interaktiver Prozessmanager mit Farbinterface
+  * [[https://nicolargo.github.io/glances|Glances]] - Multi-System-Monitoring-Tool
+  * **systemd** - Systemdienstverwaltung (systemctl status/start/stop)
+  * **cron** - Zeitgesteuerte Prozessausführung
+  * Container-Lösungen (Docker, Kubernetes) für isolierte Prozessumgebungen
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen:
+<code>
+man ps
+man top
+man kill
+</code>
+
+Weitere Ressourcen:
+  * [[https://www.dokuwiki.org/dokuwiki|DokuWiki-Dokumentation]]
+  * [[https://man7.org/linux/man-pages|Linux Man Pages Online]]
+  * [[https://wiki.ubuntuusers.de/Prozessverwaltung|Ubuntu Prozessmanagement Guide]]

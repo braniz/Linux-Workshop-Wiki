@@ -1,0 +1,221 @@
+====== CLI cheat sheet ======
+(2025.02)
+
+==== System ====
+<code | Systeminformationen>
+uname -a                         : Zeigt alle Systeminformationen an.
+hostnamectl                      : Zeigt den aktuellen Hostnamen und zugehörige Details an.
+lscpu                            : Listet Informationen zur CPU-Architektur auf. 
+timedatectl status               : Zeigt die Systemzeit an.
+</code>
+
+<code | Systemüberwachung und -verwaltung>
+top                              : Zeigt Echtzeit-Systemprozesse an.
+htop                             : Ein interaktiver Prozessbetrachter (muss installiert werden).
+df -h                            : Zeigt die Festplattennutzung in einem menschenlesbaren Format an.
+free -m                          : Zeigt freien und genutzten Speicher in MB an.
+kill <Prozess-ID>                : Beendet einen Prozess. 
+</code>
+
+<code | Ausgeführte Befehle> 
+[command] &                      : Führt einen Befehl im Hintergrund aus.
+jobs                             : Zeigt Hintergrundbefehle an.
+fg <Befehl-Nummer>               : Bringt einen Befehl in den Vordergrund.
+</code>
+
+<code | Dienstverwaltung>
+sudo systemctl start <service>   : Startet einen Dienst.
+sudo systemctl stop <service>    : Stoppt einen Dienst.
+sudo systemctl status <service>  : Überprüft den Status eines Dienstes.
+sudo systemctl reload <service>  : Lädt die Konfiguration eines Dienstes neu, ohne seinen Betrieb zu unterbrechen.
+journalctl -f                    : Verfolgt das Journal und zeigt neue Lognachrichten in Echtzeit an.
+journalctl -u <unit_name>        : Zeigt Logs für eine bestimmte systemd-Einheit an.
+</code>
+
+<code | Cron Jobs und Planung>
+crontab -e                       : Bearbeitet Cron-Jobs für den aktuellen Benutzer.
+crontab -l                       : Listet Cron-Jobs für den aktuellen Benutzer auf.
+</code>
+
+==== Files ====
+<code | File management>
+ls                               : Listet Dateien und Verzeichnisse auf.
+touch <filename>                 : Erstellt eine leere Datei oder aktualisiert das Datum des letzten Zugriffs.
+cp <source> <destination>        : Kopiert Dateien von der Quelle zum Ziel.
+mv <source> <destination>        : Verschiebt Dateien oder benennt sie um.
+rm <filename>                    : Löscht eine Datei.
+</code>
+
+<code | Verzeichnisnavigation>
+pwd                              : Zeigt den aktuellen Verzeichnispfad an.  
+cd <directory>                   : Wechselt das aktuelle Verzeichnis.  
+mkdir <dirname>                  : Erstellt ein neues Verzeichnis.
+</code>
+
+<code | Dateiberechtigungen und Eigentümerschaft>
+chmod [who][+/-][permissions] <file>         : Ändert die Dateiberechtigungen.
+chmod u+x <file>                             : Macht eine Datei für den Besitzer ausführbar.
+chown [user]:[group] <file>                  : Ändert den Dateibesitzer und die Gruppe.
+</code>
+
+<code | Suchen und Finden>
+find [directory] -name <search_pattern>      : Findet Dateien und Verzeichnisse.
+grep <search_pattern> <file>                 : Sucht nach einem Muster in Dateien.
+</code>
+
+<code | Archivierung und Kompression>
+tar -czvf <name.tar.gz> [files]              : Komprimiert Dateien in ein tar.gz-Archiv.
+tar -xvf <name.tar.[gz|bz|xz]> [destination] : Entpackt ein komprimiertes Tar-Archiv.
+</code>
+
+<code | Textbearbeitung und -verarbeitung>
+vi / vim [file]                              : Öffnet eine Datei im vim-Texteditor.
+nano [file]                                  : Öffnet eine Datei im Nano-Texteditor.
+cat <file>                                   : Zeigt den Inhalt einer Datei an.
+less <file>                                  : Zeigt den paginierten Inhalt einer Datei an.
+head <file>                                  : Zeigt die ersten Zeilen einer Datei an.
+tail <file>                                  : Zeigt die letzten Zeilen einer Datei an.
+awk ‘{print}’ [file]                         : Gibt jede Zeile einer Datei aus.
+</code>
+
+==== Rechte ====
+<code | Datei- Ordnerrechte>
+ls -la <file>                                : Zeigt Dateirechte und Eigentümerschaft an.
+stat <file>                                  : Detaillierte Dateiinformationen.
+getfacl <file>                               : Zeigt ACLs einer Datei.
+setfacl                                      : Setzt oder ändert ACLs.
+lsattr <file>                                : Zeigt spezielle Dateiattribute an.
+chmod <permissions> <file>                   : Ändert Dateiberechtigungen.
+chown <user>:<group> <file>                  : Ändert Eigentümer und Gruppe.
+chgrp <group> <file>                         : Ändert die Gruppe einer Datei.
+</code>
+
+<code | SELinux>
+sestatus                                     : Zeigt den aktuellen SELinux-Status an.
+getenforce                                   : Zeigt den aktuellen SELinux-Modus an.
+setenforce <mode>                            : Ändert den SELinux-Modus (Enforcing, Permissive, Disabled).
+/etc/selinux/config                          : Bearbeiten der SELinux-Konfiguration für dauerhafte Änderungen.
+ls -Z <file>                                 : Zeigt den SELinux-Kontext einer Datei an.
+chcon                                        : Ändert den SELinux-Kontext einer Datei.
+restorecon                                   : Setzt den SELinux-Kontext auf den Standardwert zurück.
+ausearch                                     : Durchsucht die SELinux-Logs nach Ereignissen.
+sealert                                      : Hilft, SELinux-bezogene Fehler zu interpretieren.
+audit2allow                                  : Generiert SELinux-Regeln basierend auf Fehlern.
+</code>
+
+==== Pakete ====
+<code | Debian / Ubuntu (APT)>
+sudo apt install <package>                   : Installiert ein Paket.
+sudo apt install -f --reinstall <package>    : Installiert ein beschädigtes Paket neu.
+apt search <package>                         : Sucht nach APT-Paketen.
+apt-cache policy <package>                   : Listet verfügbare Paketversionen auf.
+sudo apt update                              : Aktualisiert die Paketlisten.
+sudo apt upgrade                             : Aktualisiert alle aktualisierbaren Pakete.
+sudo apt remove <package>                    : Entfernt ein Paket.
+sudo apt purge <package>                     : Entfernt ein Paket und alle seine Konfigurationsdateien.
+</code>
+
+<code | Fedora & Red Hat (DNF)>
+sudo dnf install <package>                   : Installiert ein Paket.  
+sudo dnf reinstall <package>                 : Installiert ein Paket neu.  
+dnf search <package>                         : Sucht nach DNF-Paketen.  
+dnf list --available <package>               : Listet verfügbare Paketversionen auf.  
+sudo dnf check-update                        : Prüft auf Paketaktualisierungen.  
+sudo dnf upgrade                             : Aktualisiert alle Pakete.  
+sudo dnf remove <package>                    : Entfernt ein Paket.  
+sudo dnf autoremove                          : Entfernt nicht mehr benötigte Pakete und Abhängigkeiten.  
+</code>
+
+<code | OpenSUSE (Zypper)>
+sudo zypper install <package>                : Installiert ein Paket.  
+sudo zypper in --force <package>             : Installiert ein Paket neu.  
+zypper search <package>                      : Sucht nach Paketen.  
+zypper info <package>                        : Zeigt Informationen zu einem Paket an.  
+sudo zypper refresh                          : Aktualisiert die Paketlisten.  
+sudo zypper update                           : Aktualisiert alle Pakete.  
+sudo zypper remove <package>                 : Entfernt ein Paket.  
+sudo zypper remove --clean-deps <package>    : Entfernt ein Paket und nicht mehr benötigte Abhängigkeiten.  
+</code>
+
+<code | Paketverwaltung (Snap)>
+snap find <package>                          : Sucht nach Snap-Paketen.
+sudo snap install <snap_name>                : Installiert ein Snap-Paket.
+sudo snap remove <snap_name>                 : Entfernt ein Snap-Paket.
+sudo snap refresh                            : Aktualisiert alle installierten Snap-Pakete.
+snap list                                    : Listet alle installierten Snap-Pakete auf.
+snap info <snap_name>                        : Zeigt Informationen zu einem Snap-Paket an.
+</code>
+
+==== Benutzer & Gruppen ====
+<code | Benutzerverwaltung>
+w                                            : Zeigt an, welche Benutzer angemeldet sind.
+sudo adduser <username>                      : Erstellt einen neuen Benutzer.
+sudo deluser <username>                      : Löscht einen Benutzer.
+sudo passwd <username>                       : Setzt oder ändert das Passwort eines Benutzers.
+su <username>                                : Wechselt zu einem anderen Benutzer.
+sudo passwd -l <username>                    : Sperrt ein Benutzerkonto.
+sudo passwd -u <username>                    : Entsperrt das Passwort eines Benutzers.
+sudo chage <username>                        : Legt das Ablaufdatum des Benutzerpassworts fest.
+</code>
+
+<code | Gruppenverwaltung>
+id [username]                                : Zeigt Benutzer- und Gruppen-IDs an.
+groups [username]                            : Zeigt die Gruppen an, denen ein Benutzer angehört.
+sudo addgroup <groupname>                    : Erstellt eine neue Gruppe.
+sudo delgroup <groupname>                    : Löscht eine Gruppe.
+</code>
+
+==== Netzwerk ====
+<code | Netzwerk>
+ip addr show                                                            : Zeigt Netzwerkschnittstellen und IP-Adressen an.
+ip -s link                                                              : Zeigt Netzwerksstatistiken an.
+ss -l                                                                   : Zeigt lauschende Sockets an.
+ping <host>                                                             : Sendet Pings an einen Host und gibt die Ergebnisse aus.
+</code>
+
+<code | Netplan-Konfiguration (mehr unter netplan.io)>
+cat /etc/netplan/*.yaml                                                 : Zeigt die aktuelle Netplan-Konfiguration an.
+sudo netplan try                                                        : Testet eine neue Konfiguration für eine bestimmte Zeit.
+sudo netplan apply                                                      : Wendet die aktuelle Netplan-Konfiguration an.
+</code>
+
+<code | SystemD nmcli>
+nmcli connection show                                                   : Listet alle Verbindungen auf.
+nmcli connection up <connection_name>                                   : Aktiviert eine Verbindung.
+nmcli connection down <connection_name>                                 : Deaktiviert eine Verbindung.
+nmcli connection add type ethernet con-name <name> ifname <interface>   : Fügt eine neue Ethernet-Verbindung hinzu.
+nmcli connection delete <connection_name>                               : Löscht eine Verbindung.
+
+nmcli device modify <device_name> ipv4.addresses <IP-Adresse>/<Subnetz> : Setzt eine statische IP-Adresse.
+nmcli device modify <device_name> ipv4.method auto                      : Setzt DHCP für eine Verbindung.
+nmcli device modify <device_name> ipv4.method manual                    : Setzt eine statische IP.
+</code>
+
+<code | SSH und Fernzugriff>
+ssh user@host                                                           : Stellt eine Verbindung zu einem entfernten Host über SSH her.
+scp <source> user@host:<destination>                                    : Kopiert Dateien sicher zwischen Hosts.
+</code>
+
+==== Firewall ====
+<code | Firewall-Verwaltung Ubuntu>
+sudo ufw status                                                      : Zeigt den Status der Firewall an.
+sudo ufw enable                                                      : Aktiviert die Firewall.
+sudo ufw disable                                                     : Deaktiviert die Firewall.
+sudo ufw allow <port/service>                                        : Erlaubt den Datenverkehr auf einem bestimmten Port oder Dienst.
+sudo ufw deny <port/service>                                         : Verweigert den Datenverkehr auf einem bestimmten Port oder Dienst.
+sudo ufw delete allow/deny <port/service>                            : Löscht eine bestehende Regel.
+</code>
+
+<code | Firewall-Verwaltung SystemD>
+sudo firewall-cmd --state                                            : Zeigt den Status der Firewall an.
+sudo firewall-cmd --zone=public --add-port=<port>/tcp                : Erlaubt den Datenverkehr auf einem bestimmten Port (TCP).
+sudo firewall-cmd --zone=public --remove-port=<port>/tcp             : Entfernt eine Regel für einen bestimmten Port (TCP).
+sudo firewall-cmd --zone=public --add-service=<service>              : Erlaubt den Datenverkehr für einen bestimmten Dienst.
+sudo firewall-cmd --zone=public --remove-service=<service>           : Entfernt eine Regel für einen bestimmten Dienst.
+sudo firewall-cmd --permanent --zone=public --add-port=<port>/tcp    : Fügt dauerhaft einen Port zur Regel hinzu.
+sudo firewall-cmd --permanent --zone=public --remove-port=<port>/tcp : Entfernt dauerhaft einen Port.
+sudo firewall-cmd --reload                                           : Lädt die Firewall-Konfiguration neu.
+</code>
+
+
+

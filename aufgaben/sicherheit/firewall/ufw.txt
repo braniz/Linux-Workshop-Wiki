@@ -1,0 +1,118 @@
+====== UFW - Übungen ======
+(2025.02)
+
+===== Leichte Übungen =====
+
+**Installation und Statusüberprüfung**  
+  * Installiere ufw, falls es nicht bereits installiert ist:
+<hidden Lösung><code>
+sudo apt install ufw  # Für Debian/Ubuntu  
+sudo dnf install ufw  # Für Fedora  
+sudo pacman -S ufw    # Für Arch Linux
+</code></hidden>\\
+  * Überprüfe den aktuellen Status der Firewall:
+<hidden Lösung><code>
+sudo ufw status
+</code></hidden>\\
+  * Aktiviere ufw und überprüfe erneut den Status:
+<hidden Lösung><code>
+sudo ufw enable  
+sudo ufw status
+</code></hidden>\\
+
+**Grundlegende Regeln setzen**  
+  * Erlaube eingehenden SSH-Zugriff (`22/tcp`):
+<hidden Lösung><code>
+sudo ufw allow 22/tcp
+</code></hidden>\\
+  * Erlaube HTTP (`80/tcp`) und HTTPS (`443/tcp`):
+<hidden Lösung><code>
+sudo ufw allow 80/tcp  
+sudo ufw allow 443/tcp
+</code></hidden>\\
+  * Verbiete explizit alle eingehenden Verbindungen außer denen, die explizit erlaubt wurden:
+<hidden Lösung><code>
+sudo ufw default deny incoming  
+sudo ufw default allow outgoing
+</code></hidden>\\
+  * Überprüfe die gesetzten Regeln:
+<hidden Lösung><code>
+sudo ufw status verbose
+</code></hidden>\\
+
+===== Mittelschwere Übungen =====
+
+**Regeln mit IP-Adressen und Subnetzen**  
+  * Erlaube nur Verbindungen von der IP-Adresse `192.168.1.100` auf Port `22/tcp`:
+<hidden Lösung><code>
+sudo ufw allow from 192.168.1.100 to any port 22 proto tcp
+</code></hidden>\\
+  * Erlaube Zugriff auf Port `3306` (MySQL), aber nur aus dem Subnetz `192.168.1.0/24`:
+<hidden Lösung><code>
+sudo ufw allow from 192.168.1.0/24 to any port 3306
+</code></hidden>\\
+  * Teste die Regeln:
+<hidden Lösung><code>
+sudo ufw status verbose
+</code></hidden>\\
+
+**Logging aktivieren und testen**  
+  * Aktiviere das Logging:
+<hidden Lösung><code>
+sudo ufw logging on
+</code></hidden>\\
+    * Erlaube `ICMP`-Pakete für `ping`:
+<hidden Lösung><code>
+sudo ufw allow proto icmp
+</code></hidden>\\
+  * Blockiere alle anderen eingehenden Verbindungen:
+<hidden Lösung><code>
+sudo ufw default deny incoming
+</code></hidden>\\
+  * Führe einen Verbindungsversuch durch und überprüfe die Logs:
+<hidden Lösung><code>
+sudo journalctl -xe | grep UFW
+</code></hidden>\\
+
+===== Komplexe Übungen =====
+
+**Benutzerdefinierte Regeln und Skripte**  
+  * Erstelle eine Regel, die nur von Montag bis Freitag zwischen 08:00 und 18:00 Uhr Zugriff auf `22/tcp` erlaubt:
+<hidden Lösung><code>
+echo "0 8 * * 1-5 root ufw allow 22/tcp" | sudo tee -a /etc/crontab  
+echo "0 18 * * 1-5 root ufw deny 22/tcp" | sudo tee -a /etc/crontab
+</code></hidden>\\
+  * Schreibe ein Bash-Skript, das die aktuellen `ufw`-Regeln sichert und eine neue Regel zum Blockieren einer bestimmten IP hinzufügt:
+<hidden Lösung><code>
+#!/bin/bash  
+sudo ufw status numbered > ufw_backup_$(date +%F).txt  
+sudo ufw deny from 203.0.113.42
+</code></hidden>\\
+
+**IPv6-Regeln verwalten**  
+  * Stelle sicher, dass `ufw` IPv6 unterstützt (`/etc/default/ufw` -> `IPV6=yes`):
+<hidden Lösung><code>
+sudo nano /etc/default/ufw
+</code></hidden>\\
+ * Erstelle eine Regel, die nur IPv6-Verbindungen auf Port `443` erlaubt:
+<hidden Lösung><code>
+sudo ufw allow 443/tcp from any to any proto tcp
+</code></hidden>\\
+  * Teste den Zugriff mit IPv6:
+<hidden Lösung><code>
+curl -6 https://example.com
+</code></hidden>\\
+
+**Erweiterte Logs und Analyse**  
+  * Erstelle eine Regel, die eingehenden `SSH`-Verkehr (`22/tcp`) protokolliert:
+<hidden Lösung><code>
+sudo ufw allow log 22/tcp
+</code></hidden>\\
+  * Analysiere die Log-Dateien, um herauszufinden, ob unerwartete Verbindungen auftreten:
+<hidden Lösung><code>
+sudo journalctl -u ufw --no-pager | tail -n 20
+</code></hidden>\\
+  * Erstelle eine Regel, um eine IP zu sperren, die zu viele fehlgeschlagene Verbindungsversuche unternimmt:
+<hidden Lösung><code>
+sudo ufw deny from 192.168.1.200
+</code></hidden>\\

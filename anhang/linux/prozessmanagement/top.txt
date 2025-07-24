@@ -1,0 +1,67 @@
+====== top ======
+(202)
+
+Echtzeit-Systemmonitor für Prozessaktivitäten und Ressourcennutzung.
+
+===== Syntax =====
+Grundbefehl mit Optionen:
+<code>
+top [-d Verzögerung] [-n Iterationen] [-u Benutzer] [-p PID]
+</code>
+
+Interaktive Befehle im laufenden **top**:
+<code>
+k - Prozess beenden
+M - Nach Speichernutzung sortieren
+P - Nach CPU-Auslastung sortieren
+z - Farbdarstellung umschalten
+q - Beenden
+</code>
+
+===== Wichtige Optionen =====
+^ Option   ^ Beschreibung                          ^
+| -d sec   | Aktualisierungsintervall in Sekunden   |
+| -n num   | Begrenzt die Anzahl Aktualisierungen  |
+| -u user  | Zeigt nur Prozesse des angegebenen Users |
+| -p pid   | Überwacht spezifische Prozess-ID       |
+| -b       | Batch-Mode für Skriptverarbeitung     |
+
+===== Beispiele =====
+Start mit 2 Sekunden Intervall:
+<code>
+top -d 2
+</code>
+
+Prozesse eines bestimmten Benutzers anzeigen:
+<code>
+top -u www-data
+</code>
+
+Dauerüberwachung von PID 1423 und 1535:
+<code>
+top -p 1423,1535
+</code>
+
+===== Hinweis =====
+  * **Nicht blind Prozesse killen**: Immer erst SIGTERM (15) vor SIGKILL (9) versuchen
+  * CPU-Werte zeigen kumulative Auslastung seit Start
+  * //Virtuelle// vs. //Resident Memory//: VIRT zeigt gesamten reservierten Speicher
+  * Bei hoher Systemlast Batch-Mode (-b) für Protokollierung verwenden
+
+===== Alternativen =====
+  * **htop** - Moderneres Interface mit Scrollfunktion
+  * **glances** - Webinterface und API-Support
+  * **atop** - Langzeit-Statistikaufzeichnung
+  * **nmon** - Spezialisiert auf Hardware-Ressourcen
+  * **gotop** - Go-basierte Alternative mit Diagrammen
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen:
+<code>
+man top
+</code>
+
+Externe Ressourcen:
+* [[https://www.linuxtechi.com/top-command-examples/|Top Command Examples]]
+* [[https://www.brendangregg.com/blog/2017-08-08/top-2017.html|Advanced top Usage]]
+* [[https://www.booleanworld.com/guide-linux-top-command/|Top Command Guide]]

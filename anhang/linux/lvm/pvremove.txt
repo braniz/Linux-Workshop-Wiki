@@ -1,0 +1,44 @@
+====== pvremove - Entfernen eines physischen Volumes ======
+
+`pvremove` ist ein Befehl, der verwendet wird, um ein physisches Volume (PV) aus einem Logical Volume Manager (LVM) zu entfernen. Dieser Befehl entfernt das PV aus der LVM-Konfiguration, ohne die Daten darauf zu löschen, solange es nicht in einer Volume-Gruppe (VG) verwendet wird.
+
+===== Syntax =====
+<code>
+pvremove [Optionen] <Physisches-Volume>
+</code>
+
+===== Wichtige Optionen =====
+
+^ Option           ^ Beschreibung                                                               ^
+| `-v`, `--verbose` | Zeigt detaillierte Ausgaben während der Ausführung des Befehls an.          |
+| `--test`          | Führt einen Testlauf durch, ohne Änderungen vorzunehmen.                      |
+
+===== Beschreibung =====
+Der Befehl `pvremove` entfernt ein physisches Volume (PV) aus der LVM-Datenbank. Bevor Sie `pvremove` verwenden, stellen Sie sicher, dass das PV nicht mehr in einer Volume-Gruppe (VG) verwendet wird und dass keine logischen Volumes (LVs) oder Daten auf diesem PV verbleiben.
+
+Der Befehl löscht nur die Zuordnung des PVs in der LVM-Datenbank, aber die Daten auf dem Volume werden nicht automatisch gelöscht. Wenn Sie das PV tatsächlich von der Festplatte entfernen wollen, müssen Sie dies mit einem anderen Tool, wie `wipefs`, tun.
+
+===== Beispiele =====
+
+  * Entfernen eines physischen Volumes:
+  <code>
+  pvremove /dev/sdb1
+  </code>
+  In diesem Beispiel wird das physische Volume `/dev/sdb1` aus der LVM-Konfiguration entfernt.
+
+  * Testen, was passieren würde, wenn das physische Volume entfernt wird:
+  <code>
+  pvremove --test /dev/sdb1
+  </code>
+  Dies zeigt nur die Auswirkungen des Befehls, ohne die tatsächlichen Änderungen vorzunehmen.
+
+===== Hinweis =====
+
+  *  Bevor Sie ein PV entfernen, stellen Sie sicher, dass es nicht mehr in einer Volume-Gruppe verwendet wird.
+  *  Verwenden Sie den Befehl `vgreduce`, um ein PV aus einer VG zu entfernen, bevor Sie es mit `pvremove` löschen.
+  
+===== Weitere Informationen =====
+Weitere Details finden Sie in den Manpages des Befehls:
+<code>
+man pvremove
+</code>

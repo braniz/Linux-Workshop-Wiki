@@ -1,0 +1,67 @@
+====== traceroute - Netzwerkpfad verfolgen ======
+(2025)
+
+Das Kommando **traceroute** wird verwendet, um den Netzwerkpfad von einem Computer zu einem Zielhost zu verfolgen. Es zeigt die Route und die Zeit, die jeder Router auf dem Weg zum Ziel benötigt. Dies ist hilfreich, um Netzwerkprobleme zu diagnostizieren und festzustellen, wo eine Verbindung fehlschlägt oder langsam wird.
+
+===== Syntax =====
+<code>
+traceroute [OPTIONEN] <ZIEL>
+</code>
+
+----
+
+===== Wichtige Optionen =====
+Die wichtigsten Optionen und Argumente für **traceroute** sind:
+
+^ Option ^ Beschreibung ^
+| `-m <HOPLIMIT>`     | Setzt das Maximum der Hops (Zwischenstationen) für die Traceroute. |
+| `-n`                | Zeigt IP-Adressen statt Hostnamen an, um die Auflösung zu vermeiden. |
+| `-T`                | Verwendet TCP anstelle von ICMP, um den Pfad zu verfolgen. |
+| `-p <PORT>`         | Setzt den Zielport, wenn die TCP-Option (`-T`) verwendet wird. |
+| `-I`                | Verwendet ICMP Echo-Request statt UDP-Pakete. |
+| `-w <TIMEOUT>`      | Setzt den Timeout-Wert für jede Antwort in Sekunden. |
+| `-q <ANZAHL>`       | Bestimmt, wie viele Anfragen pro Hop gesendet werden. |
+
+----
+
+===== Beispiele =====
+Hier sind einige Beispiele für die Verwendung von **traceroute**:
+
+  *  Zeigt die Route zu einem Zielhost an:
+<code>
+traceroute example.com
+</code>
+
+  *  Verwendet TCP statt UDP und setzt den Zielport auf 80 (HTTP):
+<code>
+traceroute -T -p 80 example.com
+</code>
+
+  *  Zeigt die Route zu einem Zielhost ohne Namensauflösung an (nur IP-Adressen):
+<code>
+traceroute -n example.com
+</code>
+
+  *  Setzt das Maximum der Hops auf 15:
+<code>
+traceroute -m 15 example.com
+</code>
+
+  *  Setzt den Timeout auf 2 Sekunden:
+<code>
+traceroute -w 2 example.com
+</code>
+
+----
+
+===== Hinweis =====
+  *  **traceroute** kann durch Firewalls oder Router blockiert werden, die ICMP oder UDP-Pakete blockieren.
+  *  Einige Netzwerke und Hosts antworten möglicherweise nicht auf **traceroute**-Anfragen, was zu einer unvollständigen Routenanzeige führen kann.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **traceroute**:
+<code>
+man traceroute
+</code>

@@ -1,0 +1,70 @@
+====== at - Einmalige Zeitgesteuerte Aufgaben ======
+(2025)
+
+**at** ist ein Dienst auf Unix-ähnlichen Systemen, der es ermöglicht, einmalige Aufgaben zu einem bestimmten Zeitpunkt in der Zukunft auszuführen. Im Gegensatz zu **cron**, das für wiederkehrende Aufgaben verwendet wird, ist **at** für Aufgaben gedacht, die nur einmalig zu einem bestimmten Zeitpunkt ausgeführt werden sollen.
+
+===== Syntax =====
+  at [Optionen] [Zeit] [Befehl]
+
+----
+
+===== Wichtige Optionen =====
+^ Option ^ Beschreibung ^
+| -f <Datei>      | Liest die Befehle aus einer Datei anstatt sie direkt einzugeben. |
+| -l              | Listet alle geplanten Jobs auf. |
+| -r <Job-ID>     | Entfernt einen geplanten Job anhand seiner Job-ID. |
+| -m              | Schickt eine E-Mail bei der Ausführung des Jobs (Standardverhalten). |
+| -v              | Gibt eine detaillierte Ausgabe der geplanten Jobs aus. |
+
+----
+
+===== Zeitformat =====
+Die Zeitangabe für den **at**-Befehl kann in verschiedenen Formaten erfolgen, z.B.:
+  * Eine genaue Uhrzeit: `at 14:30`
+  * Ein Datum und eine Uhrzeit: `at 2025-03-05 16:00`
+  * Relative Zeiten wie `at now + 2 hours` für zwei Stunden ab jetzt.
+  
+Ein weiteres Beispiel ist:
+<code>
+at 14:30 tomorrow
+</code>
+dies würde die Aufgabe am nächsten Tag um 14:30 Uhr ausführen.
+
+----
+
+===== Beispiel =====
+  *  Eine Aufgabe um 15:00 Uhr ausführen:
+<code>
+at 15:00
+at> /usr/bin/script.sh
+at> <EOT>
+</code>
+In diesem Beispiel wird das Skript **script.sh** um 15:00 Uhr ausgeführt.
+
+  *  Eine Aufgabe eine Stunde nach der aktuellen Zeit ausführen:
+<code>
+at now + 1 hour
+at> /usr/bin/backup.sh
+at> <EOT>
+</code>
+
+  *  Eine Aufgabe morgen um 16:00 Uhr ausführen:
+<code>
+at 16:00 tomorrow
+at> /usr/bin/cleanup.sh
+at> <EOT>
+</code>
+
+----
+
+===== Hinweis =====
+  *  **at** verarbeitet nur einmalige Jobs. Wenn Sie eine wiederkehrende Aufgabe benötigen, verwenden Sie stattdessen **cron**.
+  *  **at** benötigt möglicherweise Administratorrechte, um Aufgaben für andere Benutzer zu planen.
+
+----
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen über **at**:
+<code>
+man at
+</code>

@@ -1,0 +1,68 @@
+====== 00 Zeit- und Aufgabenplanung in Linux ======
+(2025)
+
+Automatisierung von Tasks und präzise Steuerung der Ausführungszeiten sind Kernfunktionen moderner Linux-Systeme. Dieser Artikel erklärt grundlegende Tools und Konzepte für die Planung wiederkehrender oder einmaliger Aufgaben.
+
+===== Syntax =====
+Häufig verwendete Planungs-Tools:
+
+<code>
+cron            # Wiederkehrende Aufgaben (Cronjobs)
+at              # Einmalige Aufgaben zu festen Zeiten
+systemd-timer   # Systemd-interne Zeitplaner (Ersatz für cron)
+sleep           # Verzögerte Skriptausführung (z.B. sleep 30 && befehl)
+</code>
+
+===== Wichtige Optionen =====
+^ Tool          ^ Optionen/Befehl            ^ Beschreibung ^
+| cron          | crontab -e                 | Cronjobs bearbeiten |
+|               | */5 * * * * befehl         | Alle 5 Minuten ausführen |
+| at            | at 15:30                   | Befehl um 15:30 Uhr starten |
+|               | atq                        | Wartende Jobs anzeigen |
+| systemd-timer | systemctl list-timers      | Aktive Timer anzeigen |
+| sleep         | sleep 1h 30m; befehl       | 1,5 Stunden warten |
+
+===== Beispiele =====
+Cronjob für tägliches Backup um 2:30 Uhr:
+<code>
+30 2 * * * /usr/bin/backup-script.sh
+</code>
+
+Einmaligen Shutdown um 23:45 planen:
+<code>
+echo "shutdown -h now" | at 23:45
+</code>
+
+Systemd-Timer für stündliche Logrotation:
+<code>
+# /etc/systemd/system/logrotate-hourly.timer
+[Timer]
+OnCalendar=hourly
+Persistent=true
+</code>
+
+===== Hinweis =====
+  * **Crontab immer mit `crontab -e` editieren** – direkte Dateimanipulation in /etc/cron.d/ kann Syntaxfehler verursachen
+  * Zeitzonen beachten: Cronjobs laufen standardmäßig in der Systemzeitzone
+  * //at//-Jobs benötigen oft aktivierten **atd**-Daemon (systemctl enable --now atd)
+  * Systemd-Timer unterstützen komplexe Zeitangaben wie "mon..fri 09:00"
+
+===== Alternativen =====
+  * **anacron** – Für Systeme, die nicht 24/7 laufen (z.B. Laptops)
+  * **tmux**/screen – Persistente Terminal-Sessions für langlaufende Tasks
+  * **Jenkins** – Professionelle Automatisierungsserver mit Webinterface
+  * **Taskwarrior** – Kommandozeilen-Taskmanager für persönliche Planung
+  * **Web-Cron** – Externe Dienste wie [[https://cron-job.org|Cron-Job.org]]
+
+===== Weitere Informationen =====
+Offizielle Dokumentationen:
+<code>
+man 5 crontab
+man at
+man systemd.timer
+</code>
+
+Praktische Guides:
+  * [[https://wiki.archlinux.org/title/Cron|Arch Linux Cron Guide]]
+  * [[https://www.digitalocean.com/community/tutorials/how-to-use-systemd-timers|Systemd Timer Tutorial]]
+  * [[https://crontab.guru|Crontab Guru]] – Interaktiver Cronzeitplan-Generator

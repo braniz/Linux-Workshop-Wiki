@@ -1,0 +1,29 @@
+====== ssh ======
+(2025)
+
+Kurze Beschreibung
+
+===== Syntax =====
+Text
+
+===== Wichtige Optionen =====
+Text
+
+===== Beispiele =====
+<code: text>
+
+</code>
+===== Hinweis =====
+Text
+
+===== Alternativen =====
+Text
+
+===== Weitere Informationen =====
+
+Die Man-Page liefert detaillierte Informationen:
+
+<code>
+
+</code>
+Weitere Informationen und Dokumentation zu findest du auf xxx

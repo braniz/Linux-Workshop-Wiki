@@ -1,0 +1,40 @@
+===== sshd_config =====
+(2025.02)
+
+**Minimal Einstellung für sshd**
+
+<code>
+Include /etc/ssh/sshd_config.d/*.conf
+Port <PortNR>
+PasswordAuthentication no
+PermitRootLogin no
+KbdInteractiveAuthentication no
+UsePAM yes
+X11Forwarding yes
+PrintMotd no
+AcceptEnv LANG LC_*
+Subsystem	sftp	/usr/lib/openssh/sftp-server
+</code>
+
+Neuere Versionen der Linuxdistributionen verwenden sshd_conf.d um sshd Modularer zu Konfigurieren.
+
+Bessere Übersichtlichkeit bei vielen Einstellungen.\\
+Paket- oder distributionsspezifische Konfigurationen können eigene Dateien einfügen, ohne die Hauptdatei zu verändern.\\
+Priorisierung: Dateien werden alphabetisch eingelesen – spätere Einträge überschreiben frühere.
+
+<code>
+Include /etc/ssh/sshd_config.d/*.conf
+KbdInteractiveAuthentication no
+UsePAM yes
+X11Forwarding yes
+PrintMotd no
+AcceptEnv LANG LC_*
+Subsystem	sftp	/usr/lib/openssh/sftp-server
+</code>
+
+<code>
+Port <PortNR>
+PermitRootLogin no
+PasswordAuthentication no
+AuthenticationMethods publickey
+</code>

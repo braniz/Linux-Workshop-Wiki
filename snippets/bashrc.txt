@@ -1,0 +1,36 @@
+====== .bashrc ======
+(2025.02)
+
+**Aktivieren der .bashrc Anpassungen**
+<code>
+. .bashrc
+</code>
+
+
+**Standard**
+<code>
+PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+</code>
+<code>
+UserName@HostName:~$
+</code>
+
+**Angepasst**
+<code>
+PS1='\[\033[01;32m\]\342\224\214\342\224\200\342\224\200\[\033[01;32m\][\D{%Y-%m-%d}]-[\u@\h] [\[\033[1;33m\]\W\[\033[01;32m\]]\$: \n\342\224\224\342\224\200\342\224\200|\[\033[1;37m\] '
+</code>
+
+<code>
+┌──[2024-08-17]-[UserName@HostName] [~]$:
+└──|
+</code>
+
+===== Alias ======
+
+<code>
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+alias dinf='sudo docker ps --format "table {{.Names}}\t{{.ID}}\t{{.Status}}"'
+</code>

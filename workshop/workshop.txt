@@ -1,0 +1,59 @@
+~~NOTOC~~
+~~NOCACHE~~ 
+
+<WRAP centeralign round box 80% center>
+====== 20 - Workshop ======
+</WRAP>
+
+<WRAP round box 80% center>
+==== Agenda ====
+<hidden TAG-1>
+  * Einführung
+  * Die Secure Shell
+  * Keine Angst vor der Shell
+  * Dateien: Aufzucht und Pflege
+  * Standardkanäle und Filterkommandos
+  * ManPages - Hilfe
+</hidden>
+
+<hidden TAG-2>
+  * Der Editor vi
+  * Mehr über die Shell
+  * Paketverwaltung
+  * Paketverwaltung mit Debian-Werkzeugen
+  * Paketverwaltung mit RPM & Co.
+</hidden>
+
+<hidden TAG-3>
+  * Das Dateisystem
+  * Systemadministration
+  * Benutzerverwaltung
+  * Prozessverwaltung
+  * Festplatten (und andere Massenspeicher)
+  * Dateisysteme
+</hidden>
+
+<hidden TAG-4>
+  * Linux booten
+  * System-V-Init und der Init-Prozess
+  * Systemd
+  * Systemprotokollierung
+  * Systemprotokollierung mit systemd und »dem Journal«
+  * Grundlagen von TCP/IP
+  * Linux-Netzkonfiguration
+  * Fehlersuche und Fehlerbehebung im Netz
+</hidden>
+
+<hidden TAG-5>
+  * Abschluss
+  * Frage Runde
+  * Tips & Tricks 
+</hidden>
+
+
+</WRAP>
+
+
+
+
+

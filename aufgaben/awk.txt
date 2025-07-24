@@ -1,0 +1,19 @@
+====== AWK ======
+(2025.02)
+
+===== Einführung =====
+
+awk - pattern-directed scanning and processing language
+
+===== Verwendte Befehle ======
+
+<code>
+
+</code>
+
+===== Beispiele =====
+
+<code>
+
+</code>
+

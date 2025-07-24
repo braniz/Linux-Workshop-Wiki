@@ -1,0 +1,63 @@
+====== vgdisplay – Anzeige von Volume Group-Informationen ======
+(2025)
+
+Der Befehl **vgdisplay** zeigt detaillierte Informationen über eine oder mehrere **Volume Groups (VGs)** an. Dies umfasst wichtige Daten wie den verfügbaren Speicherplatz, die Anzahl der Logical Volumes und Physical Volumes sowie die UUID der Volume Group.
+
+===== Syntax =====
+<code>
+vgdisplay [Optionen] [Volume-Group-Name]
+</code>
+
+**Wichtige Optionen:**  
+
+^ Option ^ Beschreibung ^
+| **-v**, **--verbose**           | Zeigt detailliertere Informationen zu den Volume Groups an. |
+| **-c**, **--colon**             | Gibt die Ausgabe im kommagetrennten Format aus. |
+| **--units <Einheit>**           | Bestimmt die Einheit für die Ausgabe (z.B. MB, GB, TB). |
+
+-----
+
+===== Beispiele =====
+
+  *  **Anzeige der Informationen einer bestimmten Volume Group**  
+<code>
+sudo vgdisplay vg01
+</code>
+
+  *  **Anzeige aller Volume Groups im System**  
+<code>
+sudo vgdisplay
+</code>
+
+  *  **Anzeige der Informationen einer Volume Group im kommagetrennten Format**  
+<code>
+sudo vgdisplay -c vg01
+</code>
+
+  *  **Anzeige der Informationen mit detaillierten Ausgaben**  
+<code>
+sudo vgdisplay -v vg01
+</code>
+
+-----
+
+===== Hinweis =====
+  *  Der Befehl `vgdisplay` zeigt nur Informationen zu Volume Groups an, die im System vorhanden sind.
+  *  Wenn der Name der Volume Group nicht angegeben wird, zeigt der Befehl die Informationen zu allen Volume Groups an.
+
+-----
+
+===== Alternativen =====
+  *  `vgcreate` – Erstellt eine neue Volume Group.  
+  *  `vgextend` – Fügt einer Volume Group zusätzliche Physical Volumes hinzu.  
+  *  `vgreduce` – Entfernt ein Physical Volume aus einer Volume Group.  
+
+-----
+
+===== Weitere Informationen =====
+Für detaillierte Informationen siehe die Man-Page:  
+<code>
+man vgdisplay
+</code>
+
+Weitere Dokumentation findest du unter [[https://man7.org/linux/man-pages/man8/vgdisplay.8.html|vgdisplay Man-Page]].

@@ -1,0 +1,34 @@
+====== Kommandozeile (CLI) ======
+(2025)
+
+Die Kommandozeile (CLI) ist ein mächtiges Werkzeug in Linux, mit dem du Befehle direkt eingeben kannst, um Aufgaben effizient auszuführen. Hier sind einige der häufigsten und wichtigsten CLI-Kommandos:
+
+===== Wichtige Befehle =====
+
+^ Kommando                                      ^ Beschreibung                                                     ^ **Optionale Parameter**                                          ^
+| //[[anhang:linux:befehle:cd|cd]]//            | Wechselt das Verzeichnis                                         | Keine zusätzlichen Parameter                                     |
+| //[[anhang:linux:befehle:pwd|pwd]]//          | Zeigt den aktuellen Arbeitsordner an                             | Keine zusätzlichen Parameter                                     |
+| //[[anhang:linux:befehle:ls|ls]]//            | Listet Dateien und Verzeichnisse im aktuellen Verzeichnis        | -l (lange Liste), -a (alle Dateien, einschließlich versteckter)  |
+| //[[anhang:linux:befehle:mkdir|mkdir]]//      | Erstellt ein neues Verzeichnis                                   | -p (Erstellt Verzeichnisse, falls erforderlich)                  |
+| //[[anhang:linux:befehle:rmdir|rmdir]]//      | Entfernt ein leeres Verzeichnis                                  | Keine zusätzlichen Parameter                                     |
+| //[[anhang:linux:befehle:cp|cp]]//            | Kopiert Dateien oder Verzeichnisse                               | -r (rekursiv für Verzeichnisse), -u (nur bei neuerer Quelle)     |
+| //[[anhang:linux:befehle:mv|mv]]//            | Verschiebt oder benennt Dateien/Verzeichnisse um                 | -i (fragt vor Überschreiben), -u (nur bei neuerer Quelle)        |
+| //[[anhang:linux:befehle:rm|rm]]//            | Entfernt Dateien oder Verzeichnisse                              | -r (rekursiv für Verzeichnisse), -f (erzwingt Löschen)           |
+| //[[anhang:linux:befehle:touch|touch]]//      | Erstellt eine neue Datei oder ändert das Änderungsdatum          | Keine zusätzlichen Parameter                                     |
+| //[[anhang:linux:befehle:cat|cat]]//          | Zeigt den Inhalt einer Datei an                                  | Keine zusätzlichen Parameter                                     |
+| //[[anhang:linux:befehle:less|less]]//        | Zeigt den Inhalt einer Datei seitenweise an                      | Keine zusätzlichen Parameter                                     |
+| //[[anhang:linux:befehle:chmod|chmod]]//      | Ändert die Berechtigungen einer Datei oder eines Verzeichnisses  | -R (rekursiv für Verzeichnisse)                                  |
+| //[[anhang:linux:befehle:chown|chown]]//      | Ändert den Besitzer einer Datei oder eines Verzeichnisses        | -R (rekursiv für Verzeichnisse)                                  |
+| //[[anhang:linux:befehle:find|find]]//        | Sucht nach Dateien im Dateisystem                                | -name (nach Dateinamen suchen), -type (nach Dateityp suchen)     |
+| //[[anhang:linux:befehle:grep|grep]]//        | Sucht nach Textmustern in Dateien                                | -i (ignoriert Groß-/Kleinschreibung), -r (rekursiv)              |
+| //[[anhang:linux:befehle:df|df]]//            | Zeigt Informationen über den Festplattenspeicher an              | -h (zeigt in menschenlesbarem Format)                            |
+| //[[anhang:linux:befehle:du|du]]//            | Zeigt den Speicherverbrauch von Dateien und Verzeichnissen an    | -h (zeigt in menschenlesbarem Format)                            |
+| //[[anhang:linux:befehle:ps|ps]]//            | Zeigt aktuelle Prozesse an                                       | -aux (zeigt alle Prozesse), -u (zeigt Prozesse eines Nutzers)    |
+| //[[anhang:linux:befehle:top|top]]//          | Zeigt eine dynamische Übersicht der laufenden Prozesse           | Keine zusätzlichen Parameter                                     |
+| //[[anhang:linux:befehle:htop|htop]]//        | Zeigt eine dynamische Übersicht der laufenden Prozesse           | Keine zusätzlichen Parameter                                     |
+| //[[anhang:linux:befehle:kill|kill]]//        | Beendet einen laufenden Prozess                                  | -9 (erzwungene Beendigung)                                       |
+| //[[anhang:linux:befehle:man|man]]//          | Zeigt die Handbuchseite (Hilfe) zu einem Befehl                  | Keine zusätzlichen Parameter                                     |
+| //[[anhang:linux:befehle:apropos|apropos]]//  | Man-Page nach Stichwort durchsuchen                              | Keine zusätzlichen Parameter                                     |
+| //[[anhang:linux:befehle:sudo|sudo]]//        | Führt Befehle mit Administratorrechten aus                       | Keine zusätzlichen Parameter                                     |
+
+

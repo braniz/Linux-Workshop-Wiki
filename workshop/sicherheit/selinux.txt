@@ -1,0 +1,99 @@
+====== SELinux - Sicherheitsmanagement in Linux ======
+(2025.02)
+
+**SELinux** (Security-Enhanced Linux) ist ein Sicherheitsmodul für den Linux-Kernel, das eine erweiterte Zugriffskontrolle (MAC - Mandatory Access Control) bietet. SELinux ermöglicht eine detaillierte Kontrolle darüber, welche Programme und Benutzer auf Ressourcen im System zugreifen dürfen. Es schützt das System vor schädlichen Programmen oder Fehlern, indem es den Zugriff auf sensible Daten und Systemressourcen einschränkt.
+
+SELinux verwendet Sicherheitsrichtlinien, um zu bestimmen, welcher Prozess auf welche Datei, Netzwerkressource oder Systemfunktion zugreifen kann. Es trägt so zur Verbesserung der Sicherheit von Linux-Systemen bei, insbesondere in sicherheitskritischen Umgebungen.
+
+===== Syntax =====
+<code bash>
+sestatus
+setenforce [Enforced|Permissive|Disabled]
+getenforce
+semanage [Optionen] [Befehl]
+restorecon [Optionen] [Datei]
+</code>
+
+===== Wichtige Optionen =====
+^ Option               ^ Beschreibung                                                   ^
+| `sestatus`           | Zeigt den aktuellen Status von SELinux an.                     |
+| `setenforce`         | Setzt den SELinux-Modus auf `Enforced`, `Permissive` oder `Disabled`. |
+| `getenforce`         | Zeigt den aktuellen Modus von SELinux an.                      |
+| `semanage`           | Verwendet die SELinux-Verwaltung, um Konfigurationen zu ändern.|
+| `restorecon`         | Stellt die Standard-SELinux-Kontexte für Dateien wieder her.  |
+| `audit2allow`        | Erzeugt SELinux-Regeln aus den Protokolldateien.              |
+| `seinfo`             | Zeigt Informationen zu SELinux-Objekten und -Modulen an.      |
+
+===== Verzeichnisse =====
+^ Verzeichnis                          ^ Beschreibung                                                               ^
+| `/etc/selinux/`                       | Hauptkonfigurationsverzeichnis für SELinux. Enthält die Datei `config`.       |
+| `/var/log/audit/`                     | Verzeichnis für die Audit-Logs, die von SELinux und anderen Systemdiensten erzeugt werden.|
+| `/etc/selinux/targeted/`              | Verzeichnis mit den SELinux-Policy-Dateien für den `targeted`-Modus.         |
+| `/etc/selinux/strict/`                | Verzeichnis mit den SELinux-Policy-Dateien für den `strict`-Modus.           |
+| `/etc/selinux/selinux.conf`           | Die Hauptkonfigurationsdatei für SELinux, in der der Modus und andere Optionen festgelegt werden.|
+| `/etc/selinux/contexts/`              | Verzeichnis für SELinux-Kontextdateien, die den Zugriff steuern.            |
+
+===== SELinux Modus =====
+**SELinux** arbeitet in drei verschiedenen Modi, die das Verhalten und die Sicherheitseinstellungen steuern:
+
+^ Modus      ^ Beschreibung                                                              ^
+| `Enforced` | SELinux erzwingt die Sicherheitsrichtlinien. Alle Verstöße werden protokolliert und die Aktionen blockiert.|
+| `Permissive` | SELinux protokolliert Verstöße gegen die Richtlinien, blockiert jedoch keine Aktionen. Dieser Modus ist nützlich zur Fehlersuche.|
+| `Disabled`  | SELinux ist deaktiviert und schützt das System nicht. Alle Sicherheitsrichtlinien werden ignoriert.|
+
+===== Beispiele =====
+**Aktuellen SELinux-Status anzeigen:**
+<code bash>
+sestatus
+</code>
+Zeigt den aktuellen Status von SELinux an, einschließlich des Modus und der Aktivierung.
+
+**SELinux-Modus ändern (z.B. von `Enforced` auf `Permissive`):**
+<code bash>
+setenforce Permissive
+</code>
+Wechselt den SELinux-Modus in den `Permissive`-Modus. In diesem Modus werden Verstöße protokolliert, aber nicht blockiert.
+
+**Den aktuellen SELinux-Modus anzeigen:**
+<code bash>
+getenforce
+</code>
+Zeigt den aktuellen SELinux-Modus an, entweder `Enforced`, `Permissive` oder `Disabled`.
+
+**Konfiguration von SELinux anpassen (z.B. ändern auf `Disabled`):**
+<code bash>
+vi /etc/selinux/config
+</code>
+Ändere die Zeile `SELINUX=enforcing` zu `SELINUX=disabled`, um SELinux dauerhaft zu deaktivieren.
+
+**Dateikontext wiederherstellen:**
+<code bash>
+restorecon /path/to/datei
+</code>
+Stellt den Standard-SELinux-Dateikontext für eine Datei oder ein Verzeichnis wieder her.
+
+**Erzeugt Regeln aus Audit-Logs:**
+<code bash>
+audit2allow -a
+</code>
+Erzeugt basierend auf den Audit-Logs die SELinux-Regeln, die zur Behebung von Sicherheitsverletzungen erforderlich sind.
+
+**Änderungen in der SELinux-Konfiguration übernehmen:**
+<code bash>
+setenforce 1
+</code>
+Aktiviert den `Enforced`-Modus, um alle SELinux-Richtlinien strikt durchzusetzen.
+
+===== Hinweis =====
+- Im `Permissive`-Modus protokolliert SELinux Verstöße, jedoch ohne Maßnahmen zu ergreifen, was besonders für die Fehlersuche nützlich ist. Der `Enforced`-Modus ist die empfohlene Einstellung für produktive Systeme.
+- **SELinux** kann je nach Distribution unterschiedliche Standardsicherheitsrichtlinien verwenden, z.B. den `targeted`-Modus, der den Zugriff auf weniger kritische Dienste einschränkt, oder den `strict`-Modus, der umfassende Einschränkungen für alle Prozesse und Benutzer festlegt.
+- Um SELinux dauerhaft zu deaktivieren, müssen Änderungen in der Datei `/etc/selinux/config` vorgenommen und das System neu gestartet werden.
+
+===== Weitere Informationen =====
+Die Man-Pages liefern detaillierte Informationen zu den Kommandos und SELinux-Konfigurationen:
+<code bash>
+man selinux
+man setenforce
+man getenforce
+man audit2allow
+</code>

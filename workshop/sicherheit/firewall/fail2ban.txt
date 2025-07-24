@@ -1,0 +1,77 @@
+======= fail2ban - Schutz vor Brute-Force-Angriffen ======
+(2025.02)
+
+**fail2ban** ist ein Sicherheitstool für Linux, das Log-Dateien überwacht und automatisch IP-Adressen sperrt, die verdächtige Aktivitäten wie wiederholte fehlerhafte Anmeldeversuche aufweisen. Es hilft, Brute-Force-Angriffe auf Dienste wie SSH, FTP und Webserver zu verhindern, indem es IPs temporär blockiert, die sich mehrfach mit falschen Anmeldedaten einloggen wollen.
+
+===== Syntax =====
+<code bash>
+fail2ban-client [Optionen] [Befehl] [Argumente]
+</code>
+
+===== Wichtige Optionen =====
+^ Option             ^ Beschreibung                                               ^
+| `status`           | Zeigt den aktuellen Status von fail2ban an.                  |
+| `status <jail>`    | Zeigt den Status eines spezifischen Jails an.                 |
+| `start <jail>`     | Startet ein spezifisches Jail (z.B. sshd, apache).           |
+| `stop <jail>`      | Stoppt ein spezifisches Jail.                                |
+| `reload <jail>`    | Lädt die Konfiguration eines Jails neu.                       |
+| `banip <IP>`       | Sperrt eine IP-Adresse manuell.                              |
+| `unbanip <IP>`     | Entsperrt eine IP-Adresse manuell.                            |
+| `logpath`          | Gibt den Pfad zu den Log-Dateien an, die überwacht werden.    |
+
+===== Beispiele =====
+**Status von fail2ban anzeigen:**
+<code bash>
+fail2ban-client status
+</code>
+Zeigt den allgemeinen Status von fail2ban an, einschließlich der aktiven Jails und gesperrten IP-Adressen.
+
+**Status eines spezifischen Jails anzeigen:**
+<code bash>
+fail2ban-client status sshd
+</code>
+Zeigt den Status des "sshd"-Jails an, das SSH-Verbindungen überwacht und blockiert.
+
+**Jail starten:**
+<code bash>
+fail2ban-client start sshd
+</code>
+Startet das "sshd"-Jail, um SSH-Logins zu überwachen und bei fehlerhaften Versuchen IPs zu sperren.
+
+**Jail stoppen:**
+<code bash>
+fail2ban-client stop sshd
+</code>
+Stoppt das "sshd"-Jail, sodass keine weiteren fehlerhaften Versuche überwacht werden.
+
+**IP-Adresse manuell sperren:**
+<code bash>
+fail2ban-client banip 192.168.1.100
+</code>
+Sperrt die IP-Adresse `192.168.1.100` manuell, wenn sie eine Bedrohung darstellt.
+
+**IP-Adresse manuell entsperren:**
+<code bash>
+fail2ban-client unbanip 192.168.1.100
+</code>
+Entsperrt die IP-Adresse `192.168.1.100`, wenn sie fälschlicherweise blockiert wurde.
+
+**Änderungen an der Konfiguration vornehmen:**
+<code bash>
+nano /etc/fail2ban/jail.local
+</code>
+Bearbeitet die lokale Konfigurationsdatei für fail2ban, um Jails zu konfigurieren oder IP-Sperren zu ändern.
+
+===== Hinweis =====
+- **Jails** sind Konfigurationseinheiten, die auf bestimmte Dienste (z.B. SSH, Apache) angewendet werden, um unerwünschte IP-Adressen zu blockieren.
+- **fail2ban** blockiert IP-Adressen nur vorübergehend (standardmäßig für eine Stunde), aber die Dauer kann in den Jail-Konfigurationen angepasst werden.
+- Bei Änderungen an der Konfiguration ist ein Neustart von fail2ban erforderlich, um die neuen Regeln zu übernehmen:
+  <code bash>
+  sudo systemctl restart fail2ban
+  </code>
+
+===== Weitere Informationen =====
+Die Man-Page liefert detaillierte Informationen:
+<code bash>
+man fail2ban-client
+</code>

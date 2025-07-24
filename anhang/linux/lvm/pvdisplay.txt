@@ -1,0 +1,64 @@
+====== pvdisplay – Anzeigen von Physical Volumes ======
+(2025)
+
+Der Befehl **pvdisplay** zeigt detaillierte Informationen über **Physical Volumes (PVs)**, die im **Logical Volume Manager (LVM)** verwendet werden. Er listet Metadaten wie Größe, UUID, Volume Group-Zugehörigkeit und andere Eigenschaften eines PVs auf.
+
+===== Syntax =====
+<code>
+pvdisplay [Optionen] <Gerät>
+</code>
+
+**Wichtige Optionen:**  
+
+^ Option ^ Beschreibung ^
+|  **-C**    | Zeigt eine kompakte Ausgabe in Tabellenform. |
+|  **-m**    | Zeigt die Zuordnung der **Physical Extents (PEs)** zu **Logical Volumes (LVs)**. |
+|  **-s**    | Gibt eine kurze Übersicht über die PV-Größe aus. |
+|  **-v**    | Detaillierte Ausgabe mit zusätzlichen Informationen. |
+
+-----
+
+===== Beispiele =====
+
+  *  **Alle vorhandenen Physical Volumes anzeigen**  
+<code>
+sudo pvdisplay
+</code>
+
+  *  **Details zu einem bestimmten Physical Volume anzeigen**  
+<code>
+sudo pvdisplay /dev/sdb1
+</code>
+
+  *  **Kompakte Übersicht über alle Physical Volumes**  
+<code>
+sudo pvs
+</code>
+
+  *  **Anzeigen, welche Logical Volumes sich auf einem Physical Volume befinden**  
+<code>
+sudo pvdisplay -m /dev/sdb1
+</code>
+
+-----
+
+===== Hinweis =====
+  *  Falls ein Gerät nicht als Physical Volume erkannt wird, kann `pvs` als kompakte Alternative nützlich sein.
+  *  Wenn keine Ausgabe erfolgt, könnte das Gerät nicht als PV initialisiert sein. In diesem Fall kann `pvcreate` verwendet werden.
+
+-----
+
+===== Alternativen =====
+  *  `pvcreate` – Erstellt ein neues Physical Volume.  
+  *  `pvs` – Zeigt eine kompakte Liste aller Physical Volumes.  
+  *  `pvremove` – Entfernt ein Physical Volume aus dem LVM.
+
+-----
+
+===== Weitere Informationen =====
+Für detaillierte Informationen siehe die Man-Page:  
+<code>
+man pvdisplay
+</code>
+
+Weitere Dokumentation findest du unter [[https://man7.org/linux/man-pages/man8/pvdisplay.8.html|pvdisplay Man-Page]].

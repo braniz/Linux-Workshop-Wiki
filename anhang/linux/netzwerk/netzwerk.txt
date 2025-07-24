@@ -1,0 +1,146 @@
+====== 00 Linux-Netzwerkbefehle und Diagnose ======
+(2025) | //Grundlagen der Netzwerkkonfiguration und Troubleshooting-Tools//
+
+Linux bietet leistungsstarke CLI-Tools für Netzwerkdiagnose, Konfiguration und Monitoring. Dieser Artikel erklärt essentielle Befehle und ihre Anwendung im Alltag eines Systemadministrators.
+
+===== Grundkonzepte =====
+^ Schicht        ^ Protokolle/Tools          ^ Beschreibung                  ^
+| **Physikalisch** | ethtool, lshw          | Kabel, NICs, Signalstärke       |
+| **Datenverbindung** | macchanger, arp    | MAC-Adressen, ARP-Tabellen      |
+| **Netzwerk**      | ip route, ping       | IP-Adressen, Routing, ICMP      |
+| **Transport**     | ss, iptables        | Ports, Firewall, TCP/UDP        |
+| **Anwendung**     | curl, dig, nslookup | HTTP, DNS, SSH                  |
+
+===== Wichtige Befehle =====
+**Basiskonfiguration**:
+<code>
+ip addr show              # Alle Interfaces anzeigen (modernes Äquivalent zu ifconfig)
+ip route show             # Routing-Tabelle anzeigen
+nmcli dev status          # NetworkManager-Status (bei Distribs mit NM)
+</code>
+
+**Erweiterte Diagnose**:
+<code>
+ss -tulpn                 # Offene Ports + zugehörige Prozesse
+mtr 8.8.8.8               # Kombiniert traceroute + ping (Echtzeit-Analyse)
+nc -zv 192.168.1.10 22    # Port-Verfügbarkeit testen (Netcat)
+tcpdump -i eth0 'port 80'# Rohen HTTP-Datenverkehr erfassen
+</code>
+
+===== Praxisbeispiele =====
+**1. Netzwerkinterface konfigurieren** (statische IP):
+<code>
+sudo ip addr add 192.168.1.100/24 dev eth0
+sudo ip link set eth0 up
+sudo ip route add default via 192.168.1.1
+</code>
+
+**2. DNS-Probleme analysieren**:
+<code>
+dig +short google.com A          # Direkte DNS-Abfrage
+dig @8.8.8.8 google.com NS       # Spezifischen DNS-Server abfragen
+cat /etc/resolv.conf             # Konfigurierte DNS-Server prüfen
+</code>
+
+**3. Firewall-Regeln (iptables)**:
+<code>
+sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT  # SSH erlauben
+sudo iptables -A INPUT -j DROP                      # Alle anderen blockieren
+sudo iptables-save > /etc/iptables/rules.v4         # Regeln persistieren
+</code>
+
+**4. SSH-Tunnel erstellen**:
+<code>
+ssh -L 8080:localhost:80 user@jumphost   # Lokalen Port weiterleiten
+ssh -D 9090 user@proxyhost              # SOCKS-Proxy für Browser
+</code>
+
+**5. Bandbreitentest**:
+<code>
+# Download/Upload mit curl (10MB Test):
+curl -o /dev/null http://speedtest.tele2.net/10MB.zip
+# Oder mit iperf3:
+iperf3 -c speedtest.server -p 5201 -R
+</code>
+
+===== Sicherheitshinweise =====
+  * **Port-Scanning** nur auf eigenen Netzen:<code>nmap -sS 192.168.1.0/24</code>
+  * **SSH Härtung**:
+    - Passwort-Login deaktivieren (`PasswordAuthentication no`)
+    - Root-Login verbieten (`PermitRootLogin no`)
+  * **Sensitive Daten**:
+    - tcpdump mit Filter: `tcpdump -i any -w capture.pcap 'not port 22'`
+    - Wireshark-Analyse nur auf verschlüsselten Systemen
+  * **MAC-Spoofing**:<code>ip link set dev eth0 address 00:11:22:33:44:55</code>
+
+===== Monitoring & Automatisierung =====
+**Echtzeit-Überwachung**:
+<code>
+iftop -i eth0                  # Bandbreitennutzung pro Verbindung
+nethogs eth0                   # Traffic pro Prozess
+bmon -p eth0                   # Detaillierte Interface-Statistiken
+</code>
+
+**Automatisierte Checks**:
+<code>
+# Cron-Job für Ping-Monitoring:
+*/5 * * * * ping -c 3 8.8.8.8 >/dev/null || echo "Internet DOWN" | mail -s "Alert" admin@example.com
+</code>
+
+**Log-Analyse**:
+<code>
+journalctl -u NetworkManager --since "1 hour ago"  # NM-Fehler suchen
+grep "DHCPREQUEST" /var/log/syslog                 # DHCP-Aktivitäten
+</code>
+
+===== Wichtige Hinweise für den Produktiveinsatz =====  
+**Bei der Arbeit mit Netzwerkbefehlen beachten**:  
+
+  * **Rechteverwaltung**:  
+    - Die meisten Befehle erfordern **Root-Rechte** (via `sudo`).  
+    - Nutzen Sie `visudo`, um gezielte Berechtigungen für Backup-Benutzer zu vergeben.  
+
+  * **Dokumentation**:  
+    - Halten Sie die **Netzwerktopologie** (IP-Schema, VLANs, Gerätezuordnung) schriftlich fest.  
+    - Archivieren Sie Konfigurationsdateien mit Versionsangaben:<code>
+    cp /etc/netplan/*.yaml /backup/netplan_$(date +%F).yaml</code>
+
+  * **Hardware-Wartung**:  
+    - Führen Sie **regelmäßige Firmware-Updates** für Router, Switches und NICs durch.  
+    - Überwachen Sie physische Indikatoren (Link-LEDs, Kabelbruchstellen).  
+
+  * **Sicherheit**:  
+    - Sichern Sie Serverräume und Netzwerkgeräte **physisch** gegen unbefugten Zugriff.  
+    - Implementieren Sie **Port-Sicherheit** (MAC-Filtering, 802.1X) auf Switches.  
+
+  * **Backup-Strategie**:  
+    - Sichern Sie kritische Netzwerkkonfigurationen automatisiert:<code>
+    # Netplan + Firewall-Regeln:
+    tar czf /backup/network_config_$(date +%F).tar.gz /etc/netplan/ /etc/iptables/</code> 
+    - Testen Sie die Wiederherstellung in einer Sandbox-Umgebung.  
+
+===== Alternative Tools =====
+^ Tool               ^ Zweck                          ^
+| **nmap**           | Port-Scanning + Service-Detection |
+| **wireshark**      | GUI-basierte Paketanalyse       |
+| **nftables**       | Moderner Firewall-Ersatz für iptables |
+| **netplan**        | YAML-basierte Netzwerkkonfig (Ubuntu) |
+| **ethtool**        | NIC-Parameter anpassen (Duplex, Speed) |
+
+===== Weiterführende Links =====
+  * [[https://wiki.archlinux.org/title/Network_configuration|Arch Linux Netzwerkkonfiguration]]
+  * [[https://linux.die.net/man/8/ip|ip-Befehl Manpage]]
+  * [[https://explainshell.com/|Befehlszeilen-Erklärungen]]
+  * [[https://netwerklinx.de/linux-networking-cheat-sheet/|Deutsches Cheat Sheet]]
+  * [[https://www.cyberciti.biz/networking/nmap-command-examples-tutorials/|Nmap Tutorial]]
+
+**Konfigurationsdateien von Bedeutung**:  
+  - `/etc/hosts` – Lokale Hostnamen  
+  - `/etc/resolv.conf` – DNS-Server  
+  - `/etc/nsswitch.conf` – Namensauflösungsreihenfolge  
+  - `/etc/network/interfaces` – Debian-Interface-Konfig (vor Netplan)  
+
+**Letzte Prüfpunkte**:  
+  - **Notfallplan**: Physikalischen Zugang zu Geräten im Ausfallfall sicherstellen  
+  - **Redundanz**: Kritische Verbindungen doppelt auslegen (z.B. Bonding mit `ip link add bond0 type bond`)  
+  - **Compliance**: Netzwerkaktivitäten gemäß DSGVO/ePrivacy regulieren  
