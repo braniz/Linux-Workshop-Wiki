@@ -1,1 +1,119 @@
-====== 00 - Linux Crashkursh======
+====== 00 - Linux Crashkurs ======
+
+Ein kompakter Überblick über die wichtigsten Linux-Grundlagen für Einsteiger und als Referenz für erfahrene Benutzer.
+
+===== Was ist Linux? =====
+
+Linux ist ein freies, Unix-ähnliches Betriebssystem, das von Linus Torvalds 1991 entwickelt wurde. Es basiert auf dem Linux-Kernel und wird mit verschiedenen Software-Paketen zu vollständigen Distributionen zusammengestellt.
+
+**Wichtige Eigenschaften:**
+  * **Open Source**: Quellcode ist frei verfügbar
+  * **Multitasking**: Mehrere Programme gleichzeitig
+  * **Multi-User**: Mehrere Benutzer gleichzeitig
+  * **Netzwerk-orientiert**: Starke Netzwerk-Unterstützung
+  * **Sicherheit**: Robustes Berechtigungssystem
+  * **Stabilität**: Sehr zuverlässig und performant
+
+===== Wichtige Distributionen =====
+
+**Desktop-orientiert:**
+  * **Ubuntu**: Benutzerfreundlich, große Community
+  * **Linux Mint**: Einfach zu bedienen, Windows-ähnlich
+  * **Fedora**: Neueste Features, Red Hat gesponsert
+  * **openSUSE**: Deutsch, professionelle Tools
+
+**Server-orientiert:**
+  * **Debian**: Sehr stabil, große Paket-Auswahl
+  * **CentOS/RHEL**: Enterprise-fokussiert
+  * **Ubuntu Server**: LTS-Versionen für Server
+
+**Spezielle Zwecke:**
+  * **Kali Linux**: Penetration Testing
+  * **Alpine Linux**: Minimal, für Container
+  * **Arch Linux**: Rolling Release, anpassbar
+
+===== Grundlegende Konzepte =====
+
+**Dateisystem-Hierarchie:**
+<code>
+/           # Root-Verzeichnis
+├── bin/    # Wichtige Systemprogramme
+├── etc/    # Konfigurationsdateien
+├── home/   # Benutzer-Verzeichnisse
+├── usr/    # Benutzer-Programme
+├── var/    # Variable Daten (Logs, Cache)
+├── tmp/    # Temporäre Dateien
+└── opt/    # Zusätzliche Software
+</code>
+
+**Benutzer und Berechtigungen:**
+  * **root**: Administrator mit allen Rechten
+  * **sudo**: Temporäre Administrator-Rechte
+  * **Datei-Berechtigungen**: read (r), write (w), execute (x)
+  * **Besitzer**: user, group, others
+
+**Paketmanagement:**
+  * **apt** (Debian/Ubuntu): `apt install paket`
+  * **yum/dnf** (Red Hat/Fedora): `dnf install paket`
+  * **pacman** (Arch): `pacman -S paket`
+  * **zypper** (openSUSE): `zypper install paket`
+
+===== Erste Schritte =====
+
+**Nach der Installation:**
+<code>
+# System aktualisieren
+sudo apt update && sudo apt upgrade    # Ubuntu/Debian
+sudo dnf update                        # Fedora
+sudo pacman -Syu                      # Arch Linux
+
+# Grundlegende Software installieren
+sudo apt install curl wget git vim    # Tools installieren
+sudo apt install build-essential      # Entwickler-Tools
+</code>
+
+**Wichtige Tastenkombinationen:**
+  * **Ctrl+C**: Programm abbrechen
+  * **Ctrl+Z**: Programm pausieren
+  * **Ctrl+L**: Terminal löschen
+  * **Tab**: Auto-Vervollständigung
+  * **↑/↓**: Befehlshistorie
+
+**Hilfe bekommen:**
+<code>
+man befehl          # Manual Page anzeigen
+befehl --help       # Hilfe-Text anzeigen
+info befehl         # Info-Dokumentation
+which befehl        # Pfad zum Programm finden
+</code>
+
+===== Workshop-Struktur =====
+
+**Dieser Workshop behandelt:**
+  1. **Kommandozeile**: Terminal-Grundlagen
+  2. **Dateien & Verzeichnisse**: Navigation und Verwaltung
+  3. **Ein-/Ausgabe**: Pipes, Redirection, Streams
+  4. **Benutzer**: Account- und Gruppenverwaltung
+  5. **Dateisysteme**: Mounting, Partitionierung
+  6. **LVM & RAID**: Erweiterte Speicherverwaltung
+  7. **Prozesse**: Process-Management
+  8. **Boot & Cron**: System-Start und Automatisierung
+  9. **Software**: Paketmanagement
+  10. **Netzwerk**: Netzwerk-Konfiguration
+  11. **SSH**: Sichere Remote-Verbindungen
+  12. **NFS/Samba**: Netzwerk-Freigaben
+  13. **Suchen & Finden**: Dateien und Inhalte suchen
+
+===== Weiterführende Ressourcen =====
+
+**Online-Dokumentation:**
+  * [[https://wiki.ubuntuusers.de/|Ubuntu Users Wiki]]
+  * [[https://wiki.archlinux.org/|Arch Linux Wiki]]
+  * [[https://linuxcommand.org/|The Linux Command Line]]
+  * [[https://www.tldp.org/|The Linux Documentation Project]]
+
+**Übungsumgebungen:**
+  * VirtualBox/VMware für lokale VMs
+  * Docker für Container-basiertes Lernen
+  * Online-Terminals für schnelle Tests
+  * Raspberry Pi für Hardware-nahes Lernen

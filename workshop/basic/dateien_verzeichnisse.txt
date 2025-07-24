@@ -1,2 +1,225 @@
-====== 02 - Datein und Verzeichnisse ======
+====== 02 - Dateien und Verzeichnisse ======
+
+Die Arbeit mit Dateien und Verzeichnissen ist fundamental für die Linux-Administration. Alles in Linux ist eine Datei - normale Dateien, Verzeichnisse, Geräte, und sogar Prozesse.
+
 {{page>workshop:grund:dateisystembaum}}
+
+===== Syntax =====
+
+**Navigation:**
+<code>
+pwd                                 # Aktuelles Verzeichnis anzeigen
+cd /path/to/directory              # Verzeichnis wechseln
+cd ~                               # Home-Verzeichnis
+cd ..                              # Übergeordnetes Verzeichnis
+cd -                               # Vorheriges Verzeichnis
+ls                                 # Verzeichnisinhalt auflisten
+ls -la                             # Detaillierte Auflistung mit versteckten Dateien
+</code>
+
+**Erstellen und Löschen:**
+<code>
+mkdir verzeichnis                  # Verzeichnis erstellen
+mkdir -p pfad/zu/verzeichnis       # Verzeichnis mit Eltern-Pfad erstellen
+rmdir verzeichnis                  # Leeres Verzeichnis löschen
+rm datei.txt                       # Datei löschen
+rm -rf verzeichnis                 # Verzeichnis rekursiv löschen
+touch datei.txt                    # Leere Datei erstellen oder Zeitstempel aktualisieren
+</code>
+
+**Kopieren und Verschieben:**
+<code>
+cp quelle ziel                     # Datei kopieren
+cp -r quell_verzeichnis ziel       # Verzeichnis rekursiv kopieren
+mv quelle ziel                     # Datei/Verzeichnis verschieben oder umbenennen
+</code>
+
+**Inhalte anzeigen:**
+<code>
+cat datei.txt                      # Datei komplett anzeigen
+less datei.txt                     # Datei seitenweise anzeigen
+head datei.txt                     # Erste 10 Zeilen anzeigen
+tail datei.txt                     # Letzte 10 Zeilen anzeigen
+tail -f datei.txt                  # Datei live verfolgen
+</code>
+
+===== Wichtige Optionen =====
+
+**ls Optionen:**
+  * **-l**: Lange Auflistung mit Details
+  * **-a**: Alle Dateien (auch versteckte)
+  * **-h**: Menschenlesbare Größenangaben
+  * **-t**: Nach Änderungszeit sortieren
+  * **-r**: Umgekehrte Sortierung
+  * **-S**: Nach Dateigröße sortieren
+  * **-R**: Rekursiv (Unterverzeichnisse)
+
+**cp Optionen:**
+  * **-r/-R**: Rekursiv (für Verzeichnisse)
+  * **-i**: Interaktiv (vor Überschreiben fragen)
+  * **-u**: Nur neuere Dateien kopieren
+  * **-p**: Berechtigungen und Zeitstempel beibehalten
+  * **-v**: Verbose (zeige was kopiert wird)
+
+**Datei-Typen:**
+  * **-**: Normale Datei
+  * **d**: Verzeichnis
+  * **l**: Symbolischer Link
+  * **c**: Character Device
+  * **b**: Block Device
+  * **p**: Named Pipe (FIFO)
+  * **s**: Socket
+
+===== Beispiele =====
+
+**Verzeichnis-Struktur erstellen:**
+<code>
+# Projekt-Verzeichnis mit Unterordnern erstellen
+mkdir -p projekt/{src,docs,tests,config}
+mkdir -p projekt/src/{main,utils}
+
+# Struktur anzeigen
+tree projekt
+# oder
+find projekt -type d
+</code>
+
+**Dateien mit Wildcards verwalten:**
+<code>
+# Alle .txt Dateien auflisten
+ls *.txt
+
+# Alle .log Dateien löschen
+rm *.log
+
+# Alle .conf Dateien nach /etc/backup kopieren
+cp *.conf /etc/backup/
+
+# Dateien mit bestimmtem Muster finden
+ls test?.txt           # test1.txt, test2.txt, etc.
+ls test[1-5].txt       # test1.txt bis test5.txt
+</code>
+
+**Dateien suchen und filtern:**
+<code>
+# Dateien nach Name suchen
+find /home -name "*.pdf"
+find . -type f -name "config*"
+
+# Dateien nach Größe suchen
+find . -size +100M           # Größer als 100MB
+find . -size -1k             # Kleiner als 1KB
+
+# Dateien nach Alter suchen
+find . -mtime -7             # Geändert in letzten 7 Tagen
+find . -atime +30            # Nicht zugegriffen seit 30 Tagen
+</code>
+
+**Berechtigungen verwalten:**
+<code>
+# Berechtigungen anzeigen
+ls -l datei.txt
+
+# Berechtigungen setzen
+chmod 755 script.sh         # rwxr-xr-x
+chmod u+x script.sh         # Ausführungsrecht für Besitzer
+chmod g-w datei.txt         # Schreibrecht für Gruppe entfernen
+chmod o=r datei.txt         # Nur Leserecht für andere
+
+# Besitzer ändern
+chown user:group datei.txt
+chown -R user:group verzeichnis/
+</code>
+
+**Symbolische Links:**
+<code>
+# Symbolischen Link erstellen
+ln -s /path/to/original /path/to/link
+
+# Hard Link erstellen
+ln original_file hard_link
+
+# Links anzeigen
+ls -l
+readlink link_name           # Ziel eines symbolischen Links anzeigen
+</code>
+
+===== Hinweis =====
+
+**Wichtige Konzepte:**
+  * **Absolute Pfade**: Beginnen mit / (z.B. /home/user/datei.txt)
+  * **Relative Pfade**: Relativ zum aktuellen Verzeichnis (z.B. ../datei.txt)
+  * **Versteckte Dateien**: Beginnen mit . (z.B. .bashrc)
+  * **Inode**: Eindeutige ID für jede Datei im Dateisystem
+
+**Berechtigungen verstehen:**
+<code>
+-rwxrw-r--  1 user group  1234 Jan 1 12:00 datei.txt
+ |||||||||||
+ ||||||||||└─ Andere: r-- (read only)
+ |||||||└──── Gruppe: rw- (read, write)
+ ||||└─────── Besitzer: rwx (read, write, execute)
+ |||└──────── Anzahl Hard Links
+ ||└───────── Dateityp: - (normale Datei)
+ └────────── Berechtigungen
+</code>
+
+**Numerische Berechtigungen:**
+  * **4**: Read (r)
+  * **2**: Write (w)
+  * **1**: Execute (x)
+  * **755**: rwxr-xr-x (Owner: 7=4+2+1, Group: 5=4+1, Other: 5=4+1)
+
+**Sicherheitshinweise:**
+  * **rm -rf** mit Vorsicht verwenden - keine Rückgängig-Funktion
+  * **sudo** nur bei Bedarf verwenden
+  * **Berechtigungen minimal halten** (Prinzip der geringsten Rechte)
+  * **Backups** vor größeren Änderungen erstellen
+
+===== Alternativen =====
+
+**GUI-Dateimanager:**
+  * **Nautilus**: GNOME Standard-Dateimanager
+  * **Dolphin**: KDE Dateimanager
+  * **Thunar**: XFCE Dateimanager
+  * **PCManFM**: Lightweight Dateimanager
+  * **Ranger**: Terminal-basierter Dateimanager
+
+**Erweiterte Tools:**
+  * **tree**: Verzeichnis-Struktur als Baum anzeigen
+  * **fd**: Moderne Alternative zu find
+  * **exa**: Moderne Alternative zu ls
+  * **bat**: cat mit Syntax-Highlighting
+  * **ripgrep**: Schnelle Text-Suche
+
+**Dateisystem-Tools:**
+  * **du**: Verzeichnisgrößen anzeigen
+  * **df**: Speicherplatz anzeigen
+  * **ncdu**: Interaktive Verzeichnisgrößen-Analyse
+  * **lsof**: Offene Dateien anzeigen
+
+===== Weitere Informationen =====
+
+**Manual Pages:**
+<code>
+man ls                     # Verzeichnis-Auflistung
+man cp                     # Kopieren
+man mv                     # Verschieben
+man rm                     # Löschen
+man find                   # Dateien suchen
+man chmod                  # Berechtigungen ändern
+man chown                  # Besitzer ändern
+man ln                     # Links erstellen
+</code>
+
+**Online-Ressourcen:**
+  * [[https://wiki.archlinux.org/title/File_permissions_and_attributes|Arch Linux File Permissions]]
+  * [[https://www.cyberciti.biz/faq/understanding-unix-linux-filesystem/|Linux Filesystem Guide]]
+  * [[https://linuxcommand.org/lc3_lts0040.php|Linux Command File Permissions]]
+
+**Weiterführende Themen:**
+  * Erweiterte Datei-Attribute (xattr)
+  * Access Control Lists (ACLs)
+  * Dateisystem-Quotas
+  * File Locking Mechanismen
+  * Dateisystem-Performance-Optimierung

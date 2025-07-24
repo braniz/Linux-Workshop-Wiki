@@ -1,22 +1,297 @@
 ====== 05 - Benutzerverwaltung ======
 
+Linux ist ein Multi-User-System, das es mehreren Benutzern ermöglicht, gleichzeitig und sicher auf dem System zu arbeiten. Die Benutzerverwaltung umfasst das Erstellen, Modifizieren und Löschen von Benutzerkonten und Gruppen.
+
 ===== Syntax =====
+
+**Benutzer-Verwaltung:**
+<code>
+# Benutzer erstellen
+useradd username                    # Neuen Benutzer erstellen
+useradd -m -s /bin/bash username    # Mit Home-Verzeichnis und Shell
+adduser username                    # Interaktive Benutzer-Erstellung (Debian/Ubuntu)
+
+# Benutzer modifizieren
+usermod -aG gruppe username         # Benutzer zu Gruppe hinzufügen
+usermod -s /bin/zsh username        # Shell ändern
+usermod -l neuer_name alter_name    # Benutzername ändern
+usermod -L username                 # Benutzer sperren
+usermod -U username                 # Benutzer entsperren
+
+# Benutzer löschen
+userdel username                    # Benutzer löschen
+userdel -r username                 # Benutzer mit Home-Verzeichnis löschen
+</code>
+
+**Gruppen-Verwaltung:**
+<code>
+# Gruppen erstellen und verwalten
+groupadd gruppenname                # Neue Gruppe erstellen
+groupmod -n neuer_name alter_name   # Gruppe umbenennen
+groupdel gruppenname                # Gruppe löschen
+gpasswd -a username gruppenname     # Benutzer zu Gruppe hinzufügen
+gpasswd -d username gruppenname     # Benutzer aus Gruppe entfernen
+</code>
+
+**Passwort-Verwaltung:**
+<code>
+passwd username                     # Passwort für Benutzer setzen
+passwd -l username                  # Passwort sperren
+passwd -u username                  # Passwort entsperren
+chage -l username                   # Passwort-Informationen anzeigen
+chage -E 2024-12-31 username        # Ablaufdatum setzen
+</code>
 
 ----
 
 ===== Wichtige Optionen =====
 
+**useradd Optionen:**
+  * **-m**: Home-Verzeichnis erstellen
+  * **-s**: Standard-Shell festlegen
+  * **-g**: Primäre Gruppe festlegen
+  * **-G**: Zusätzliche Gruppen
+  * **-d**: Home-Verzeichnis-Pfad
+  * **-c**: Kommentar/Vollständiger Name
+  * **-e**: Ablaufdatum des Kontos
+  * **-u**: Spezifische User-ID (UID)
+
+**usermod Optionen:**
+  * **-aG**: Zu Gruppe hinzufügen (append to groups)
+  * **-l**: Login-Name ändern
+  * **-d**: Home-Verzeichnis ändern
+  * **-m**: Home-Verzeichnis verschieben
+  * **-s**: Shell ändern
+  * **-L**: Konto sperren
+  * **-U**: Konto entsperren
+  * **-e**: Ablaufdatum setzen
+
+**Wichtige Gruppen:**
+  * **sudo/wheel**: Administrative Rechte
+  * **adm**: System-Log-Zugriff
+  * **dialout**: Serieller Port-Zugriff
+  * **cdrom**: CD/DVD-Zugriff
+  * **plugdev**: USB-Geräte-Zugriff
+  * **lpadmin**: Drucker-Administration
+  * **sambashare**: Samba-Freigaben
+
+**Benutzer-Informationen:**
+<code>
+id username                         # Benutzer- und Gruppen-IDs
+whoami                             # Aktueller Benutzer
+who                                # Angemeldete Benutzer
+w                                  # Detaillierte Benutzer-Info
+last                               # Login-Historie
+groups username                    # Gruppen-Mitgliedschaften
+</code>
+
 ----
 
 ===== Beispiele =====
+
+**Neuen Benutzer komplett einrichten:**
+<code>
+# Benutzer mit Home-Verzeichnis und bash-Shell erstellen
+sudo useradd -m -s /bin/bash -c "Max Mustermann" maxmuster
+
+# Passwort setzen
+sudo passwd maxmuster
+
+# Zu sudo-Gruppe hinzufügen (Ubuntu/Debian)
+sudo usermod -aG sudo maxmuster
+
+# Zu wheel-Gruppe hinzufügen (Red Hat/CentOS)
+sudo usermod -aG wheel maxmuster
+
+# Benutzer-Info überprüfen
+id maxmuster
+groups maxmuster
+</code>
+
+**Service-Benutzer erstellen:**
+<code>
+# System-Benutzer ohne Login-Shell für Services
+sudo useradd -r -s /bin/false -d /var/lib/myservice myservice
+
+# Verzeichnis für Service erstellen
+sudo mkdir -p /var/lib/myservice
+sudo chown myservice:myservice /var/lib/myservice
+sudo chmod 750 /var/lib/myservice
+</code>
+
+**Bestehenden Benutzer modifizieren:**
+<code>
+# Home-Verzeichnis verschieben
+sudo usermod -d /home/new_location -m username
+
+# Benutzer zu mehreren Gruppen hinzufügen
+sudo usermod -aG docker,vboxusers,audio username
+
+# Shell ändern
+sudo usermod -s /bin/zsh username
+</code>
+
+**Passwort-Richtlinien:**
+<code>
+# Passwort-Ablauf konfigurieren
+sudo chage -M 90 username           # Max. 90 Tage gültig
+sudo chage -m 7 username            # Min. 7 Tage zwischen Änderungen
+sudo chage -W 7 username            # 7 Tage Warnung vor Ablauf
+
+# Passwort-Informationen anzeigen
+sudo chage -l username
+
+# Benutzer zwingen, Passwort zu ändern
+sudo chage -d 0 username
+</code>
+
+**Gruppen-Management:**
+<code>
+# Projektgruppe erstellen
+sudo groupadd developers
+
+# Mehrere Benutzer zur Gruppe hinzufügen
+sudo gpasswd -a alice developers
+sudo gpasswd -a bob developers
+sudo gpasswd -a charlie developers
+
+# Gruppen-Mitglieder anzeigen
+getent group developers
+
+# Benutzer aus Gruppe entfernen
+sudo gpasswd -d alice developers
+</code>
 
 ----
 
 ===== Hinweis =====
 
+**Wichtige Dateien:**
+  * **/etc/passwd**: Benutzer-Informationen
+  * **/etc/shadow**: Passwort-Hashes (nur root lesbar)
+  * **/etc/group**: Gruppen-Informationen
+  * **/etc/gshadow**: Gruppen-Passwörter
+  * **/etc/skel/**: Vorlage für neue Home-Verzeichnisse
+  * **/etc/default/useradd**: Standard-Einstellungen für useradd
+
+**UID/GID Bereiche:**
+  * **0**: root-Benutzer
+  * **1-99**: System-Benutzer (historisch)
+  * **100-999**: System-Benutzer (moderne Systeme)
+  * **1000+**: Normale Benutzer
+
+**/etc/passwd Format:**
+<code>
+username:x:UID:GID:GECOS:home_dir:shell
+# Beispiel:
+john:x:1001:1001:John Doe:/home/john:/bin/bash
+</code>
+
+**sudo-Konfiguration:**
+<code>
+# sudoers-Datei sicher bearbeiten
+sudo visudo
+
+# Benutzer sudo-Rechte geben
+username ALL=(ALL:ALL) ALL
+
+# Gruppe sudo-Rechte geben
+%groupname ALL=(ALL:ALL) ALL
+
+# Ohne Passwort-Abfrage
+username ALL=(ALL:ALL) NOPASSWD: ALL
+
+# Nur spezifische Befehle
+username ALL=(ALL:ALL) /usr/bin/systemctl, /usr/bin/mount
+</code>
+
+**Sicherheitshinweise:**
+  * **Starke Passwörter** erzwingen
+  * **Regelmäßige Passwort-Änderungen** konfigurieren
+  * **Ungenutzte Konten deaktivieren** oder löschen
+  * **sudo-Zugriff minimal halten**
+  * **Login-Aktivitäten überwachen**
+  * **Service-Konten** ohne Login-Shell erstellen
+
+**Shell-Konfiguration:**
+<code>
+# Verfügbare Shells anzeigen
+cat /etc/shells
+
+# Standard-Shell für neue Benutzer setzen
+sudo chsh -s /bin/zsh
+
+# Shell für bestimmten Benutzer ändern
+sudo chsh -s /bin/bash username
+</code>
+
 ----
 
 ===== Alternativen =====
+
+**GUI-Tools für Benutzerverwaltung:**
+  * **GNOME Users**: Standard-Benutzer-Manager in GNOME
+  * **KDE System Settings**: Benutzer-Management in KDE
+  * **Webmin**: Web-basierte Systemverwaltung
+  * **Cockpit**: Red Hat's Web-Konsole
+  * **YaST**: openSUSE System-Administration
+
+**Enterprise-Lösungen:**
+  * **LDAP**: Lightweight Directory Access Protocol
+  * **Active Directory**: Microsoft's Directory Service
+  * **FreeIPA**: Red Hat's Identity Management
+  * **Samba AD**: Samba als Active Directory Controller
+  * **389 Directory Server**: Red Hat Directory Server
+
+**Erweiterte Authentifizierung:**
+  * **PAM**: Pluggable Authentication Modules
+  * **Kerberos**: Netzwerk-Authentifizierung
+  * **2FA/MFA**: Zwei-/Multi-Faktor-Authentifizierung
+  * **SSH-Keys**: Public-Key-Authentifizierung
+  * **SAML/OAuth**: Single Sign-On Lösungen
+
+**Alternative Benutzer-Backends:**
+  * **NIS/YP**: Network Information Service
+  * **nsswitch**: Name Service Switch
+  * **systemd-homed**: Portable Home-Verzeichnisse
+  * **SSSD**: System Security Services Daemon
+
+===== Weitere Informationen =====
+
+**Manual Pages:**
+<code>
+man useradd                # Benutzer erstellen
+man usermod                # Benutzer modifizieren
+man userdel                # Benutzer löschen
+man groupadd               # Gruppen erstellen
+man passwd                 # Passwort ändern
+man chage                  # Passwort-Richtlinien
+man sudo                   # Superuser-Rechte
+man visudo                 # sudoers sicher bearbeiten
+man 5 passwd               # passwd-Datei-Format
+man 5 shadow               # shadow-Datei-Format
+</code>
+
+**Wichtige Konfigurationsdateien:**
+  * **/etc/login.defs**: Standard-Einstellungen für Login
+  * **/etc/sudoers**: sudo-Konfiguration
+  * **/etc/pam.d/**: PAM-Konfiguration
+  * **/etc/security/**: Sicherheits-Konfigurationen
+  * **/home/**: Benutzer-Home-Verzeichnisse
+
+**Online-Ressourcen:**
+  * [[https://wiki.archlinux.org/title/Users_and_groups|Arch Linux User Management]]
+  * [[https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_basic_system_settings/index|Red Hat User Management]]
+  * [[https://help.ubuntu.com/community/AddUsersHowto|Ubuntu User Management]]
+  * [[https://www.debian.org/doc/manuals/debian-reference/ch04.en.html|Debian User Management]]
+
+**Best Practices:**
+  * Eindeutige Benutzernamen verwenden
+  * Gruppen für Berechtigungen nutzen statt individuelle Rechte
+  * Regelmäßige Überprüfung ungenutzter Konten
+  * Dokumentation aller Service-Konten
+  * Backup wichtiger Konfigurationsdateien
+  * Monitoring von Login-Aktivitäten
 
 ----
 

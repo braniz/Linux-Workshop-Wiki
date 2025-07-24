@@ -1,22 +1,296 @@
-====== 04 - Ein- & Ausgage, Pipes ======
+====== 04 - Ein- & Ausgabe, Pipes ======
+
+Ein- und Ausgabe-Umleitung sowie Pipes sind mächtige Konzepte in Linux, die es ermöglichen, Befehle zu verketten und Datenströme flexibel zu verarbeiten.
 
 ===== Syntax =====
+
+**Standard-Streams:**
+<code>
+# 0 = stdin (Standard Input)
+# 1 = stdout (Standard Output) 
+# 2 = stderr (Standard Error)
+
+# Ausgabe-Umleitung
+befehl > datei.txt              # stdout in Datei umleiten (überschreiben)
+befehl >> datei.txt             # stdout an Datei anhängen
+befehl 2> error.log             # stderr in Datei umleiten
+befehl > output.txt 2> error.log # stdout und stderr getrennt umleiten
+befehl > logfile.txt 2>&1       # stdout und stderr zusammen umleiten
+befehl &> alles.log             # Kurzform für stdout und stderr zusammen
+</code>
+
+**Eingabe-Umleitung:**
+<code>
+befehl < datei.txt              # stdin aus Datei lesen
+befehl << EOF                   # Here Document (Multi-line Input)
+Zeile 1
+Zeile 2
+EOF
+
+# Here String
+befehl <<< "Text als Input"
+</code>
+
+**Pipes (Verkettung):**
+<code>
+befehl1 | befehl2               # stdout von befehl1 als stdin zu befehl2
+befehl1 | befehl2 | befehl3     # Mehrere Befehle verketten
+befehl1 |& befehl2              # stdout und stderr weiterleiten
+</code>
+
+**Named Pipes (FIFOs):**
+<code>
+mkfifo mypipe                   # Named Pipe erstellen
+echo "data" > mypipe &          # Daten in Pipe schreiben (Background)
+cat < mypipe                    # Daten aus Pipe lesen
+</code>
 
 ----
 
 ===== Wichtige Optionen =====
 
+**Umleitung-Operatoren:**
+  * **>**: Ausgabe umleiten (überschreiben)
+  * **>>**: Ausgabe umleiten (anhängen)
+  * **<**: Eingabe umleiten
+  * **<<**: Here Document
+  * **<<<**: Here String
+  * **|**: Pipe (stdout zu stdin)
+  * **|&**: Pipe mit stderr
+  * **2>&1**: stderr zu stdout umleiten
+  * **&>**: stdout und stderr zusammen umleiten
+
+**Nützliche Pipe-Befehle:**
+  * **grep**: Text filtern und suchen
+  * **sort**: Zeilen sortieren
+  * **uniq**: Doppelte Zeilen entfernen
+  * **cut**: Spalten extrahieren
+  * **awk**: Text-Verarbeitung
+  * **sed**: Stream-Editor
+  * **tr**: Zeichen übersetzen/löschen
+  * **head/tail**: Erste/letzte Zeilen
+  * **wc**: Wörter, Zeilen, Zeichen zählen
+  * **tee**: Ausgabe duplizieren
+
+**Process Substitution:**
+<code>
+befehl <(other_command)         # Prozess-Ausgabe als Datei behandeln
+befehl >(other_command)         # Prozess-Eingabe als Datei behandeln
+</code>
+
 ----
 
 ===== Beispiele =====
+
+**Grundlegende Umleitung:**
+<code>
+# Log-Dateien erstellen
+ls -la > verzeichnis_inhalt.txt
+date >> logfile.txt
+echo "Neue Zeile" >> datei.txt
+
+# Fehler getrennt behandeln
+compile_programm > output.txt 2> errors.txt
+make install > /dev/null 2> build_errors.log
+
+# Alles zusammen loggen
+./script.sh > logfile.txt 2>&1
+./script.sh &> complete.log
+</code>
+
+**Pipe-Ketten für Datenverarbeitung:**
+<code>
+# Top 10 größte Dateien finden
+find /home -type f -exec ls -la {} \; | sort -k5 -nr | head -10
+
+# Häufigste Befehle in bash_history
+history | awk '{print $2}' | sort | uniq -c | sort -nr | head -10
+
+# Aktive Netzwerk-Verbindungen analysieren
+netstat -tuln | grep LISTEN | awk '{print $4}' | cut -d: -f2 | sort -n | uniq
+
+# System-Prozesse nach CPU-Verbrauch
+ps aux | sort -k3 -nr | head -10
+
+# Log-Analyse
+cat /var/log/syslog | grep ERROR | cut -d' ' -f1-3 | sort | uniq -c
+</code>
+
+**Text-Verarbeitung mit Pipes:**
+<code>
+# CSV-Datei verarbeiten
+cat data.csv | cut -d, -f2,3 | sort | uniq > result.txt
+
+# Zeilen zählen und statistiken
+cat textfile.txt | wc -l        # Zeilen zählen
+cat textfile.txt | wc -w        # Wörter zählen
+cat textfile.txt | wc -c        # Zeichen zählen
+
+# Doppelte Zeilen entfernen
+sort datei.txt | uniq > ohne_duplikate.txt
+
+# Case-insensitive Sortierung
+sort -f datei.txt | uniq -i
+</code>
+
+**Erweiterte Pipe-Beispiele:**
+<code>
+# Live-Log-Monitoring mit Filterung
+tail -f /var/log/apache2/access.log | grep -i error | tee error_log.txt
+
+# Backup mit Kompression und Progress
+tar cf - /home/user | gzip | pv > backup.tar.gz
+
+# Dateien nach Extension gruppieren
+find . -type f | sed 's/.*\.//' | sort | uniq -c | sort -nr
+
+# Remote-Backup über SSH
+tar czf - /important/data | ssh server "cat > backup_$(date +%Y%m%d).tar.gz"
+</code>
+
+**Here Documents und Here Strings:**
+<code>
+# Multi-line Input
+cat << EOF > config.txt
+server_name=localhost
+port=8080
+debug=true
+EOF
+
+# SQL-Script ausführen
+mysql -u user -p database << EOF
+SELECT * FROM users WHERE active = 1;
+UPDATE settings SET value = 'new_value' WHERE key = 'config';
+EOF
+
+# Here String für kurze Inputs
+base64 <<< "Hello World"
+md5sum <<< "test string"
+</code>
+
+**tee für Ausgabe-Duplizierung:**
+<code>
+# Ausgabe sowohl auf Bildschirm als auch in Datei
+ls -la | tee listing.txt
+
+# An bestehende Datei anhängen
+echo "New entry" | tee -a logfile.txt
+
+# Mehrere Dateien gleichzeitig
+echo "Important message" | tee file1.txt file2.txt file3.txt
+</code>
 
 ----
 
 ===== Hinweis =====
 
+**Stream-Konzept verstehen:**
+  * **stdin (0)**: Standard-Eingabe (normalerweise Tastatur)
+  * **stdout (1)**: Standard-Ausgabe (normalerweise Bildschirm)
+  * **stderr (2)**: Standard-Fehlerausgabe (normalerweise Bildschirm)
+
+**Wichtige Sonderdateien:**
+  * **/dev/null**: "Schwarzes Loch" - verwirft alle Eingaben
+  * **/dev/zero**: Liefert unendlich viele Null-Bytes
+  * **/dev/random**: Zufällige Daten (blockierend)
+  * **/dev/urandom**: Zufällige Daten (nicht-blockierend)
+
+**Performance-Tipps:**
+  * **Pipes** sind effizienter als temporäre Dateien
+  * **Früh filtern** in Pipe-Ketten (grep am Anfang)
+  * **pv** (Pipe Viewer) für Progress-Anzeige bei langen Operationen
+  * **Parallelisierung** mit GNU parallel möglich
+
+**Debugging-Techniken:**
+<code>
+# Pipe-Kette schrittweise testen
+command1 | head          # Ersten Teil testen
+command1 | command2 | head    # Zweiten Teil hinzufügen
+
+# Intermediate results speichern
+command1 | tee step1.txt | command2 | tee step2.txt | command3
+
+# Stderr sichtbar machen während Piping
+command 2>&1 | less
+</code>
+
+**Häufige Fallstricke:**
+  * **Reihenfolge** bei Umleitungen beachten: `2>&1` muss nach `>` stehen
+  * **Pipes** brechen bei ersten Fehler ab (set -o pipefail in Scripts)
+  * **Buffering** kann bei interaktiven Programmen Probleme verursachen
+  * **Locale-Einstellungen** beeinflussen sort-Verhalten
+
+**Sicherheitsaspekte:**
+  * **Sensitive Daten** nicht in temporäre Dateien umleiten
+  * **Berechtigungen** von Ausgabe-Dateien prüfen
+  * **umask** beeinflusst Berechtigungen neuer Dateien
+  * **Shell-Injection** bei dynamischen Befehlen vermeiden
+
 ----
 
 ===== Alternativen =====
+
+**Erweiterte Pipe-Tools:**
+  * **pv**: Pipe Viewer mit Progress-Anzeige
+  * **buffer**: Puffern für unregelmäßige Datenströme
+  * **moreutils**: Sammlung nützlicher Pipe-Tools
+  * **parallel**: GNU Parallel für parallele Verarbeitung
+  * **jq**: JSON-Verarbeitung in Pipes
+  * **xmlstarlet**: XML-Verarbeitung in Pipes
+
+**Stream-Editoren:**
+  * **sed**: Stream Editor für Text-Manipulation
+  * **awk**: Pattern-Scanning und Datenextraktion
+  * **perl**: Perl one-liners für komplexe Verarbeitung
+  * **python**: Python one-liners mit `-c` Option
+
+**Moderne Alternativen:**
+  * **rg** (ripgrep): Schnellerer grep-Ersatz
+  * **fd**: Moderne find-Alternative
+  * **bat**: cat mit Syntax-Highlighting
+  * **exa**: Moderne ls-Alternative
+  * **dust**: Moderne du-Alternative
+
+**GUI-Alternativen:**
+  * **Text-Editoren**: VS Code, Sublime, vim/emacs
+  * **Log-Viewer**: glogg, LogExpert, Chainsaw
+  * **Data-Processing**: LibreOffice Calc, Excel, R/RStudio
+
+===== Weitere Informationen =====
+
+**Manual Pages:**
+<code>
+man bash                   # Bash-Manual (Redirection Kapitel)
+man pipe                   # Pipe-Konzept
+man tee                    # Ausgabe duplizieren
+man mkfifo                 # Named Pipes erstellen
+man pv                     # Pipe Viewer
+man parallel               # GNU Parallel
+</code>
+
+**Wichtige Bash-Features:**
+  * **Process Substitution**: `<()` und `>()`
+  * **Brace Expansion**: `{1..10}`, `{a,b,c}`
+  * **Parameter Expansion**: `${var}`, `${var:-default}`
+  * **Command Substitution**: `$(command)` oder `` `command` ``
+
+**Online-Ressourcen:**
+  * [[https://www.gnu.org/software/bash/manual/html_node/Redirections.html|Bash Redirection Manual]]
+  * [[https://wiki.bash-hackers.org/syntax/redirection|Bash Hackers Redirection Guide]]
+  * [[https://www.cyberciti.biz/faq/linux-redirect-output-to-file/|Linux Redirection Examples]]
+
+**Weiterführende Themen:**
+  * Shell-Scripting mit erweiterten I/O-Techniken
+  * Named Pipes für Inter-Process Communication
+  * Asynchrone I/O und Event-driven Programming
+  * Stream-Processing mit modernen Tools (Apache Kafka, etc.)
+  * Big Data Pipeline-Entwicklung
+
+**Praktische Übungen:**
+  * Log-Analyse-Scripts entwickeln
+  * Data-Processing-Pipelines bauen
+  * System-Monitoring mit Pipes automatisieren
+  * Performance-Optimierung von Pipe-Ketten
 
 ----
 

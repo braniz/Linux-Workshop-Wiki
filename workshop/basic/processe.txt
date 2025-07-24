@@ -1,22 +1,216 @@
 ====== 08 - Prozesse ======
 
+Prozess-Management ist ein zentraler Aspekt der Linux-Administration. Prozesse sind laufende Programme, die Systemressourcen verwenden und verwaltet werden müssen.
+
 ===== Syntax =====
+
+**Prozesse anzeigen:**
+<code>
+ps                                  # Prozesse der aktuellen Shell anzeigen
+ps aux                             # Alle Prozesse mit Details anzeigen
+ps -ef                             # Alternative Anzeige aller Prozesse
+top                                # Live-Anzeige der Prozesse
+htop                               # Erweiterte Live-Anzeige (falls installiert)
+pstree                             # Prozesse als Baum anzeigen
+</code>
+
+**Prozesse beenden:**
+<code>
+kill PID                           # Prozess mit Signal TERM beenden
+kill -9 PID                        # Prozess sofort beenden (SIGKILL)
+kill -15 PID                       # Prozess höflich beenden (SIGTERM)
+killall process_name               # Alle Prozesse mit diesem Namen beenden
+pkill pattern                      # Prozesse nach Muster beenden
+</code>
+
+**Job-Control:**
+<code>
+befehl &                           # Befehl im Hintergrund starten
+Ctrl+Z                            # Aktuellen Prozess pausieren
+bg                                # Pausierten Prozess im Hintergrund fortsetzen
+fg                                # Hintergrund-Prozess in Vordergrund holen
+jobs                              # Aktuelle Jobs anzeigen
+nohup befehl &                    # Befehl auch nach Logout weiter laufen lassen
+</code>
+
+**Prozess-Prioritäten:**
+<code>
+nice -n 10 befehl                 # Befehl mit niedriger Priorität starten
+renice 5 PID                      # Priorität eines laufenden Prozesses ändern
+ionice -c 3 PID                   # I/O-Priorität setzen
+</code>
 
 ----
 
 ===== Wichtige Optionen =====
 
+**ps Optionen:**
+  * **a**: Prozesse aller Benutzer anzeigen
+  * **u**: Benutzer-orientierte Ausgabe
+  * **x**: Auch Prozesse ohne Terminal anzeigen
+  * **-e**: Alle Prozesse anzeigen
+  * **-f**: Vollständige Ausgabe
+  * **-l**: Lange Ausgabe mit mehr Details
+  * **--forest**: Prozess-Hierarchie anzeigen
+
+**Prozess-Zustände:**
+  * **R**: Running (läuft)
+  * **S**: Sleeping (wartet)
+  * **D**: Uninterruptible sleep (I/O wartend)
+  * **Z**: Zombie (beendet, aber noch in Tabelle)
+  * **T**: Stopped (angehalten)
+  * **I**: Idle (inaktiv)
+
+**Signale:**
+  * **SIGTERM (15)**: Höfliches Beenden (Standard)
+  * **SIGKILL (9)**: Sofortiges Beenden (nicht blockierbar)
+  * **SIGHUP (1)**: Hangup (oft für Konfiguration neu laden)
+  * **SIGSTOP (19)**: Prozess pausieren
+  * **SIGCONT (18)**: Pausierten Prozess fortsetzen
+  * **SIGUSR1/SIGUSR2**: Benutzerdefinierte Signale
+
+**Nice-Werte:**
+  * **-20 bis +19**: Prioritäts-Bereich
+  * **-20**: Höchste Priorität
+  * **0**: Standard-Priorität
+  * **+19**: Niedrigste Priorität
+
 ----
 
 ===== Beispiele =====
 
-----
+**Prozess-Monitoring:**
+<code>
+# Speicher-hungrige Prozesse finden
+ps aux --sort=-%mem | head -10
+
+# CPU-intensive Prozesse finden
+ps aux --sort=-%cpu | head -10
+
+# Prozesse eines bestimmten Benutzers
+ps -u username
+
+# Prozesse nach Namen suchen
+ps aux | grep apache
+pgrep -f apache
+
+# Prozess-Hierarchie anzeigen
+ps --forest
+pstree -p
+</code>
+
+**Prozesse beenden:**
+<code>
+# Firefox-Prozesse beenden
+killall firefox
+pkill firefox
+
+# Hängende SSH-Verbindungen beenden
+pkill -f "ssh.*server"
+
+# Alle Prozesse eines Benutzers beenden
+pkill -u username
+
+# Prozess-Gruppe beenden
+kill -TERM -$(ps -o pgid= PID | grep -o '[0-9]*')
+</code>
+
+**Job-Control Beispiele:**
+<code>
+# Langwieriges Backup im Hintergrund
+tar czf backup.tar.gz /home/user &
+
+# Prozess pausieren und fortsetzen
+ping google.com    # Läuft im Vordergrund
+# Ctrl+Z drücken     # Pausiert den Prozess
+bg                  # Im Hintergrund fortsetzen
+fg                  # Zurück in den Vordergrund
+
+# Mehrere Jobs verwalten
+jobs                # Alle Jobs anzeigen
+fg %2               # Job Nr. 2 in Vordergrund
+bg %1               # Job Nr. 1 in Hintergrund
+</code>
+
+**System-Performance analysieren:**
+<code>
+# Top-Prozesse nach CPU
+top -o %CPU
+
+# Memory-Verbrauch überwachen
+free -h
+cat /proc/meminfo
+
+# Load Average anzeigen
+uptime
+cat /proc/loadavg
+
+# I/O-Statistiken
+iostat 1            # jede Sekunde
+iotop               # I/O nach Prozessen
+</code>
 
 ===== Hinweis =====
 
-----
+**Prozess-Konzepte:**
+  * **PID**: Process ID - eindeutige Prozess-Nummer
+  * **PPID**: Parent Process ID - Eltern-Prozess
+  * **UID**: User ID des Prozess-Besitzers
+  * **GID**: Group ID des Prozesses
+  * **TTY**: Terminal, von dem der Prozess gestartet wurde
+
+**Process States verstehen:**
+  * **Zombie-Prozesse**: Beendete Prozesse, deren Eltern-Prozess noch läuft
+  * **Orphan-Prozesse**: Prozesse deren Eltern beendet wurden (werden von init adoptiert)
+  * **Daemon-Prozesse**: Hintergrund-Services ohne Terminal
+
+**Sicherheitsaspekte:**
+  * **Nur eigene Prozesse** können normale Benutzer beenden
+  * **root** kann alle Prozesse verwalten
+  * **SUID-Programme** laufen mit Besitzer-Rechten
+  * **Process Limits** können in /etc/security/limits.conf gesetzt werden
 
 ===== Alternativen =====
+
+**Moderne Process-Monitoring Tools:**
+  * **htop**: Erweiterte Alternative zu top
+  * **glances**: System-Monitoring mit Web-Interface
+  * **netdata**: Real-time Performance-Monitoring
+  * **atop**: Erweiterte System- und Prozess-Analyse
+  * **iotop**: I/O-Monitoring nach Prozessen
+  * **powertop**: Power-Consumption Monitoring
+
+**Process-Management:**
+  * **systemd**: Modern process supervision
+  * **supervisor**: Python-basierter Process-Manager
+  * **pm2**: Node.js Process-Manager
+  * **monit**: System-Monitoring und automatic restart
+
+===== Weitere Informationen =====
+
+**Manual Pages:**
+<code>
+man ps                     # Prozesse anzeigen
+man top                    # Live-Prozess-Monitor
+man kill                   # Prozesse beenden
+man signal                 # Signal-Konzepte
+man nohup                  # Prozesse nach Logout laufen lassen
+man nice                   # Prozess-Prioritäten
+</code>
+
+**Wichtige /proc Dateien:**
+  * **/proc/PID/**: Prozess-spezifische Informationen
+  * **/proc/meminfo**: Memory-Informationen
+  * **/proc/cpuinfo**: CPU-Informationen
+  * **/proc/loadavg**: System Load
+  * **/proc/stat**: System-Statistiken
+
+**Weiterführende Themen:**
+  * Process Groups und Sessions
+  * Shared Memory und IPC
+  * Real-time Scheduling
+  * Container-Process-Management
+  * Performance-Profiling
 
 ----
 

@@ -1,12 +1,91 @@
-====== 12 - ssh ======
+====== 12 - SSH ======
 
 **SSH (Secure Shell)** ist ein Netzwerkprotokoll, das eine sichere, verschlüsselte Verbindung zu entfernten Computern über ein unsicheres Netzwerk ermöglicht.
 Es wird hauptsächlich verwendet, um sich per Kommandozeile auf Servern einzuloggen und entfernte Befehle auszuführen.
+
+===== Syntax =====
+
+**Grundlegende SSH-Befehle:**
+<code>
+ssh username@hostname              # SSH-Verbindung zu Server
+ssh -p 2222 user@server           # Verbindung über spezifischen Port
+ssh user@server "command"          # Einzelnen Befehl ausführen
+ssh -i ~/.ssh/private_key user@server  # Mit spezifischem SSH-Key
+scp datei.txt user@server:/path/   # Datei kopieren (Upload)
+scp user@server:/path/datei.txt .  # Datei kopieren (Download)
+rsync -av /local/ user@server:/remote/  # Verzeichnisse synchronisieren
+</code>
+
+**SSH-Key Management:**
+<code>
+ssh-keygen -t rsa -b 4096          # RSA-Schlüsselpaar generieren
+ssh-keygen -t ed25519              # Ed25519-Schlüssel (empfohlen)
+ssh-copy-id user@server            # Public Key auf Server kopieren
+ssh-add ~/.ssh/private_key         # Private Key zu ssh-agent hinzufügen
+ssh-agent bash                     # SSH-Agent starten
+</code>
+
+===== Wichtige Optionen =====
+
+**SSH Client Optionen:**
+  * **-p**: Port angeben
+  * **-i**: Identity-Datei (Private Key)
+  * **-v**: Verbose (Debug-Ausgabe)
+  * **-L**: Local Port Forwarding
+  * **-R**: Remote Port Forwarding
+  * **-D**: Dynamic Port Forwarding (SOCKS Proxy)
+  * **-N**: Keine Remote-Befehle ausführen
+  * **-f**: In Background laufen
+
+**SCP/RSYNC Optionen:**
+  * **-r**: Rekursiv (für Verzeichnisse)
+  * **-p**: Berechtigungen beibehalten
+  * **-v**: Verbose Ausgabe
+  * **-a**: Archiv-Modus (rsync)
+  * **--delete**: Verwaiste Dateien löschen (rsync)
+
+===== Beispiele =====
+
+**Tägliche SSH-Nutzung:**
+<code>
+# Server-Administration
+ssh admin@production-server
+ssh webserver "sudo systemctl restart nginx"
+
+# Dateien übertragen
+scp backup.tar.gz user@backup-server:/backups/
+rsync -av --delete /var/www/ user@mirror:/var/www/
+
+# Tunnel und Port-Forwarding
+ssh -L 8080:localhost:80 user@server    # Lokaler Port 8080 zu Server Port 80
+ssh -R 9000:localhost:22 user@server    # Server Port 9000 zu lokaler Port 22
+ssh -D 1080 user@server                 # SOCKS Proxy auf Port 1080
+</code>
 
 {{page>snippets:sshd_config}}
 {{page>workshop:sicherheit:ssh-key}}
 {{page>workshop:sicherheit:ssh-copy-id}}
 {{page>snippets:ssh_config}}
 {{page>snippets:ssh_motd}}
+
+===== Hinweis =====
+
+**Sicherheits-Best-Practices:**
+  * **SSH-Keys** statt Passwörter verwenden
+  * **Standard-Port 22 ändern**
+  * **Root-Login deaktivieren**
+  * **Fail2ban** gegen Brute-Force-Angriffe
+  * **Starke Authentifizierung** (2FA wenn möglich)
+
+===== Weitere Informationen =====
+
+**Manual Pages:**
+<code>
+man ssh
+man sshd_config
+man ssh_config
+man scp
+man rsync
+</code>
 
 

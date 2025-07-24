@@ -1,18 +1,194 @@
 ====== 13 - NFS, SAMBA ======
 
+NFS (Network File System) und Samba ermöglichen das Teilen von Dateien und Verzeichnissen über das Netzwerk zwischen verschiedenen Betriebssystemen.
+
 ===== Syntax =====
+
+**NFS Server Setup:**
+<code>
+# NFS-Server installieren
+sudo apt install nfs-kernel-server
+
+# Verzeichnis für NFS-Export erstellen
+sudo mkdir -p /srv/nfs/shared
+sudo chown nobody:nogroup /srv/nfs/shared
+
+# Export-Konfiguration
+echo "/srv/nfs/shared 192.168.1.0/24(rw,sync,no_subtree_check)" | sudo tee -a /etc/exports
+
+# NFS-Exports aktivieren
+sudo exportfs -a
+sudo systemctl restart nfs-kernel-server
+</code>
+
+**NFS Client:**
+<code>
+# NFS-Client installieren
+sudo apt install nfs-common
+
+# NFS-Share mounten
+sudo mkdir /mnt/nfs-share
+sudo mount -t nfs server_ip:/srv/nfs/shared /mnt/nfs-share
+
+# Automatisches Mounten in /etc/fstab
+echo "server_ip:/srv/nfs/shared /mnt/nfs-share nfs defaults 0 0" | sudo tee -a /etc/fstab
+</code>
+
+**Samba Server Setup:**
+<code>
+# Samba installieren
+sudo apt install samba samba-common-bin
+
+# Samba-Konfiguration bearbeiten
+sudo nano /etc/samba/smb.conf
+
+# Samba-Benutzer erstellen
+sudo smbpasswd -a username
+
+# Samba-Service neu starten
+sudo systemctl restart smbd nmbd
+</code>
+
+**Samba Client:**
+<code>
+# CIFS-Utils installieren
+sudo apt install cifs-utils
+
+# SMB-Share mounten
+sudo mkdir /mnt/samba-share
+sudo mount -t cifs //server_ip/sharename /mnt/samba-share -o username=user,password=pass
+
+# Mit Credentials-Datei
+echo "username=user" | sudo tee /etc/samba/credentials
+echo "password=pass" | sudo tee -a /etc/samba/credentials
+sudo chmod 600 /etc/samba/credentials
+sudo mount -t cifs //server/share /mnt/samba -o credentials=/etc/samba/credentials
+</code>
 
 ----
 
 ===== Wichtige Optionen =====
 
-----
+**NFS Export-Optionen:**
+  * **rw**: Read-Write Zugriff
+  * **ro**: Read-Only Zugriff
+  * **sync**: Synchroner Schreibvorgang
+  * **async**: Asynchroner Schreibvorgang
+  * **no_subtree_check**: Deaktiviert Subtree-Checking
+  * **root_squash**: Root-Zugriff einschränken
+  * **no_root_squash**: Root-Zugriff erlauben
+  * **all_squash**: Alle Benutzer zu nobody mappen
+
+**NFS Mount-Optionen:**
+  * **hard**: Bei Netzwerkproblemen warten
+  * **soft**: Bei Netzwerkproblemen Fehler zurückgeben
+  * **intr**: Unterbrechbare Mounts
+  * **rsize/wsize**: Read/Write Puffergröße
+  * **timeo**: Timeout-Wert
+  * **retrans**: Anzahl Wiederholungen
+
+**Samba Share-Typen:**
+  * **[homes]**: Automatische Home-Verzeichnis-Freigaben
+  * **[printers]**: Drucker-Freigaben
+  * **[public]**: Öffentliche Freigaben
+  * **Custom Shares**: Benutzerdefinierte Freigaben
 
 ===== Beispiele =====
 
-----
+**NFS-Konfiguration Beispiele:**
+<code>
+# /etc/exports Beispiele
+/home/shared 192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash)
+/var/backups 10.0.0.100(ro,sync,no_subtree_check,root_squash)
+/public *(ro,sync,no_subtree_check,all_squash,anonuid=1000,anongid=1000)
+
+# NFS-Status prüfen
+showmount -e localhost          # Lokale Exports anzeigen
+showmount -e server_ip          # Remote Exports anzeigen
+nfsstat -s                      # Server-Statistiken
+nfsstat -c                      # Client-Statistiken
+</code>
+
+**Samba-Konfiguration Beispiele:**
+<code>
+# /etc/samba/smb.conf
+[global]
+    workgroup = WORKGROUP
+    server string = File Server
+    security = user
+    map to guest = bad user
+
+[shared]
+    path = /srv/samba/shared
+    browseable = yes
+    writable = yes
+    guest ok = no
+    valid users = user1,user2
+
+[public]
+    path = /srv/samba/public
+    browseable = yes
+    writable = yes
+    guest ok = yes
+    create mask = 0664
+    directory mask = 0775
+</code>
+
+**Samba-Management:**
+<code>
+# Samba-Benutzer verwalten
+sudo smbpasswd -a username      # Benutzer hinzufügen
+sudo smbpasswd -d username      # Benutzer deaktivieren
+sudo smbpasswd -e username      # Benutzer aktivieren
+sudo smbpasswd -x username      # Benutzer löschen
+
+# Samba-Status prüfen
+sudo smbstatus                  # Aktive Verbindungen
+testparm                        # Konfiguration testen
+smbclient -L //server_ip        # Verfügbare Shares anzeigen
+</code>
 
 ===== Hinweis =====
+
+**Sicherheitsaspekte:**
+  * **Firewall-Regeln** für NFS (Port 2049) und Samba (Ports 139, 445)
+  * **Starke Passwörter** für Samba-Benutzer
+  * **Netzwerk-Segmentierung** für interne Freigaben
+  * **Verschlüsselung** über VPN für externe Zugriffe
+  * **Regelmäßige Updates** der NFS/Samba-Software
+
+**Performance-Tipps:**
+  * **NFS v4** für bessere Performance verwenden
+  * **Optimale rsize/wsize** Werte testen
+  * **Jumbo Frames** in Gigabit-Netzwerken aktivieren
+  * **SSD-Storage** für häufig zugeriffene Shares
+
+===== Alternativen =====
+
+**Moderne Alternativen:**
+  * **SSHFS**: SSH-basiertes Dateisystem
+  * **WebDAV**: HTTP-basierte Dateifreigabe
+  * **FTP/SFTP**: File Transfer Protocol
+  * **NextCloud/OwnCloud**: Cloud-Storage-Lösungen
+  * **GlusterFS**: Verteiltes Dateisystem
+  * **Ceph**: Objekt-Storage
+
+===== Weitere Informationen =====
+
+**Manual Pages:**
+<code>
+man exports
+man nfs
+man mount.cifs
+man smb.conf
+man smbclient
+</code>
+
+**Wichtige Dateien:**
+  * **/etc/exports**: NFS-Export-Konfiguration
+  * **/etc/samba/smb.conf**: Samba-Hauptkonfiguration
+  * **/var/log/samba/**: Samba-Logs
+  * **/proc/fs/nfsd/**: NFS-Server-Status
 
 ----
 

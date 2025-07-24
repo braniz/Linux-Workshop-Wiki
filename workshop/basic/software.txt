@@ -1,18 +1,173 @@
-====== 10 - Software verwaltung ======
+====== 10 - Software Verwaltung ======
+
+Linux-Distributionen verwenden Paketmanager zur Installation, Aktualisierung und Entfernung von Software. Jede Distribution hat eigene Tools, aber die Konzepte sind ähnlich.
 
 ===== Syntax =====
+
+**APT (Debian/Ubuntu):**
+<code>
+apt update                         # Paketlisten aktualisieren
+apt upgrade                        # Alle Pakete aktualisieren
+apt install paketname              # Paket installieren
+apt remove paketname               # Paket entfernen
+apt purge paketname                # Paket mit Konfiguration entfernen
+apt search suchbegriff             # Pakete suchen
+apt show paketname                 # Paket-Informationen anzeigen
+apt list --installed               # Installierte Pakete auflisten
+apt autoremove                     # Nicht mehr benötigte Pakete entfernen
+</code>
+
+**YUM/DNF (Red Hat/Fedora/CentOS):**
+<code>
+dnf update                         # Alle Pakete aktualisieren
+dnf install paketname              # Paket installieren
+dnf remove paketname               # Paket entfernen
+dnf search suchbegriff             # Pakete suchen
+dnf info paketname                 # Paket-Informationen
+dnf list installed                 # Installierte Pakete
+dnf autoremove                     # Verwaiste Pakete entfernen
+</code>
+
+**Pacman (Arch Linux):**
+<code>
+pacman -Syu                        # System aktualisieren
+pacman -S paketname                # Paket installieren
+pacman -R paketname                # Paket entfernen
+pacman -Rs paketname               # Paket mit Abhängigkeiten entfernen
+pacman -Ss suchbegriff             # Pakete suchen
+pacman -Si paketname               # Paket-Informationen
+pacman -Q                          # Installierte Pakete
+</code>
+
+**Zypper (openSUSE):**
+<code>
+zypper refresh                     # Repositories aktualisieren
+zypper update                      # System aktualisieren
+zypper install paketname           # Paket installieren
+zypper remove paketname            # Paket entfernen
+zypper search suchbegriff          # Pakete suchen
+</code>
 
 ----
 
 ===== Wichtige Optionen =====
 
-----
+**APT Optionen:**
+  * **-y**: Automatisch "ja" zu allen Fragen
+  * **--no-install-recommends**: Nur notwendige Abhängigkeiten installieren
+  * **--reinstall**: Paket neu installieren
+  * **--fix-broken**: Beschädigte Abhängigkeiten reparieren
+  * **-s**: Simulation (nur zeigen, was gemacht würde)
+  * **-f**: Force - Installationen erzwingen
+
+**Repository-Management:**
+  * **add-apt-repository**: Repository hinzufügen (Ubuntu)
+  * **apt-key**: GPG-Schlüssel verwalten
+  * **/etc/apt/sources.list**: Haupt-Repository-Liste
+  * **/etc/apt/sources.list.d/**: Zusätzliche Repository-Dateien
+
+**Paket-Dateiformate:**
+  * **.deb**: Debian/Ubuntu Pakete
+  * **.rpm**: Red Hat/Fedora/SUSE Pakete
+  * **.pkg.tar.xz**: Arch Linux Pakete
+  * **.snap**: Universal Snap Pakete
+  * **.flatpak**: Flatpak Pakete
+  * **.appimage**: Portable AppImage Pakete
 
 ===== Beispiele =====
 
-----
+**Alltägliche Softwareverwaltung:**
+<code>
+# System komplett aktualisieren
+sudo apt update && sudo apt upgrade -y
+
+# Entwicklungstools installieren
+sudo apt install build-essential git curl wget
+
+# Multimedia-Pakete
+sudo apt install vlc gimp firefox
+
+# Server-Software
+sudo apt install nginx mysql-server php
+
+# Nicht mehr benötigte Pakete aufräumen
+sudo apt autoremove && sudo apt autoclean
+</code>
+
+**Repository-Verwaltung:**
+<code>
+# PPA hinzufügen (Ubuntu)
+sudo add-apt-repository ppa:username/repository
+sudo apt update
+
+# Externes Repository hinzufügen
+wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
+echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+sudo apt update
+sudo apt install sublime-text
+</code>
+
+**Alternative Paketmanager:**
+<code>
+# Snap Pakete
+sudo snap install code --classic
+sudo snap install discord
+snap list
+
+# Flatpak
+flatpak install flathub org.gimp.GIMP
+flatpak run org.gimp.GIMP
+
+# AppImage (keine Installation nötig)
+wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+chmod +x appimagetool-x86_64.AppImage
+./appimagetool-x86_64.AppImage
+</code>
 
 ===== Hinweis =====
+
+**Sicherheitsaspekte:**
+  * **Nur vertrauenswürdige Repositories** verwenden
+  * **GPG-Schlüssel** für Repository-Authentifizierung
+  * **Regelmäßige Updates** für Sicherheits-Patches
+  * **Backups** vor größeren System-Updates
+
+**Package-Management Best Practices:**
+  * System vor Updates **immer aktualisieren**: `apt update`
+  * **Abhängigkeiten verstehen** - nicht blind installieren
+  * **Logs überprüfen** bei Problemen: `/var/log/apt/`
+  * **Paket-Pins** für kritische Software-Versionen
+  * **Testing-Repositories** nur für Entwicklung verwenden
+
+===== Alternativen =====
+
+**Weitere Paketmanager:**
+  * **pip**: Python-Pakete
+  * **npm**: Node.js-Pakete
+  * **cargo**: Rust-Pakete
+  * **gem**: Ruby-Pakete
+  * **conda**: Data Science Pakete
+
+**Container-basierte Lösungen:**
+  * **Docker**: Containerisierte Anwendungen
+  * **Podman**: Rootless Container-Runtime
+  * **LXC/LXD**: System-Container
+
+===== Weitere Informationen =====
+
+**Manual Pages:**
+<code>
+man apt
+man dpkg
+man dnf
+man pacman
+man zypper
+</code>
+
+**Online-Ressourcen:**
+  * Distribution-spezifische Paket-Suchen
+  * Offizielle Repository-Listen
+  * Community-Repositories und PPAs
 
 ----
 
