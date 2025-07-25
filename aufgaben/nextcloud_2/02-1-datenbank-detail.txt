@@ -1,0 +1,558 @@
+====== MariaDB/MySQL Detaillierte Einrichtung für Nextcloud ======
+
+===== Warum eine eigene Anleitung? =====
+
+Die Datenbank-Einrichtung ist **das Herzstück** jeder Nextcloud-Installation. Fehler hier führen zu:
+  * Performance-Problemen
+  * Encoding-Fehlern (Umlaute, Emojis)
+  * Sicherheitslücken
+  * Backup-Problemen
+  * Schwer debugbaren Fehlern
+
+**Diese Anleitung erklärt jeden Schritt im Detail!**
+
+===== 1. MariaDB Installation verstehen =====
+
+**Was wird installiert:**
+<code>
+sudo apt install -y mariadb-server mariadb-client
+</code>
+
+**Was passiert dabei:**
+  * **mariadb-server** - Der Datenbank-Server (mysqld-Daemon)
+  * **mariadb-client** - Command-Line-Tools (mysql, mysqldump, etc.)
+  * **Automatischer Start** - Service wird bei Boot gestartet
+  * **Socket-Datei** - `/var/run/mysqld/mysqld.sock` für lokale Verbindungen
+  * **Datenverzeichnis** - `/var/lib/mysql/` für alle Datenbanken
+
+**Installation überprüfen:**
+<code>
+# Service-Status
+sudo systemctl status mariadb
+
+# Prozess überprüfen
+ps aux | grep mysql
+
+# Lauschende Ports
+sudo netstat -tlnp | grep mysql
+# oder
+sudo ss -tlnp | grep mysql
+
+# Log-Dateien prüfen
+sudo tail -f /var/log/mysql/error.log
+</code>
+
+===== 2. Sicherheitskonfiguration im Detail =====
+
+**Warum mysql_secure_installation wichtig ist:**
+
+**Ohne Konfiguration hat MariaDB:**
+  * ❌ Root-Benutzer ohne Passwort
+  * ❌ Anonyme Benutzer (können sich ohne Login verbinden)
+  * ❌ Test-Datenbank (öffentlich zugänglich)
+  * ❌ Remote-Root-Zugang möglich
+  * ❌ Privilege-Tabellen nicht optimiert
+
+**Sicherheitskonfiguration starten:**
+<code>
+sudo mysql_secure_installation
+</code>
+
+**Detaillierte Erklärung jeder Frage:**
+
+**1. "Switch to unix_socket authentication [Y/n]"**
+<code>
+Auswahl: Y (Ja)
+</code>
+**Was das bedeutet:**
+  * Root kann sich nur als `sudo mysql` anmelden
+  * Verhindert Brute-Force-Attacken auf Root-Account
+  * **Best Practice** für lokale Systeme
+
+**2. "Change the root password? [Y/n]"**
+<code>
+Auswahl: Y (Ja)
+Neues Passwort: Start1234
+</code>
+**Was das bedeutet:**
+  * Setzt ein Passwort für den MySQL-Root-Benutzer
+  * **Für Schulungen:** Einfaches Passwort `Start1234`
+  * **Für Produktion:** Minimum 16 Zeichen, Sonderzeichen, Zahlen
+
+**3. "Remove anonymous users? [Y/n]"**
+<code>
+Auswahl: Y (Ja)
+</code>
+**Was das bedeutet:**
+  * Entfernt Benutzer ohne Namen (`''@'localhost'`)
+  * Diese können sich ohne Authentifizierung verbinden
+  * **Sicherheitsrisiko** - immer entfernen!
+
+**4. "Disallow root login remotely? [Y/n]"**
+<code>
+Auswahl: Y (Ja)
+</code>
+**Was das bedeutet:**
+  * Root kann nur von `localhost` zugreifen
+  * Verhindert Remote-Attacken auf Admin-Account
+  * Für Remote-Zugang: Separaten Admin-User erstellen
+
+**5. "Remove test database and access to it? [Y/n]"**
+<code>
+Auswahl: Y (Ja)
+</code>
+**Was das bedeutet:**
+  * Entfernt die `test`-Datenbank
+  * Diese ist standardmäßig für alle User zugänglich
+  * **Sicherheitsrisiko** und unnötig
+
+**6. "Reload privilege tables now? [Y/n]"**
+<code>
+Auswahl: Y (Ja)
+</code>
+**Was das bedeutet:**
+  * Lädt alle Änderungen sofort neu
+  * Ohne Reload sind Änderungen erst nach Neustart aktiv
+  * Entspricht `FLUSH PRIVILEGES;`
+
+===== 3. Datenbankzugang verstehen =====
+
+**Nach der Konfiguration gibt es zwei Wege:**
+
+**Weg 1: Als System-Root (mit unix_socket)**
+<code>
+sudo mysql
+# Kein Passwort nötig, da unix_socket-Auth
+</code>
+
+**Weg 2: Mit Passwort-Authentifizierung**
+<code>
+mysql -u root -p
+# Passwort: Start1234
+</code>
+
+**Was ist der Unterschied?**
+  * **unix_socket** - Überprüft das Linux-Benutzerkonto
+  * **Passwort-Auth** - Überprüft das MySQL-Passwort
+
+===== 4. Nextcloud-Datenbank erstellen (Schritt für Schritt) =====
+
+**MariaDB-Konsole öffnen:**
+<code>
+sudo mysql
+# oder
+mysql -u root -pStart1234
+</code>
+
+===== KURZE VERSION (Schnell-Anleitung) =====
+
+**Komplette Datenbank-Einrichtung in 4 Befehlen:**
+<code>
+# MariaDB öffnen
+sudo mysql
+
+# Datenbank erstellen (mit korrektem Character Set!)
+CREATE DATABASE nextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
+# Benutzer erstellen
+CREATE USER 'nc_user'@'localhost' IDENTIFIED BY 'nc_pass';
+
+# Berechtigungen setzen
+GRANT ALL PRIVILEGES ON nextcloud.* TO 'nc_user'@'localhost';
+
+# Änderungen aktivieren
+FLUSH PRIVILEGES;
+
+# Verlassen
+EXIT;
+</code>
+
+<WRAP center round important 70%>
+**⚠️ WICHTIG: Character Set nicht vergessen!**
+
+Die häufig verwendete Version `CREATE DATABASE nextcloud;` **ohne Character Set** führt zu Problemen mit Emojis und internationalen Zeichen!
+</WRAP>
+
+===== ALTERNATIVE: Ihre Version (funktioniert auch) =====
+
+**Ihre bestehenden Befehle:**
+<code>
+create database nextcloud; 
+create user 'nc_user'@'localhost' identified by 'nc_pass';
+grant all privileges on nextcloud.* to 'nc_user'@'localhost' identified by 'nc_pass';
+flush privileges;
+</code>
+
+**Problem:** Ohne `CHARACTER SET utf8mb4` funktionieren **Emojis und viele internationale Zeichen NICHT**.
+
+**Lösung für bestehende DB:**
+<code>
+# Falls Sie bereits eine DB ohne utf8mb4 haben:
+sudo mysql
+ALTER DATABASE nextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+FLUSH PRIVILEGES;
+</code>
+
+===== DETAILLIERTE VERSION (für Verständnis) =====
+
+**Schritt 1: Datenbank erstellen**
+<code>
+CREATE DATABASE nextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+</code>
+
+**Was bedeutet das im Detail:**
+  * **`CREATE DATABASE nextcloud`** - Erstellt neue Datenbank namens "nextcloud"
+  * **`CHARACTER SET utf8mb4`** - Vollständige UTF-8 Unterstützung (4-Byte)
+    * Unterstützt **alle Unicode-Zeichen** (Emojis, chinesische Zeichen, etc.)
+    * `utf8` wäre nur 3-Byte (unvollständig)
+  * **`COLLATE utf8mb4_general_ci`** - Sortier- und Vergleichsregeln
+    * `general_ci` = Case Insensitive (Groß-/Kleinschreibung egal)
+    * Alternative: `utf8mb4_unicode_ci` (linguistisch korrekter)
+
+**Schritt 2: Benutzer erstellen**
+<code>
+CREATE USER 'nc_user'@'localhost' IDENTIFIED BY 'nc_pass';
+</code>
+
+**Was bedeutet das im Detail:**
+  * **`CREATE USER 'nc_user'`** - Erstellt neuen Benutzer "nc_user"
+  * **`@'localhost'`** - Kann nur vom lokalen System zugreifen
+    * Sicherheitsfeature: Keine Remote-Verbindungen
+    * Alternative: `@'%'` = von überall (NICHT empfohlen)
+  * **`IDENTIFIED BY 'nc_pass'`** - Setzt Passwort auf "nc_pass"
+    * **Für Schulungen:** Einfaches Passwort
+    * **Für Produktion:** Starkes Passwort verwenden
+
+**Schritt 3: Berechtigungen setzen**
+<code>
+GRANT ALL PRIVILEGES ON nextcloud.* TO 'nc_user'@'localhost';
+</code>
+
+**Was bedeutet das im Detail:**
+  * **`GRANT ALL PRIVILEGES`** - Gibt alle Rechte (SELECT, INSERT, UPDATE, DELETE, etc.)
+  * **`ON nextcloud.*`** - Für alle Tabellen in der "nextcloud"-Datenbank
+    * `nextcloud.*` = alle Tabellen in dieser DB
+    * Alternative: `nextcloud.specific_table` = nur eine Tabelle
+  * **`TO 'nc_user'@'localhost'`** - An diesen spezifischen Benutzer
+
+**Schritt 4: Änderungen aktivieren**
+<code>
+FLUSH PRIVILEGES;
+</code>
+
+**Was bedeutet das:**
+  * **Lädt die Berechtigungstabellen neu**
+  * Ohne `FLUSH PRIVILEGES` sind Änderungen erst nach Neustart aktiv
+  * Entspricht einem "Reload" der Konfiguration
+
+===== 5. Erweiterte Berechtigungen (Optional) =====
+
+**Minimal-Berechtigungen für Sicherheit:**
+<code>
+-- Statt ALL PRIVILEGES nur die wirklich benötigten:
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, 
+      CREATE TEMPORARY TABLES, LOCK TABLES ON nextcloud.* TO 'nc_user'@'localhost';
+</code>
+
+**Was bedeuten die einzelnen Rechte:**
+  * **SELECT** - Daten lesen
+  * **INSERT** - Neue Datensätze hinzufügen
+  * **UPDATE** - Bestehende Daten ändern
+  * **DELETE** - Datensätze löschen
+  * **CREATE** - Neue Tabellen erstellen
+  * **DROP** - Tabellen löschen
+  * **INDEX** - Indizes erstellen/löschen
+  * **ALTER** - Tabellenstruktur ändern
+  * **CREATE TEMPORARY TABLES** - Temporäre Tabellen (für Operationen)
+  * **LOCK TABLES** - Tabellen sperren (für Konsistenz)
+
+===== 6. Datenbank-Konfiguration überprüfen =====
+
+**Alle Datenbanken anzeigen:**
+<code>
+SHOW DATABASES;
+</code>
+
+**Erwartete Ausgabe:**
+<code>
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| nextcloud          |
+| performance_schema |
++--------------------+
+</code>
+
+**Benutzer und Berechtigungen prüfen:**
+<code>
+-- Alle Benutzer anzeigen
+SELECT User, Host FROM mysql.user;
+
+-- Berechtigungen für nc_user prüfen
+SHOW GRANTS FOR 'nc_user'@'localhost';
+</code>
+
+**Erwartete Ausgabe für SHOW GRANTS:**
+<code>
++---------------------------------------------------------------------------------+
+| Grants for nc_user@localhost                                                   |
++---------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO 'nc_user'@'localhost' IDENTIFIED BY PASSWORD '*...'     |
+| GRANT ALL PRIVILEGES ON `nextcloud`.* TO 'nc_user'@'localhost'                |
++---------------------------------------------------------------------------------+
+</code>
+
+**Datenbankverbindung testen:**
+<code>
+-- MariaDB verlassen
+EXIT;
+
+-- Als nc_user anmelden
+mysql -u nc_user -p
+# Passwort eingeben: nc_pass
+
+-- Zugriff auf nextcloud-DB testen
+USE nextcloud;
+SHOW TABLES;
+# (Noch leer, da Nextcloud noch nicht installiert)
+
+-- Verbindung beenden
+EXIT;
+</code>
+
+===== 7. Häufige Probleme und Lösungen =====
+
+**Problem 1: "Access denied for user 'root'@'localhost'"**
+<code>
+# Lösung: unix_socket verwenden
+sudo mysql
+
+# Oder: mysql_secure_installation nochmal durchführen
+sudo mysql_secure_installation
+</code>
+
+**Problem 2: Character Set Probleme**
+<code>
+# Aktuelle Einstellungen prüfen
+sudo mysql
+SHOW VARIABLES LIKE 'character_set%';
+SHOW VARIABLES LIKE 'collation%';
+
+# Datenbank-Encoding prüfen
+SELECT SCHEMA_NAME, DEFAULT_CHARACTER_SET_NAME 
+FROM information_schema.SCHEMATA 
+WHERE SCHEMA_NAME = 'nextcloud';
+</code>
+
+**Problem 3: Verbindung wird verweigert**
+<code>
+# MariaDB-Status prüfen
+sudo systemctl status mariadb
+
+# Service starten falls nötig
+sudo systemctl start mariadb
+
+# Logs prüfen
+sudo tail -f /var/log/mysql/error.log
+</code>
+
+**Problem 4: Benutzer kann nicht zugreifen**
+<code>
+# Als Root anmelden
+sudo mysql
+
+# Benutzer-Host prüfen
+SELECT User, Host FROM mysql.user WHERE User = 'nc_user';
+
+# Falls '@%' statt '@localhost', neu erstellen:
+DROP USER 'nc_user'@'%';
+CREATE USER 'nc_user'@'localhost' IDENTIFIED BY 'nc_pass';
+GRANT ALL PRIVILEGES ON nextcloud.* TO 'nc_user'@'localhost';
+FLUSH PRIVILEGES;
+</code>
+
+===== 8. Performance-Optimierung der Datenbank =====
+
+**MariaDB für Nextcloud optimieren:**
+<code>
+sudo nano /etc/mysql/mariadb.conf.d/50-server.cnf
+</code>
+
+**Wichtige Einstellungen hinzufügen:**
+<code>
+[mysqld]
+# Nextcloud-optimierte Einstellungen
+
+# Memory Settings
+innodb_buffer_pool_size = 256M
+innodb_buffer_pool_instances = 1
+
+# Performance
+innodb_flush_log_at_trx_commit = 2
+innodb_file_per_table = ON
+innodb_log_file_size = 64M
+
+# Character Set
+character-set-server = utf8mb4
+collation-server = utf8mb4_general_ci
+
+# Transaction Isolation
+transaction-isolation = READ-COMMITTED
+
+# Query Cache (für MariaDB < 10.10)
+query_cache_type = 1
+query_cache_size = 64M
+
+# Binary Logging (Optional, für Backup)
+log-bin = /var/log/mysql/mysql-bin.log
+expire_logs_days = 7
+</code>
+
+**Nach Änderungen MariaDB neustarten:**
+<code>
+sudo systemctl restart mariadb
+</code>
+
+**Optimierungen überprüfen:**
+<code>
+sudo mysql
+SHOW VARIABLES LIKE 'innodb_buffer_pool_size';
+SHOW VARIABLES LIKE 'character_set_server';
+SHOW VARIABLES LIKE 'transaction_isolation';
+</code>
+
+===== 9. Backup der Datenbank-Konfiguration =====
+
+**Datenbank-Schema sichern:**
+<code>
+mysqldump -u nc_user -p --no-data nextcloud > nextcloud-schema.sql
+</code>
+
+**Vollständiges Backup erstellen:**
+<code>
+mysqldump -u nc_user -p nextcloud > nextcloud-backup.sql
+</code>
+
+**Benutzer und Berechtigungen sichern:**
+<code>
+# Als Root
+sudo mysql
+SELECT CONCAT('SHOW GRANTS FOR ''',user,'''@''',host,''';') AS query FROM mysql.user;
+</code>
+
+===== 10. Troubleshooting-Commands =====
+
+**Diagnose-Befehle für Datenbank-Probleme:**
+<code>
+# Datenbank-Verbindung testen
+mysql -u nc_user -p -e "SELECT 1"
+
+# Aktuelle Verbindungen anzeigen
+sudo mysql -e "SHOW PROCESSLIST;"
+
+# Datenbank-Größe prüfen
+sudo mysql -e "SELECT table_schema AS 'Database', 
+    ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS 'Size (MB)' 
+    FROM information_schema.tables 
+    WHERE table_schema = 'nextcloud';"
+
+# Tabellen in nextcloud-DB anzeigen
+mysql -u nc_user -p -e "USE nextcloud; SHOW TABLES;"
+
+# MariaDB-Version prüfen
+mysql --version
+sudo mysql -e "SELECT VERSION();"
+
+# Konfiguration prüfen
+sudo mysql -e "SHOW VARIABLES;" | grep -i innodb
+</code>
+
+===== 11. Sicherheits-Checkliste =====
+
+**✅ Datenbank-Sicherheit validieren:**
+
+**1. Root-Zugang testen:**
+<code>
+# Das sollte NICHT funktionieren:
+mysql -u root
+# ERROR 1045 (28000): Access denied
+
+# Das sollte funktionieren:
+sudo mysql
+# oder
+mysql -u root -p
+</code>
+
+**2. Anonyme Benutzer prüfen:**
+<code>
+sudo mysql -e "SELECT User, Host FROM mysql.user WHERE User = '';"
+# Sollte leer sein (keine anonymen Benutzer)
+</code>
+
+**3. Test-Datenbank prüfen:**
+<code>
+sudo mysql -e "SHOW DATABASES LIKE 'test';"
+# Sollte leer sein (keine test-DB)
+</code>
+
+**4. Remote-Root-Zugang prüfen:**
+<code>
+sudo mysql -e "SELECT User, Host FROM mysql.user WHERE User = 'root' AND Host != 'localhost';"
+# Sollte leer sein (kein Remote-Root)
+</code>
+
+**5. nc_user Berechtigungen validieren:**
+<code>
+mysql -u nc_user -p -e "SHOW GRANTS;"
+# Sollte nur nextcloud.* Zugriff haben
+</code>
+
+===== 12. Production vs. Workshop Unterschiede =====
+
+**Workshop-Setup (wie hier):**
+  * ✅ Einfache Passwörter (`Start1234`, `nc_pass`)
+  * ✅ Lokaler Zugriff only
+  * ✅ Standard-Konfiguration
+  * ✅ Einfache Berechtigungen
+
+**Production-Setup:**
+  * 🔒 **Starke Passwörter** (32+ Zeichen, zufällig)
+  * 🔒 **Minimale Berechtigungen** (nur benötigte Rechte)
+  * 🔒 **SSL/TLS** für DB-Verbindungen
+  * 🔒 **Separate DB-Server** möglich
+  * 🔒 **Monitoring** und Alerting
+  * 🔒 **Automatische Backups**
+
+**Production-Beispiel:**
+<code>
+# Starkes Passwort generieren
+openssl rand -base64 32
+
+# Minimale Berechtigungen
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, 
+      CREATE TEMPORARY TABLES, LOCK TABLES ON nextcloud.* TO 'nc_user'@'localhost';
+
+# SSL-Verbindung erzwingen
+GRANT ... TO 'nc_user'@'localhost' REQUIRE SSL;
+</code>
+
+===== Zusammenfassung =====
+
+**Diese detaillierte Anleitung erklärt:**
+  * ✅ **Warum** jeder Schritt gemacht wird
+  * ✅ **Was** jeder SQL-Befehl bewirkt
+  * ✅ **Wie** man Probleme diagnostiziert
+  * ✅ **Sicherheitsaspekte** verstehen
+  * ✅ **Performance-Optimierung**
+  * ✅ **Production-Unterschiede**
+
+**Die kurze Version war unvollständig, weil:**
+  * ❌ Keine Erklärung der Character Sets
+  * ❌ Keine Sicherheitsaspekte erklärt
+  * ❌ Keine Troubleshooting-Hilfen
+  * ❌ Keine Performance-Optimierung
+  * ❌ Keine Fehlerbehandlung
+
+**Jetzt haben Sie eine vollständige, produktionstaugliche Anleitung!**
