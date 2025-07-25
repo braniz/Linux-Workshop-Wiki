@@ -1,0 +1,570 @@
+====== 06 - Fehlerbehebung und Problemlösung ======
+
+===== Lernziele =====
+
+Nach dieser Lektion können Sie:
+  * Häufige Nextcloud-Probleme systematisch diagnostizieren
+  * Performance-Probleme identifizieren und beheben
+  * Sicherheitsprobleme erkennen und lösen
+  * Notfall-Recovery-Verfahren durchführen
+  * Präventive Maßnahmen implementieren
+
+===== Systematische Fehlerbehebung =====
+
+**Debugging-Workflow:**
+  1. **Problem identifizieren** - Was funktioniert nicht?
+  2. **Logs analysieren** - Fehlermeldungen sammeln
+  3. **System-Status prüfen** - Services und Ressourcen
+  4. **Isolierte Tests** - Komponenten einzeln testen
+  5. **Lösung implementieren** - Schritt für Schritt
+  6. **Verifikation** - Problem gelöst?
+
+**Wichtige Diagnostic-Tools:**
+<code>
+# Nextcloud-eigene Tools:
+sudo -u www-data php /var/www/html/nextcloud/occ check
+sudo -u www-data php /var/www/html/nextcloud/occ setupchecks
+sudo -u www-data php /var/www/html/nextcloud/occ status
+
+# System-Tools:
+systemctl status apache2 mariadb redis-server
+htop
+df -h
+free -h
+netstat -tuln
+</code>
+
+===== Häufige Nextcloud-Probleme =====
+
+==== Problem 1: "Internal Server Error" (500) ====
+
+**Symptome:**
+  * Weiße Seite oder "Internal Server Error"
+  * Nextcloud nicht erreichbar
+  * Apps funktionieren nicht
+
+**Diagnose:**
+<code>
+# Apache-Error-Log prüfen:
+sudo tail -f /var/log/apache2/error.log
+
+# Nextcloud-Log prüfen:
+sudo tail -f /var/www/html/nextcloud/data/nextcloud.log
+
+# Apache-Konfiguration testen:
+sudo apache2ctl configtest
+</code>
+
+**Häufige Ursachen und Lösungen:**
+
+**1. PHP-Speicherlimit erreicht:**
+<code>
+# In /etc/php/8.3/apache2/php.ini:
+memory_limit = 1024M  # Erhöhen von 128M
+
+sudo systemctl restart apache2
+</code>
+
+**2. Falsche Dateiberechtigungen:**
+<code>
+sudo chown -R www-data:www-data /var/www/html/nextcloud/
+sudo chmod -R 755 /var/www/html/nextcloud/
+sudo chmod -R 750 /var/www/html/nextcloud/data/
+</code>
+
+**3. Korrupte .htaccess-Datei:**
+<code>
+# .htaccess neu generieren:
+sudo -u www-data php /var/www/html/nextcloud/occ maintenance:update:htaccess
+</code>
+
+**4. PHP-Module fehlen:**
+<code>
+# Erforderliche Module prüfen:
+php -m | grep -E "(mysql|xml|gd|curl|mbstring|zip)"
+
+# Falls Module fehlen:
+sudo apt install php-mysql php-xml php-gd php-curl php-mbstring php-zip
+sudo systemctl restart apache2
+</code>
+
+==== Problem 2: Langsame Performance ====
+
+**Symptome:**
+  * Lange Ladezeiten (>5 Sekunden)
+  * Timeouts bei Uploads
+  * Langsame Datei-Navigation
+
+**Performance-Diagnose:**
+<code>
+# CPU- und Memory-Verbrauch prüfen:
+htop
+
+# Disk I/O prüfen:
+iotop
+
+# Apache-Performance:
+curl -w "Total time: %{time_total}s\n" -o /dev/null -s http://localhost/nextcloud/
+
+# Datenbank-Performance:
+mysql -u nc_user -pnc_pass nextcloud -e "SHOW PROCESSLIST;"
+</code>
+
+**Performance-Optimierungen:**
+
+**1. PHP OPcache aktivieren:**
+<code>
+# In /etc/php/8.3/apache2/php.ini:
+[opcache]
+opcache.enable=1
+opcache.memory_consumption=128
+opcache.max_accelerated_files=10000
+opcache.revalidate_freq=1
+
+sudo systemctl restart apache2
+</code>
+
+**2. APCu-Cache optimieren:**
+<code>
+# APCu-Status prüfen:
+sudo -u www-data php /var/www/html/nextcloud/occ config:list | grep memcache
+
+# Falls nicht aktiv:
+sudo nano /var/www/html/nextcloud/config/config.php
+# 'memcache.local' => '\\OC\\Memcache\\APCu',
+</code>
+
+**3. Datenbank optimieren:**
+<code>
+# Fehlende Indizes hinzufügen:
+sudo -u www-data php /var/www/html/nextcloud/occ db:add-missing-indices
+
+# Datenbank-Tabellen optimieren:
+mysql -u nc_user -pnc_pass nextcloud -e "OPTIMIZE TABLE oc_filecache, oc_share, oc_activity;"
+</code>
+
+**4. Datei-Scan-Performance:**
+<code>
+# Preview-Generation limitieren:
+sudo -u www-data php /var/www/html/nextcloud/occ config:app:set preview max_x --value 1024
+sudo -u www-data php /var/www/html/nextcloud/occ config:app:set preview max_y --value 1024
+
+# Datei-Scan optimieren:
+sudo -u www-data php /var/www/html/nextcloud/occ files:scan --unscanned
+</code>
+
+==== Problem 3: Datenbank-Verbindungsfehler ====
+
+**Symptome:**
+  * "Database connection error"
+  * "SQLSTATE[HY000] [2002]"
+  * Anmeldung nicht möglich
+
+**Diagnose:**
+<code>
+# MariaDB-Status prüfen:
+sudo systemctl status mariadb
+
+# Datenbank-Verbindung testen:
+mysql -u nc_user -pnc_pass nextcloud -e "SELECT 1;"
+
+# Nextcloud-DB-Konfiguration prüfen:
+sudo grep -A 10 "dbtype" /var/www/html/nextcloud/config/config.php
+</code>
+
+**Lösungen:**
+
+**1. MariaDB-Service Problem:**
+<code>
+# Service neustarten:
+sudo systemctl restart mariadb
+
+# Fehlerlog prüfen:
+sudo tail -f /var/log/mysql/error.log
+
+# Service Status:
+sudo systemctl status mariadb -l
+</code>
+
+**2. Datenbankbenutzer-Rechte:**
+<code>
+# Root-Zugang testen:
+mysql -u root -p
+
+# Benutzer-Rechte prüfen:
+SHOW GRANTS FOR 'nc_user'@'localhost';
+
+# Falls nötig, Rechte neu setzen:
+GRANT ALL PRIVILEGES ON nextcloud.* TO 'nc_user'@'localhost';
+FLUSH PRIVILEGES;
+</code>
+
+**3. Datenbank-Konfiguration korrigieren:**
+<code>
+sudo nano /var/www/html/nextcloud/config/config.php
+
+# Prüfen:
+'dbtype' => 'mysql',
+'dbname' => 'nextcloud',
+'dbhost' => 'localhost',
+'dbuser' => 'nc_user',
+'dbpassword' => 'nc_pass',
+</code>
+
+==== Problem 4: Upload-Probleme ====
+
+**Symptome:**
+  * "File too large" Fehler
+  * Upload bricht ab
+  * "413 Request Entity Too Large"
+
+**Upload-Limits prüfen:**
+<code>
+# PHP-Limits anzeigen:
+php -i | grep -E "(upload_max_filesize|post_max_size|max_execution_time)"
+
+# Apache-Limits (falls mod_limitipconn):
+apache2ctl -M | grep limit
+</code>
+
+**Upload-Limits erhöhen:**
+<code>
+# PHP-Konfiguration anpassen:
+sudo nano /etc/php/8.3/apache2/php.ini
+
+upload_max_filesize = 1G
+post_max_size = 1G
+max_execution_time = 300
+max_input_time = 300
+
+sudo systemctl restart apache2
+</code>
+
+**Nginx-spezifische Lösung (falls Nginx verwendet):**
+<code>
+# In /etc/nginx/sites-available/nextcloud:
+client_max_body_size 1G;
+client_body_timeout 300s;
+</code>
+
+==== Problem 5: Wartungsmodus hängt ====
+
+**Symptome:**
+  * "Nextcloud is in maintenance mode"
+  * Update bleibt hängen
+  * Admin-Interface nicht erreichbar
+
+**Wartungsmodus-Status prüfen:**
+<code>
+sudo -u www-data php /var/www/html/nextcloud/occ status
+sudo grep "maintenance" /var/www/html/nextcloud/config/config.php
+</code>
+
+**Wartungsmodus manuell deaktivieren:**
+<code>
+# OCC-Befehl:
+sudo -u www-data php /var/www/html/nextcloud/occ maintenance:mode --off
+
+# Oder direkt in Konfiguration:
+sudo nano /var/www/html/nextcloud/config/config.php
+# 'maintenance' => false,
+</code>
+
+**Update-Prozess reparieren:**
+<code>
+# Update-Status prüfen:
+sudo -u www-data php /var/www/html/nextcloud/occ status
+
+# Update manuell fortsetzen:
+sudo -u www-data php /var/www/html/nextcloud/occ upgrade
+
+# Bei Fehlern, Dateien-Scan:
+sudo -u www-data php /var/www/html/nextcloud/occ files:scan --all
+</code>
+
+===== Sicherheitsprobleme beheben =====
+
+==== Verdächtige Aktivitäten ====
+
+**Security-Log analysieren:**
+<code>
+# Failed Login Attempts:
+sudo grep "Login failed" /var/www/html/nextcloud/data/nextcloud.log
+
+# Admin-Aktivitäten:
+sudo -u www-data php /var/www/html/nextcloud/occ log:file | grep -i admin
+
+# Datei-Zugriffe:
+sudo tail -f /var/log/apache2/access.log | grep nextcloud
+</code>
+
+**Verdächtige Benutzer-Accounts:**
+<code>
+# Alle Benutzer auflisten:
+sudo -u www-data php /var/www/html/nextcloud/occ user:list
+
+# Letzte Anmeldungen:
+sudo -u www-data php /var/www/html/nextcloud/occ user:lastseen
+
+# Benutzer deaktivieren (falls nötig):
+sudo -u www-data php /var/www/html/nextcloud/occ user:disable [username]
+</code>
+
+==== Malware-Verdacht ====
+
+**Verdächtige Dateien suchen:**
+<code>
+# Kürzlich modifizierte PHP-Dateien:
+find /var/www/html/nextcloud/ -name "*.php" -mtime -7 -ls
+
+# Dateien mit verdächtigen Inhalten:
+grep -r "eval\|base64_decode\|shell_exec" /var/www/html/nextcloud/ --include="*.php"
+
+# Unbekannte Dateien in Nextcloud-Verzeichnis:
+find /var/www/html/nextcloud/ -type f ! -user www-data
+</code>
+
+**System-Integrität prüfen:**
+<code>
+# Nextcloud-Dateien-Integrität:
+sudo -u www-data php /var/www/html/nextcloud/occ integrity:check-core
+
+# App-Integrität:
+sudo -u www-data php /var/www/html/nextcloud/occ integrity:check-app files
+</code>
+
+===== Notfall-Recovery =====
+
+==== Kompletter System-Crash ====
+
+**1. Boot-Probleme beheben:**
+<code>
+# System-Logs prüfen:
+journalctl -xb
+
+# Services manuell starten:
+sudo systemctl start apache2
+sudo systemctl start mariadb
+sudo systemctl start redis-server
+</code>
+
+**2. Datenbank-Recovery:**
+<code>
+# Datenbank-Status prüfen:
+sudo systemctl status mariadb
+
+# InnoDB-Recovery (bei Corruption):
+sudo systemctl stop mariadb
+sudo mysqld_safe --innodb-force-recovery=1 &
+mysql -u root -p
+# Daten exportieren, dann normal starten
+</code>
+
+**3. Aus Backup wiederherstellen:**
+<code>
+# Wartungsmodus aktivieren:
+sudo -u www-data php /var/www/html/nextcloud/occ maintenance:mode --on
+
+# Vollständige Wiederherstellung aus Backup:
+# 1. Datenbank wiederherstellen
+gunzip < /backup/nextcloud/db-backup-LATEST.sql.gz | mysql -u nc_user -pnc_pass nextcloud
+
+# 2. Dateien wiederherstellen
+tar -xzf /backup/nextcloud/nextcloud-data-LATEST.tar.gz -C /var/www/html/
+
+# 3. Berechtigungen korrigieren
+sudo chown -R www-data:www-data /var/www/html/nextcloud/
+
+# 4. Wartungsmodus deaktivieren
+sudo -u www-data php /var/www/html/nextcloud/occ maintenance:mode --off
+</code>
+
+==== Datenrettung bei Disk-Failure ====
+
+**Read-Only-Modus aktivieren:**
+<code>
+# Nur-Lese-Modus in Nextcloud:
+sudo -u www-data php /var/www/html/nextcloud/occ config:system:set maintenance --value true --type boolean
+sudo -u www-data php /var/www/html/nextcloud/occ config:system:set readonly --value true --type boolean
+</code>
+
+**Wichtige Daten sichern:**
+<code>
+# Benutzerdaten-Notfall-Backup:
+tar -czf /tmp/emergency-backup-$(date +%Y%m%d).tar.gz /var/www/html/nextcloud/data/
+
+# Konfiguration sichern:
+cp /var/www/html/nextcloud/config/config.php /tmp/
+
+# Datenbank-Dump:
+mysqldump -u nc_user -pnc_pass nextcloud > /tmp/emergency-db-$(date +%Y%m%d).sql
+</code>
+
+===== Monitoring und Alerting =====
+
+**Kritische Metriken überwachen:**
+<code>
+sudo nano /usr/local/bin/nextcloud-alerts.sh
+</code>
+
+**Alert-Script:**
+<code>
+#!/bin/bash
+# Nextcloud Critical Alerts Script
+
+LOG_FILE="/var/log/nextcloud-alerts.log"
+DATE=$(date)
+
+# Speicherplatz prüfen (Warnung bei >80%)
+DISK_USAGE=$(df /var/www/html/nextcloud/data/ | awk 'NR==2 {print $5}' | sed 's/%//')
+if [ $DISK_USAGE -gt 80 ]; then
+    echo "$DATE: ALERT - Disk usage ${DISK_USAGE}%" >> $LOG_FILE
+    # Optional: Email senden
+    # echo "Disk usage critical: ${DISK_USAGE}%" | mail -s "Nextcloud Alert" admin@example.com
+fi
+
+# Memory-Verbrauch prüfen
+MEMORY_USAGE=$(free | awk 'NR==2 {printf "%.0f", $3/$2*100}')
+if [ $MEMORY_USAGE -gt 90 ]; then
+    echo "$DATE: ALERT - Memory usage ${MEMORY_USAGE}%" >> $LOG_FILE
+fi
+
+# Service-Status prüfen
+for service in apache2 mariadb redis-server; do
+    if ! systemctl is-active --quiet $service; then
+        echo "$DATE: ALERT - Service $service is down" >> $LOG_FILE
+        # Auto-restart attempt:
+        systemctl restart $service
+        if systemctl is-active --quiet $service; then
+            echo "$DATE: INFO - Service $service restarted successfully" >> $LOG_FILE
+        else
+            echo "$DATE: CRITICAL - Service $service restart failed" >> $LOG_FILE
+        fi
+    fi
+done
+
+# Nextcloud erreichbar?
+if ! curl -f -s http://localhost/nextcloud/ > /dev/null; then
+    echo "$DATE: ALERT - Nextcloud web interface not accessible" >> $LOG_FILE
+fi
+
+# Datenbank-Verbindung testen
+if ! mysql -u nc_user -pnc_pass nextcloud -e "SELECT 1;" > /dev/null 2>&1; then
+    echo "$DATE: ALERT - Database connection failed" >> $LOG_FILE
+fi
+</code>
+
+**Alert-Script alle 5 Minuten laufen lassen:**
+<code>
+sudo chmod +x /usr/local/bin/nextcloud-alerts.sh
+
+sudo crontab -e
+# */5 * * * * /usr/local/bin/nextcloud-alerts.sh
+</code>
+
+===== Vorbeugende Maßnahmen =====
+
+**1. Regelmäßige Gesundheitschecks:**
+<code>
+# Wöchentlicher umfassender Check:
+sudo nano /usr/local/bin/nextcloud-weekly-check.sh
+</code>
+
+**Wöchentlicher Check-Script:**
+<code>
+#!/bin/bash
+# Nextcloud Weekly Health Check
+
+echo "=== Nextcloud Weekly Health Check - $(date) ===" >> /var/log/nextcloud-weekly.log
+
+# 1. System-Updates verfügbar?
+apt list --upgradable >> /var/log/nextcloud-weekly.log
+
+# 2. Nextcloud-Updates verfügbar?
+sudo -u www-data php /var/www/html/nextcloud/occ update:check >> /var/log/nextcloud-weekly.log
+
+# 3. Integrität prüfen
+sudo -u www-data php /var/www/html/nextcloud/occ integrity:check-core >> /var/log/nextcloud-weekly.log
+
+# 4. Datenbank-Konsistenz
+sudo -u www-data php /var/www/html/nextcloud/occ db:add-missing-indices >> /var/log/nextcloud-weekly.log
+
+# 5. Log-Dateien-Größen
+echo "Log sizes:" >> /var/log/nextcloud-weekly.log
+du -sh /var/log/apache2/* /var/www/html/nextcloud/data/nextcloud.log >> /var/log/nextcloud-weekly.log
+
+# 6. Backup-Status
+echo "Recent backups:" >> /var/log/nextcloud-weekly.log
+ls -lah /backup/nextcloud/ | tail -5 >> /var/log/nextcloud-weekly.log
+</code>
+
+**2. Security-Hardening-Checkliste:**
+<code>
+# Regelmäßig prüfen:
+# - Starke Admin-Passwörter
+# - Aktuelle Nextcloud-Version
+# - PHP und Apache Updates
+# - Firewall-Regeln
+# - SSL-Zertifikate (für Produktion)
+# - Benutzer-Berechtigungen
+# - Externe Storage-Verbindungen
+</code>
+
+===== Troubleshooting-Checkliste =====
+
+**Bei jedem Problem systematisch prüfen:**
+
+  * ☐ **Service-Status**: Laufen Apache, MariaDB, Redis?
+  * ☐ **Logs analysiert**: Fehlermeldungen in allen relevanten Logs?
+  * ☐ **Speicherplatz**: Ausreichend Disk Space verfügbar?
+  * ☐ **Memory**: Genug RAM frei?
+  * ☐ **Berechtigungen**: www-data Besitzer aller Nextcloud-Dateien?
+  * ☐ **Datenbank**: Verbindung und Integrität OK?
+  * ☐ **PHP**: Alle Module geladen, Limits ausreichend?
+  * ☐ **Netzwerk**: Ports erreichbar, DNS funktioniert?
+  * ☐ **Konfiguration**: config.php korrekt und vollständig?
+  * ☐ **Updates**: Nextcloud und System aktuell?
+
+===== Weiter zum Quick Install =====
+
+**🛠️ Troubleshooting-Kenntnisse erworben!**
+
+Sie können jetzt systematisch Nextcloud-Probleme diagnostizieren und beheben. Diese Fähigkeiten sind essentiell für den produktiven Betrieb.
+
+👉 **[[aufgaben:nextcloud_2:07-quick-install|07 - Quick Install für Fortgeschrittene]]**
+
+**In der letzten Lektion erstellen wir:**
+  * Automatisierte Installations-Skripts
+  * One-Click-Deployment
+  * Template für schnelle Setups
+  * Best-Practice-Zusammenfassung
+
+===== Notfall-Kontakte und Ressourcen =====
+
+**Wichtige Ressourcen bei kritischen Problemen:**
+
+**Offizielle Quellen:**
+  * [[https://help.nextcloud.com/|Nextcloud Community Forum]]
+  * [[https://docs.nextcloud.com/|Official Documentation]]
+  * [[https://github.com/nextcloud/server/issues|GitHub Issues]]
+
+**Log-Dateien-Sammlung für Support:**
+<code>
+# Komplette Log-Sammlung für Support-Anfragen:
+mkdir /tmp/nextcloud-support-logs
+cp /var/log/apache2/error.log /tmp/nextcloud-support-logs/
+cp /var/www/html/nextcloud/data/nextcloud.log /tmp/nextcloud-support-logs/
+sudo -u www-data php /var/www/html/nextcloud/occ status > /tmp/nextcloud-support-logs/nc-status.txt
+sudo -u www-data php /var/www/html/nextcloud/occ setupchecks > /tmp/nextcloud-support-logs/nc-setupchecks.txt
+
+tar -czf nextcloud-support-$(date +%Y%m%d).tar.gz /tmp/nextcloud-support-logs/
+</code>
+
+**Emergency-Recovery-Befehle (Bookmark):**
+<code>
+# Notfall-Commands (immer griffbereit haben):
+sudo systemctl restart apache2 mariadb redis-server
+sudo -u www-data php /var/www/html/nextcloud/occ maintenance:mode --off
+sudo chown -R www-data:www-data /var/www/html/nextcloud/
+sudo -u www-data php /var/www/html/nextcloud/occ check
+</code>

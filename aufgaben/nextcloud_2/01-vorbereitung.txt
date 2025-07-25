@@ -1,0 +1,241 @@
+====== 01 - Vorbereitung der Nextcloud Installation ======
+
+===== Lernziele =====
+
+Nach dieser Lektion können Sie:
+  * Systemanforderungen prüfen und verstehen
+  * Das System für die Nextcloud-Installation vorbereiten
+  * Wichtige Sicherheitsüberlegungen bewerten
+  * Einen Installationsplan erstellen
+
+===== Systemanforderungen =====
+
+**Minimale Anforderungen:**
+^ Komponente ^ Minimum ^ Empfohlen ^
+| **Betriebssystem** | Ubuntu 20.04 LTS | Ubuntu 24.04 LTS |
+| **RAM** | 1 GB | 4 GB+ |
+| **Speicherplatz** | 10 GB | 50 GB+ |
+| **PHP Version** | 8.1 | 8.3+ |
+| **Webserver** | Apache 2.4 | Apache 2.4+ oder Nginx |
+| **Datenbank** | MariaDB 10.6 | MariaDB 10.11+ |
+
+===== System-Check durchführen =====
+
+**1. Betriebssystem-Version prüfen:**
+<code>
+lsb_release -a
+</code>
+
+**Erwartete Ausgabe:**
+<code>
+Description:    Ubuntu 24.04.x LTS
+Release:        24.04
+Codename:       noble
+</code>
+
+**2. Verfügbaren Speicherplatz prüfen:**
+<code>
+df -h /
+</code>
+
+**3. RAM-Status prüfen:**
+<code>
+free -h
+</code>
+
+**4. Aktuelles PHP prüfen (falls installiert):**
+<code>
+php --version
+</code>
+
+===== Netzwerk-Planung =====
+
+**IP-Adresse des Servers ermitteln:**
+<code>
+ip addr show
+# oder
+hostname -I
+</code>
+
+<WRAP center round tip 70%>
+**💡 Tipp:** Notieren Sie sich die IP-Adresse - Sie benötigen sie später für den Zugriff auf die Nextcloud-Weboberfläche.
+
+Beispiel: `http://192.168.1.100/nextcloud`
+</WRAP>
+
+**Ports prüfen (sollten frei sein):**
+<code>
+# HTTP (Port 80)
+sudo netstat -tuln | grep :80
+
+# HTTPS (Port 443) - für spätere SSL-Konfiguration
+sudo netstat -tuln | grep :443
+</code>
+
+===== Sicherheitsplanung =====
+
+**Schulungsumgebung vs. Produktion:**
+
+<WRAP center round important 80%>
+**🎓 SCHULUNGSUMGEBUNG**
+
+In diesem Workshop verwenden wir bewusst einfache Einstellungen:
+  * **Einfache Passwörter** für bessere Merkbarkeit
+  * **HTTP statt HTTPS** für weniger Komplexität
+  * **Lokale Installation** ohne Internet-Zugang
+
+**⚠️ Für Produktionssysteme beachten Sie:**
+  * Starke, einzigartige Passwörter
+  * SSL/TLS-Verschlüsselung (HTTPS)
+  * Firewall-Konfiguration
+  * Regelmäßige Sicherheitsupdates
+</WRAP>
+
+**Passwort-Übersicht für diesen Workshop:**
+^ Service ^ Benutzer ^ Passwort ^
+| **Nextcloud Admin** | Admin | Start1234 |
+| **MariaDB Root** | root | Start1234 |
+| **Nextcloud DB** | nc_user | nc_pass |
+
+===== System vorbereiten =====
+
+**1. System aktualisieren:**
+<code>
+sudo apt update && sudo apt upgrade -y
+</code>
+
+**2. Firewall-Status prüfen (Ubuntu):**
+<code>
+sudo ufw status
+</code>
+
+**Falls UFW aktiv ist, HTTP-Zugriff erlauben:**
+<code>
+sudo ufw allow 80/tcp
+sudo ufw allow 22/tcp  # SSH beibehalten
+</code>
+
+**3. Verfügbare Pakete prüfen:**
+<code>
+apt list --upgradable
+</code>
+
+===== Verzeichnisstruktur planen =====
+
+**Standard-Pfade die verwendet werden:**
+
+^ Zweck ^ Pfad ^ Beschreibung ^
+| **Nextcloud-Installation** | `/var/www/html/nextcloud/` | Hauptverzeichnis der Anwendung |
+| **Datenverzeichnis** | `/var/www/html/nextcloud/data/` | Benutzerdaten und Dateien |
+| **Konfiguration** | `/var/www/html/nextcloud/config/` | Konfigurationsdateien |
+| **Apache-Konfiguration** | `/etc/apache2/sites-available/` | Webserver-Einstellungen |
+| **PHP-Konfiguration** | `/etc/php/8.3/apache2/` | PHP-Einstellungen |
+| **MariaDB-Daten** | `/var/lib/mysql/` | Datenbankdateien |
+
+**Erforderliche Berechtigungen:**
+  * Nextcloud-Dateien: Besitzer `www-data:www-data`
+  * Konfigurationsdateien: Lesbar für Webserver
+  * Datenverzeichnis: Schreibrechte für `www-data`
+
+===== Zeitplanung =====
+
+**Geschätzte Installationszeiten:**
+
+^ Phase ^ Dauer ^ Beschreibung ^
+| **Systemvorbereitung** | 5-10 Min | Updates und Grundpakete |
+| **Webserver + DB** | 10-15 Min | Apache und MariaDB Installation |
+| **PHP-Module** | 5-10 Min | Erforderliche PHP-Erweiterungen |
+| **Nextcloud Download** | 5 Min | Herunterladen und Entpacken |
+| **Web-Setup** | 10 Min | Browser-basierte Konfiguration |
+| **Optimierung** | 15-20 Min | Performance und Sicherheit |
+
+**Gesamtzeit:** ~50-70 Minuten (je nach Erfahrung)
+
+===== Troubleshooting-Vorbereitung =====
+
+**Wichtige Log-Dateien:**
+<code>
+# Apache-Logs
+sudo tail -f /var/log/apache2/error.log
+sudo tail -f /var/log/apache2/access.log
+
+# System-Logs
+sudo journalctl -f
+
+# Später: Nextcloud-Logs
+sudo tail -f /var/www/html/nextcloud/data/nextcloud.log
+</code>
+
+**Nützliche Diagnose-Befehle:**
+<code>
+# Service-Status prüfen
+sudo systemctl status apache2
+sudo systemctl status mysql
+
+# Speicherplatz überwachen
+watch df -h
+
+# Prozesse überwachen
+htop
+</code>
+
+===== Backup-Strategie (Schulung) =====
+
+**Vor der Installation - VM-Snapshot erstellen:**
+
+Falls Sie in einer virtuellen Maschine arbeiten:
+<code>
+# Bei VirtualBox: Snapshot erstellen
+# Bei VMware: Snapshot erstellen
+# Bei Cloud: Instanz-Image erstellen
+</code>
+
+**Wichtige Dateien für spätere Backups:**
+  * `/var/www/html/nextcloud/config/config.php`
+  * `/var/www/html/nextcloud/data/` (Benutzerdaten)
+  * MariaDB-Datenbank (`nextcloud`)
+
+===== Checkliste vor Installation =====
+
+**Vor dem nächsten Schritt prüfen:**
+
+  * ☐ Ubuntu 24.04 LTS läuft
+  * ☐ Mindestens 10 GB freier Speicherplatz
+  * ☐ Internetverbindung verfügbar
+  * ☐ IP-Adresse des Servers notiert
+  * ☐ System ist aktuell (`apt update && apt upgrade`)
+  * ☐ Firewall-Einstellungen geprüft
+  * ☐ Backup/Snapshot erstellt (falls VM)
+  * ☐ Terminal/SSH-Zugang funktioniert
+
+===== Häufige Stolpersteine vermeiden =====
+
+**⚠️ Vermeiden Sie diese Fehler:**
+
+  * **Unvollständige Updates:** Immer `apt update && apt upgrade` vor Installation
+  * **Firewall vergessen:** HTTP-Port 80 muss erreichbar sein
+  * **Speicherplatz:** Mindestens 20% freien Speicherplatz lassen
+  * **Berechtigungen:** Niemals `chmod 777` verwenden
+  * **Mixed Tutorials:** Nur einer Anleitung folgen, nicht mehrere vermischen
+
+===== Weiter zur Installation =====
+
+**Sie sind bereit für den nächsten Schritt:**
+
+👉 **[[aufgaben:nextcloud_2:02-installation|02 - Installation der Komponenten]]**
+
+**In der nächsten Lektion installieren wir:**
+  * Apache Webserver
+  * MariaDB Datenbank
+  * PHP mit erforderlichen Modulen
+  * Nextcloud-Software
+
+===== Zusätzliche Ressourcen =====
+
+**Offizielle Nextcloud-Dokumentation:**
+  * [[https://docs.nextcloud.com/server/stable/admin_manual/installation/system_requirements.html|System Requirements]]
+  * [[https://docs.nextcloud.com/server/stable/admin_manual/installation/source_installation.html|Manual Installation]]
+
+**Ubuntu-spezifische Hilfen:**
+  * [[https://ubuntu.com/server/docs|Ubuntu Server Guide]]
+  * [[https://help.ubuntu.com/community/LAMP|LAMP Stack on Ubuntu]]

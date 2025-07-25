@@ -1,0 +1,557 @@
+====== 05 - Wartung, Updates und Backup ======
+
+===== Lernziele =====
+
+Nach dieser Lektion können Sie:
+  * Automatische Wartungsaufgaben einrichten und verwalten
+  * Umfassende Backup-Strategien implementieren
+  * Nextcloud-Updates sicher durchführen
+  * System-Monitoring und Log-Management betreiben
+  * Datenbank-Wartung und -Optimierung durchführen
+
+===== Automatische Wartungsaufgaben =====
+
+**Nextcloud-Cron-Jobs einrichten:**
+
+**1. System-Cron für Nextcloud konfigurieren:**
+<code>
+sudo crontab -u www-data -e
+</code>
+
+**Cron-Eintrag hinzufügen:**
+<code>
+# Nextcloud Cron-Job alle 5 Minuten
+*/5 * * * * php /var/www/html/nextcloud/cron.php
+</code>
+
+**2. Nextcloud auf System-Cron umstellen:**
+  * Als Admin anmelden
+  * **Einstellungen** → **Verwaltung** → **Grundeinstellungen**
+  * Bei "Hintergrundaufgaben" → **Cron** auswählen
+
+**3. Cron-Status prüfen:**
+<code>
+sudo -u www-data php /var/www/html/nextcloud/occ status
+sudo crontab -u www-data -l
+</code>
+
+===== Backup-Strategien =====
+
+**Vollständiges Backup umfasst:**
+  1. **Nextcloud-Dateien** (`/var/www/html/nextcloud/`)
+  2. **Benutzerdaten** (`/var/www/html/nextcloud/data/`)
+  3. **Datenbank** (MariaDB `nextcloud`)
+  4. **Konfigurationsdateien** (Apache, PHP, etc.)
+
+==== 1. Datenbank-Backup ====
+
+**Manuelles Datenbank-Backup:**
+<code>
+# Backup erstellen:
+mysqldump -u nc_user -p nextcloud > /backup/nextcloud-db-$(date +%Y%m%d_%H%M%S).sql
+
+# Mit Kompression:
+mysqldump -u nc_user -p nextcloud | gzip > /backup/nextcloud-db-$(date +%Y%m%d_%H%M%S).sql.gz
+</code>
+
+**Automatisches Datenbank-Backup-Script:**
+<code>
+sudo nano /usr/local/bin/nextcloud-db-backup.sh
+</code>
+
+**Backup-Script-Inhalt:**
+<code>
+#!/bin/bash
+# Nextcloud Datenbank Backup Script
+
+# Konfiguration
+DB_USER="nc_user"
+DB_PASS="nc_pass"
+DB_NAME="nextcloud"
+BACKUP_DIR="/backup/nextcloud"
+DATE=$(date +%Y%m%d_%H%M%S)
+KEEP_DAYS=30
+
+# Backup-Verzeichnis erstellen
+mkdir -p $BACKUP_DIR
+
+# Wartungsmodus aktivieren
+sudo -u www-data php /var/www/html/nextcloud/occ maintenance:mode --on
+
+# Datenbank-Backup erstellen
+mysqldump -u $DB_USER -p$DB_PASS $DB_NAME | gzip > $BACKUP_DIR/db-backup-$DATE.sql.gz
+
+# Wartungsmodus deaktivieren
+sudo -u www-data php /var/www/html/nextcloud/occ maintenance:mode --off
+
+# Alte Backups löschen (älter als KEEP_DAYS)
+find $BACKUP_DIR -name "db-backup-*.sql.gz" -mtime +$KEEP_DAYS -delete
+
+# Backup-Status loggen
+echo "$(date): Datenbank-Backup erstellt: db-backup-$DATE.sql.gz" >> /var/log/nextcloud-backup.log
+
+# Backup-Größe prüfen
+BACKUP_SIZE=$(du -h $BACKUP_DIR/db-backup-$DATE.sql.gz | cut -f1)
+echo "$(date): Backup-Größe: $BACKUP_SIZE" >> /var/log/nextcloud-backup.log
+</code>
+
+**Script ausführbar machen:**
+<code>
+sudo chmod +x /usr/local/bin/nextcloud-db-backup.sh
+</code>
+
+==== 2. Dateien-Backup ====
+
+**Nextcloud-Dateien-Backup-Script:**
+<code>
+sudo nano /usr/local/bin/nextcloud-files-backup.sh
+</code>
+
+**Dateien-Backup-Script:**
+<code>
+#!/bin/bash
+# Nextcloud Dateien Backup Script
+
+# Konfiguration
+NEXTCLOUD_DIR="/var/www/html/nextcloud"
+DATA_DIR="/var/www/html/nextcloud/data"
+BACKUP_DIR="/backup/nextcloud"
+DATE=$(date +%Y%m%d_%H%M%S)
+KEEP_DAYS=7
+
+# Backup-Verzeichnis erstellen
+mkdir -p $BACKUP_DIR
+
+# Wartungsmodus aktivieren
+sudo -u www-data php $NEXTCLOUD_DIR/occ maintenance:mode --on
+
+echo "$(date): Starte Dateien-Backup..." >> /var/log/nextcloud-backup.log
+
+# Nextcloud-Anwendung backup (ohne data/)
+tar -czf $BACKUP_DIR/nextcloud-app-$DATE.tar.gz -C /var/www/html --exclude='nextcloud/data' nextcloud/
+
+# Benutzerdaten backup
+tar -czf $BACKUP_DIR/nextcloud-data-$DATE.tar.gz -C /var/www/html/nextcloud data/
+
+# Wartungsmodus deaktivieren
+sudo -u www-data php $NEXTCLOUD_DIR/occ maintenance:mode --off
+
+# Alte Backups löschen
+find $BACKUP_DIR -name "nextcloud-app-*.tar.gz" -mtime +$KEEP_DAYS -delete
+find $BACKUP_DIR -name "nextcloud-data-*.tar.gz" -mtime +$KEEP_DAYS -delete
+
+# Backup-Größen loggen
+APP_SIZE=$(du -h $BACKUP_DIR/nextcloud-app-$DATE.tar.gz | cut -f1)
+DATA_SIZE=$(du -h $BACKUP_DIR/nextcloud-data-$DATE.tar.gz | cut -f1)
+
+echo "$(date): App-Backup: $APP_SIZE, Data-Backup: $DATA_SIZE" >> /var/log/nextcloud-backup.log
+echo "$(date): Dateien-Backup abgeschlossen" >> /var/log/nextcloud-backup.log
+</code>
+
+**Script ausführbar machen:**
+<code>
+sudo chmod +x /usr/local/bin/nextcloud-files-backup.sh
+</code>
+
+==== 3. Vollständiges Backup-Script ====
+
+**Kombiniertes Backup-Script:**
+<code>
+sudo nano /usr/local/bin/nextcloud-full-backup.sh
+</code>
+
+**Vollständiges Backup-Script:**
+<code>
+#!/bin/bash
+# Nextcloud Vollständiges Backup Script
+
+# Konfiguration
+BACKUP_DIR="/backup/nextcloud"
+DATE=$(date +%Y%m%d_%H%M%S)
+LOG_FILE="/var/log/nextcloud-backup.log"
+
+echo "$(date): === Starte vollständiges Nextcloud-Backup ===" >> $LOG_FILE
+
+# Backup-Verzeichnis erstellen
+mkdir -p $BACKUP_DIR
+
+# 1. Datenbank-Backup
+echo "$(date): Führe Datenbank-Backup durch..." >> $LOG_FILE
+/usr/local/bin/nextcloud-db-backup.sh
+
+# 2. Dateien-Backup
+echo "$(date): Führe Dateien-Backup durch..." >> $LOG_FILE
+/usr/local/bin/nextcloud-files-backup.sh
+
+# 3. Konfigurationsdateien backup
+echo "$(date): Sichere Konfigurationsdateien..." >> $LOG_FILE
+tar -czf $BACKUP_DIR/config-backup-$DATE.tar.gz \
+    /etc/apache2/sites-available/000-default.conf \
+    /etc/php/8.3/apache2/php.ini \
+    /etc/php/8.3/mods-available/apcu.ini \
+    /var/www/html/nextcloud/config/config.php
+
+# Backup-Status zusammenfassen
+TOTAL_SIZE=$(du -sh $BACKUP_DIR | cut -f1)
+echo "$(date): Vollständiges Backup abgeschlossen. Gesamtgröße: $TOTAL_SIZE" >> $LOG_FILE
+echo "$(date): === Backup-Session beendet ===" >> $LOG_FILE
+</code>
+
+**Script ausführbar machen:**
+<code>
+sudo chmod +x /usr/local/bin/nextcloud-full-backup.sh
+</code>
+
+==== 4. Automatische Backups einrichten ====
+
+**Cron-Jobs für automatische Backups:**
+<code>
+sudo crontab -e
+</code>
+
+**Backup-Cron-Einträge:**
+<code>
+# Täglich um 2:00 Uhr vollständiges Backup
+0 2 * * * /usr/local/bin/nextcloud-full-backup.sh
+
+# Alle 6 Stunden Datenbank-Backup
+0 */6 * * * /usr/local/bin/nextcloud-db-backup.sh
+
+# Wöchentlich Sonntag um 3:00 Uhr zusätzliches Dateien-Backup
+0 3 * * 0 /usr/local/bin/nextcloud-files-backup.sh
+</code>
+
+===== Backup-Wiederherstellung =====
+
+**Datenbank wiederherstellen:**
+<code>
+# 1. Wartungsmodus aktivieren
+sudo -u www-data php /var/www/html/nextcloud/occ maintenance:mode --on
+
+# 2. Datenbank leeren (VORSICHT!)
+mysql -u nc_user -p
+DROP DATABASE nextcloud;
+CREATE DATABASE nextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+EXIT;
+
+# 3. Backup wiederherstellen
+gunzip < /backup/nextcloud/db-backup-YYYYMMDD_HHMMSS.sql.gz | mysql -u nc_user -p nextcloud
+
+# 4. Wartungsmodus deaktivieren
+sudo -u www-data php /var/www/html/nextcloud/occ maintenance:mode --off
+</code>
+
+**Dateien wiederherstellen:**
+<code>
+# 1. Wartungsmodus aktivieren
+sudo -u www-data php /var/www/html/nextcloud/occ maintenance:mode --on
+
+# 2. Aktuelle Dateien sichern (falls nötig)
+mv /var/www/html/nextcloud /var/www/html/nextcloud-alt
+
+# 3. Backup entpacken
+cd /var/www/html
+tar -xzf /backup/nextcloud/nextcloud-app-YYYYMMDD_HHMMSS.tar.gz
+tar -xzf /backup/nextcloud/nextcloud-data-YYYYMMDD_HHMMSS.tar.gz
+
+# 4. Berechtigungen korrigieren
+sudo chown -R www-data:www-data /var/www/html/nextcloud/
+
+# 5. Wartungsmodus deaktivieren
+sudo -u www-data php /var/www/html/nextcloud/occ maintenance:mode --off
+</code>
+
+===== Nextcloud-Updates =====
+
+**Update-Vorbereitung:**
+<code>
+# 1. Vollständiges Backup erstellen
+/usr/local/bin/nextcloud-full-backup.sh
+
+# 2. Wartungsmodus aktivieren
+sudo -u www-data php /var/www/html/nextcloud/occ maintenance:mode --on
+
+# 3. Aktuelle Version prüfen
+sudo -u www-data php /var/www/html/nextcloud/occ status
+</code>
+
+**Web-Update (empfohlene Methode):**
+  1. Als Admin anmelden
+  2. **Einstellungen** → **Verwaltung** → **Übersicht**
+  3. Update-Benachrichtigung folgen
+  4. **"Jetzt aktualisieren"** klicken
+  5. Update-Process abwarten
+  6. Nach Update testen
+
+**Manuelles Update:**
+<code>
+# 1. Neue Version herunterladen
+cd /tmp
+wget https://download.nextcloud.com/server/releases/nextcloud-XX.X.X.zip
+
+# 2. Aktueller Stand sichern
+mv /var/www/html/nextcloud /var/www/html/nextcloud-old
+
+# 3. Neue Version entpacken
+unzip nextcloud-XX.X.X.zip -d /var/www/html/
+
+# 4. Konfiguration und Daten zurückkopieren
+cp /var/www/html/nextcloud-old/config/config.php /var/www/html/nextcloud/config/
+cp -r /var/www/html/nextcloud-old/data/ /var/www/html/nextcloud/
+
+# 5. Berechtigungen setzen
+sudo chown -R www-data:www-data /var/www/html/nextcloud/
+
+# 6. Update-Prozess durchführen
+sudo -u www-data php /var/www/html/nextcloud/occ upgrade
+
+# 7. Wartungsmodus deaktivieren
+sudo -u www-data php /var/www/html/nextcloud/occ maintenance:mode --off
+</code>
+
+**Nach dem Update:**
+<code>
+# System-Check durchführen
+sudo -u www-data php /var/www/html/nextcloud/occ check
+sudo -u www-data php /var/www/html/nextcloud/occ setupchecks
+
+# Dateien neu scannen
+sudo -u www-data php /var/www/html/nextcloud/occ files:scan --all
+
+# Apps-Updates prüfen
+sudo -u www-data php /var/www/html/nextcloud/occ app:list
+</code>
+
+===== System-Monitoring =====
+
+**Monitoring-Script erstellen:**
+<code>
+sudo nano /usr/local/bin/nextcloud-health-check.sh
+</code>
+
+**Health-Check-Script:**
+<code>
+#!/bin/bash
+# Nextcloud Health Check Script
+
+LOG_FILE="/var/log/nextcloud-health.log"
+DATE=$(date)
+
+echo "$DATE: === Nextcloud Health Check ===" >> $LOG_FILE
+
+# 1. Service-Status prüfen
+echo "$DATE: Prüfe Services..." >> $LOG_FILE
+systemctl is-active apache2 >> $LOG_FILE
+systemctl is-active mariadb >> $LOG_FILE
+systemctl is-active redis-server >> $LOG_FILE
+
+# 2. Nextcloud-Status prüfen
+echo "$DATE: Nextcloud-Status:" >> $LOG_FILE
+sudo -u www-data php /var/www/html/nextcloud/occ status >> $LOG_FILE
+
+# 3. Speicherplatz prüfen
+echo "$DATE: Speicherplatz:" >> $LOG_FILE
+df -h /var/www/html/nextcloud/data/ >> $LOG_FILE
+
+# 4. Memory-Verbrauch
+echo "$DATE: Memory-Usage:" >> $LOG_FILE
+free -h >> $LOG_FILE
+
+# 5. Datenbank-Verbindung testen
+echo "$DATE: Datenbank-Test:" >> $LOG_FILE
+mysql -u nc_user -pnc_pass -e "SELECT COUNT(*) as users FROM oc_users;" nextcloud >> $LOG_FILE
+
+# 6. Web-Response-Zeit messen
+echo "$DATE: Web-Response-Zeit:" >> $LOG_FILE
+curl -w "Zeit: %{time_total}s\n" -o /dev/null -s http://localhost/nextcloud/ >> $LOG_FILE
+
+echo "$DATE: === Health Check beendet ===" >> $LOG_FILE
+</code>
+
+**Script ausführbar machen und automatisieren:**
+<code>
+sudo chmod +x /usr/local/bin/nextcloud-health-check.sh
+
+# Cron-Job hinzufügen (stündlich):
+sudo crontab -e
+# 0 * * * * /usr/local/bin/nextcloud-health-check.sh
+</code>
+
+===== Log-Management =====
+
+**Log-Dateien verwalten:**
+<code>
+# Nextcloud-Logs rotieren
+sudo nano /etc/logrotate.d/nextcloud
+</code>
+
+**Logrotate-Konfiguration:**
+<code>
+/var/www/html/nextcloud/data/nextcloud.log {
+    daily
+    missingok
+    rotate 14
+    compress
+    notifempty
+    create 644 www-data www-data
+    postrotate
+        sudo -u www-data php /var/www/html/nextcloud/occ log:manage --rotate
+    endscript
+}
+
+/var/log/nextcloud-backup.log {
+    weekly
+    missingok
+    rotate 12
+    compress
+    notifempty
+    create 644 root root
+}
+
+/var/log/nextcloud-health.log {
+    daily
+    missingok
+    rotate 30
+    compress
+    notifempty
+    create 644 root root
+}
+</code>
+
+**Log-Level in Nextcloud anpassen:**
+<code>
+# Log-Level setzen (0=Debug, 1=Info, 2=Warn, 3=Error, 4=Fatal)
+sudo -u www-data php /var/www/html/nextcloud/occ log:manage --level 2
+
+# Log-Datei-Größe begrenzen (100MB)
+sudo -u www-data php /var/www/html/nextcloud/occ config:app:set core log_rotate_size --value 104857600
+</code>
+
+===== Datenbank-Wartung =====
+
+**Regelmäßige Datenbank-Optimierung:**
+<code>
+sudo nano /usr/local/bin/nextcloud-db-maintenance.sh
+</code>
+
+**Datenbank-Wartungs-Script:**
+<code>
+#!/bin/bash
+# Nextcloud Datenbank Wartung
+
+LOG_FILE="/var/log/nextcloud-maintenance.log"
+DATE=$(date)
+
+echo "$DATE: === Starte Datenbank-Wartung ===" >> $LOG_FILE
+
+# 1. Wartungsmodus aktivieren
+sudo -u www-data php /var/www/html/nextcloud/occ maintenance:mode --on
+
+# 2. Datenbank-Tabellen optimieren
+mysql -u nc_user -pnc_pass nextcloud -e "OPTIMIZE TABLE oc_activity;" >> $LOG_FILE
+mysql -u nc_user -pnc_pass nextcloud -e "OPTIMIZE TABLE oc_filecache;" >> $LOG_FILE
+mysql -u nc_user -pnc_pass nextcloud -e "OPTIMIZE TABLE oc_share;" >> $LOG_FILE
+
+# 3. Datei-Caches aufräumen
+sudo -u www-data php /var/www/html/nextcloud/occ files:cleanup >> $LOG_FILE
+
+# 4. Previews aufräumen (optional)
+sudo -u www-data php /var/www/html/nextcloud/occ preview:cleanup >> $LOG_FILE
+
+# 5. Wartungsmodus deaktivieren
+sudo -u www-data php /var/www/html/nextcloud/occ maintenance:mode --off
+
+echo "$DATE: === Datenbank-Wartung abgeschlossen ===" >> $LOG_FILE
+</code>
+
+**Wöchentliche Ausführung:**
+<code>
+sudo chmod +x /usr/local/bin/nextcloud-db-maintenance.sh
+
+# Cron-Job (Sonntag 4:00 Uhr):
+sudo crontab -e
+# 0 4 * * 0 /usr/local/bin/nextcloud-db-maintenance.sh
+</code>
+
+===== Troubleshooting-Wartung =====
+
+**Häufige Wartungsprobleme:**
+
+**Problem 1: Wartungsmodus hängt**
+<code>
+# Manuell deaktivieren:
+sudo -u www-data php /var/www/html/nextcloud/occ maintenance:mode --off
+
+# Oder direkt in Konfiguration:
+sudo nano /var/www/html/nextcloud/config/config.php
+# 'maintenance' => false,
+</code>
+
+**Problem 2: Backup-Scripts schlagen fehl**
+<code>
+# Script-Berechtigungen prüfen:
+ls -la /usr/local/bin/nextcloud-*.sh
+
+# Log-Dateien prüfen:
+tail -f /var/log/nextcloud-backup.log
+
+# Backup-Verzeichnis erstellen:
+sudo mkdir -p /backup/nextcloud
+sudo chown root:root /backup/nextcloud
+</code>
+
+**Problem 3: Datenbank-Locks nach Backup**
+<code>
+# Aktive Verbindungen prüfen:
+mysql -u nc_user -pnc_pass -e "SHOW PROCESSLIST;" nextcloud
+
+# Falls nötig, Services neustarten:
+sudo systemctl restart mariadb
+sudo systemctl restart apache2
+</code>
+
+===== Checkliste Wartung =====
+
+**Wartungsaufgaben eingerichtet:**
+
+  * ☐ Cron-Jobs für Nextcloud konfiguriert
+  * ☐ Automatische Datenbank-Backups erstellt
+  * ☐ Automatische Dateien-Backups erstellt
+  * ☐ Backup-Wiederherstellung getestet
+  * ☐ Update-Prozess verstanden
+  * ☐ System-Monitoring eingerichtet
+  * ☐ Log-Rotation konfiguriert
+  * ☐ Datenbank-Wartung automatisiert
+  * ☐ Backup-Verzeichnis mit ausreichend Speicherplatz
+  * ☐ Alle Scripts sind ausführbar und getestet
+
+===== Weiter zur Fehlerbehebung =====
+
+**🔧 Wartung und Backup sind eingerichtet!**
+
+Ihre Nextcloud-Installation hat jetzt umfassende Wartungs- und Backup-Mechanismen. Das System überwacht sich selbst und erstellt automatisch Sicherungen.
+
+👉 **[[aufgaben:nextcloud_2:06-troubleshooting|06 - Fehlerbehebung und Problemlösung]]**
+
+**In der nächsten Lektion lernen Sie:**
+  * Häufige Nextcloud-Probleme diagnostizieren
+  * Systematische Fehlerbehebung
+  * Performance-Probleme lösen
+  * Sicherheitsprobleme beheben
+  * Notfall-Recovery-Verfahren
+
+===== Wartungskalender =====
+
+**Empfohlene Wartungsintervalle:**
+
+^ Aufgabe ^ Intervall ^ Automatisiert ^
+| **Cron-Jobs** | Alle 5 Minuten | ✅ Automatisch |
+| **Datenbank-Backup** | Alle 6 Stunden | ✅ Automatisch |
+| **Vollbackup** | Täglich | ✅ Automatisch |
+| **Health-Check** | Stündlich | ✅ Automatisch |
+| **Log-Rotation** | Täglich/Wöchentlich | ✅ Automatisch |
+| **Datenbank-Wartung** | Wöchentlich | ✅ Automatisch |
+| **Update-Check** | Monatlich | ❌ Manuell |
+| **Sicherheitsüberprüfung** | Monatlich | ❌ Manuell |
+| **Backup-Test** | Quartalsweise | ❌ Manuell |
+| **Disaster-Recovery-Test** | Halbjährlich | ❌ Manuell |

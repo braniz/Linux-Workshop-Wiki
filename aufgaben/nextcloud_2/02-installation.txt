@@ -1,0 +1,492 @@
+====== 02 - Installation der Komponenten ======
+
+===== Lernziele =====
+
+Nach dieser Lektion haben Sie:
+  * Apache Webserver installiert und konfiguriert
+  * MariaDB Datenbank eingerichtet
+  * PHP mit allen erforderlichen Modulen installiert
+  * Nextcloud heruntergeladen und entpackt
+
+===== Übersicht der Installation =====
+
+**Installationsreihenfolge:**
+  1. **System-Updates** 
+  2. **Apache Webserver**
+  3. **MariaDB Datenbank**
+  4. **PHP und Module**
+  5. **Nextcloud Software**
+  6. **Erste Konfiguration**
+
+===== 1. System aktualisieren =====
+
+**Paketlisten und System aktualisieren:**
+<code>
+sudo apt update && sudo apt upgrade -y
+</code>
+
+**System nach Updates neu starten (empfohlen):**
+<code>
+sudo reboot
+</code>
+
+===== 2. Basis-Pakete installieren =====
+
+**Erforderliche Grundpakete:**
+<code>
+sudo apt install -y wget curl unzip zip software-properties-common apt-transport-https ca-certificates
+</code>
+
+^ Paket ^ Funktion ^
+| **wget** | Dateien aus dem Internet herunterladen |
+| **curl** | Datenübertragung und API-Aufrufe |
+| **unzip/zip** | Archive erstellen und entpacken |
+| **software-properties-common** | Repository-Management |
+| **apt-transport-https** | HTTPS-Support für apt |
+| **ca-certificates** | SSL-Zertifikate für sichere Verbindungen |
+
+===== 3. Apache Webserver installieren =====
+
+**Apache installieren:**
+<code>
+sudo apt install -y apache2
+</code>
+
+**Apache-Status prüfen:**
+<code>
+sudo systemctl status apache2
+</code>
+
+**Apache automatisch starten:**
+<code>
+sudo systemctl enable apache2
+</code>
+
+**Webserver testen:**
+<code>
+# Lokaler Test
+curl http://localhost
+
+# Von anderem Rechner (IP anpassen):
+# curl http://192.168.1.100
+</code>
+
+**Erforderliche Apache-Module aktivieren:**
+<code>
+sudo a2enmod rewrite headers env dir mime setenvif ssl
+</code>
+
+===== 4. MariaDB Datenbank installieren =====
+
+**MariaDB installieren:**
+<code>
+sudo apt install -y mariadb-server mariadb-client
+</code>
+
+**MariaDB-Status prüfen:**
+<code>
+sudo systemctl status mariadb
+</code>
+
+**MariaDB automatisch starten:**
+<code>
+sudo systemctl enable mariadb
+</code>
+
+**MariaDB absichern:**
+<code>
+sudo mysql_secure_installation
+</code>
+
+**Wichtige Antworten für den Schulungskontext:**
+<code>
+Switch to unix_socket authentication [Y/n]           → Y
+Change the root password? [Y/n]                      → Y
+  New password: Start1234
+  Re-enter new password: Start1234
+Remove anonymous users? [Y/n]                        → Y
+Disallow root login remotely? [Y/n]                  → Y
+Remove test database and access to it? [Y/n]         → Y
+Reload privilege tables now? [Y/n]                   → Y
+</code>
+
+<WRAP center round info 70%>
+**💡 Schulungshinweis:**
+
+Das Passwort `Start1234` ist bewusst einfach gewählt. In Produktionsumgebungen verwenden Sie starke, einzigartige Passwörter!
+</WRAP>
+
+===== 5. Nextcloud-Datenbank einrichten =====
+
+**MariaDB-Root-Zugang testen:**
+<code>
+sudo mysql -u root -p
+# Passwort: Start1234
+</code>
+
+**Nextcloud-Datenbank und Benutzer erstellen:**
+<code>
+-- In der MariaDB-Konsole:
+CREATE DATABASE nextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
+CREATE USER 'nc_user'@'localhost' IDENTIFIED BY 'nc_pass';
+
+GRANT ALL PRIVILEGES ON nextcloud.* TO 'nc_user'@'localhost';
+
+FLUSH PRIVILEGES;
+
+-- Datenbanken anzeigen:
+SHOW DATABASES;
+
+-- MariaDB verlassen:
+EXIT;
+</code>
+
+**Datenbank-Zugang testen:**
+<code>
+mysql -u nc_user -p
+# Passwort: nc_pass
+
+# In der MariaDB-Konsole:
+SHOW DATABASES;
+USE nextcloud;
+SHOW TABLES;  # Sollte leer sein (noch keine Tabellen)
+EXIT;
+</code>
+
+===== 6. PHP installieren =====
+
+**PHP und grundlegende Module installieren:**
+<code>
+sudo apt install -y php php-cli php-fpm php-mysql php-xml php-gd php-curl php-mbstring php-intl php-bcmath php-gmp php-zip
+</code>
+
+**Apache PHP-Modul installieren:**
+<code>
+sudo apt install -y libapache2-mod-php
+</code>
+
+**PHP-Version prüfen:**
+<code>
+php --version
+</code>
+
+**PHP-Module prüfen:**
+<code>
+php -m | grep -E "(mysql|xml|gd|curl|mbstring|zip|intl|bcmath|gmp)"
+</code>
+
+**Erwartete Ausgabe:**
+<code>
+bcmath
+curl
+gd
+intl
+mbstring
+mysql
+xml
+zip
+gmp
+</code>
+
+===== 7. Zusätzliche Performance-Module =====
+
+**Caching und Performance-Module:**
+<code>
+sudo apt install -y php-apcu php-redis redis-server php-imagick
+</code>
+
+**ImageMagick-Erweiterungen für bessere Bildbearbeitung:**
+<code>
+sudo apt install -y libmagickcore-6.q16-6-extra
+</code>
+
+**Redis-Server starten und aktivieren:**
+<code>
+sudo systemctl start redis-server
+sudo systemctl enable redis-server
+</code>
+
+**Redis-Status prüfen:**
+<code>
+sudo systemctl status redis-server
+redis-cli ping  # Sollte "PONG" zurückgeben
+</code>
+
+===== 8. PHP konfigurieren =====
+
+**PHP-Konfigurationsdatei bearbeiten:**
+<code>
+sudo nano /etc/php/8.3/apache2/php.ini
+</code>
+
+**Wichtige Einstellungen anpassen:**
+<code>
+# Speicherlimit erhöhen (Zeile ~409)
+memory_limit = 1024M
+
+# Upload-Größe erhöhen (Zeile ~845)
+upload_max_filesize = 1G
+post_max_size = 1G
+
+# Zeitlimits erhöhen (Zeile ~369)
+max_execution_time = 300
+max_input_time = 300
+
+# Output Buffering deaktivieren (Zeile ~226)
+output_buffering = Off
+
+# OPcache optimieren (Ende der Datei hinzufügen)
+opcache.enable=1
+opcache.interned_strings_buffer=16
+opcache.max_accelerated_files=10000
+opcache.memory_consumption=128
+opcache.save_comments=1
+opcache.revalidate_freq=1
+</code>
+
+**APCu konfigurieren:**
+<code>
+sudo nano /etc/php/8.3/mods-available/apcu.ini
+</code>
+
+**APCu-Inhalt:**
+<code>
+extension=apcu.so
+apc.enable_cli=1
+apc.shm_size=32M
+apc.num_files_hint=7000
+apc.user_entries_hint=4096
+apc.ttl=7200
+apc.user_ttl=7200
+apc.gc_ttl=3600
+</code>
+
+===== 9. Apache für Nextcloud konfigurieren =====
+
+**Apache-Hauptkonfiguration anpassen:**
+<code>
+sudo nano /etc/apache2/sites-available/000-default.conf
+</code>
+
+**Komplette Konfiguration ersetzen:**
+<code>
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/html
+    
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+    
+    # Nextcloud-spezifische Verzeichnis-Konfiguration
+    <Directory /var/www/html>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+    
+    # .well-known URLs für Nextcloud-Dienste
+    <IfModule mod_headers.c>
+        Header always set Strict-Transport-Security "max-age=15552000; includeSubDomains"
+        Redirect 301 /.well-known/carddav /nextcloud/remote.php/dav
+        Redirect 301 /.well-known/caldav /nextcloud/remote.php/dav
+        Redirect 301 /.well-known/webfinger /nextcloud/index.php/.well-known/webfinger
+        Redirect 301 /.well-known/nodeinfo /nextcloud/index.php/.well-known/nodeinfo
+    </IfModule>
+    
+    # Security Headers
+    <IfModule mod_headers.c>
+        Header always set X-Content-Type-Options nosniff
+        Header always set X-Frame-Options DENY
+        Header always set X-XSS-Protection "1; mode=block"
+        Header always set Referrer-Policy "no-referrer"
+    </IfModule>
+</VirtualHost>
+</code>
+
+**Erforderliche Apache-Module aktivieren:**
+<code>
+sudo a2enmod headers rewrite env dir mime setenvif
+</code>
+
+===== 10. Nextcloud herunterladen =====
+
+**Ins Webserver-Verzeichnis wechseln:**
+<code>
+cd /var/www/html
+</code>
+
+**Aktuelle Nextcloud-Version herunterladen:**
+<code>
+sudo wget https://download.nextcloud.com/server/releases/latest.zip
+</code>
+
+**Alternative - spezifische Version (empfohlen für Schulung):**
+<code>
+sudo wget https://download.nextcloud.com/server/releases/nextcloud-30.0.2.zip
+sudo mv nextcloud-30.0.2.zip latest.zip
+</code>
+
+**Nextcloud entpacken:**
+<code>
+sudo unzip latest.zip
+</code>
+
+**Berechtigungen setzen:**
+<code>
+sudo chown -R www-data:www-data /var/www/html/nextcloud/
+sudo chmod -R 755 /var/www/html/nextcloud/
+</code>
+
+**Download-Datei entfernen:**
+<code>
+sudo rm latest.zip
+</code>
+
+===== 11. Services neustarten =====
+
+**Alle Dienste neustarten:**
+<code>
+sudo systemctl restart apache2
+sudo systemctl restart mariadb
+sudo systemctl restart redis-server
+</code>
+
+**Service-Status prüfen:**
+<code>
+sudo systemctl status apache2
+sudo systemctl status mariadb
+sudo systemctl status redis-server
+</code>
+
+===== 12. Installation testen =====
+
+**Webserver-Zugriff testen:**
+<code>
+curl -I http://localhost/nextcloud/
+</code>
+
+**Erwartete Antwort:**
+<code>
+HTTP/1.1 200 OK
+Server: Apache/2.4.x
+Content-Type: text/html; charset=UTF-8
+</code>
+
+**Nextcloud-Verzeichnisstruktur prüfen:**
+<code>
+ls -la /var/www/html/nextcloud/
+</code>
+
+**Wichtige Verzeichnisse sollten vorhanden sein:**
+<code>
+drwxr-xr-x  apps/
+drwxr-xr-x  config/
+drwxr-xr-x  core/
+-rw-r--r--  index.php
+drwxr-xr-x  lib/
+-rw-r--r--  occ
+drwxr-xr-x  resources/
+drwxr-xr-x  themes/
+drwxr-xr-x  updater/
+</code>
+
+===== Troubleshooting =====
+
+**Häufige Probleme und Lösungen:**
+
+**Problem: Apache startet nicht**
+<code>
+# Konfiguration testen:
+sudo apache2ctl configtest
+
+# Logs prüfen:
+sudo tail -f /var/log/apache2/error.log
+</code>
+
+**Problem: MariaDB Zugriff verweigert**
+<code>
+# Root-Passwort zurücksetzen:
+sudo systemctl stop mariadb
+sudo mysqld_safe --skip-grant-tables &
+mysql -u root
+# In MySQL: UPDATE mysql.user SET password=PASSWORD('Start1234') WHERE user='root';
+# FLUSH PRIVILEGES; EXIT;
+sudo systemctl restart mariadb
+</code>
+
+**Problem: PHP-Module fehlen**
+<code>
+# Installierte Module prüfen:
+php -m
+
+# Fehlende Module nachinstallieren:
+sudo apt install php-[modulname]
+sudo systemctl restart apache2
+</code>
+
+**Problem: Nextcloud nicht erreichbar**
+<code>
+# Berechtigungen prüfen:
+ls -la /var/www/html/nextcloud/
+
+# Falls nötig korrigieren:
+sudo chown -R www-data:www-data /var/www/html/nextcloud/
+</code>
+
+===== Checkliste Installation =====
+
+**Vor dem nächsten Schritt prüfen:**
+
+  * ☐ Apache läuft (`sudo systemctl status apache2`)
+  * ☐ MariaDB läuft (`sudo systemctl status mariadb`)
+  * ☐ Redis läuft (`sudo systemctl status redis-server`)
+  * ☐ PHP funktioniert (`php --version`)
+  * ☐ Nextcloud-Dateien sind entpackt (`ls /var/www/html/nextcloud/`)
+  * ☐ Berechtigungen sind korrekt (`ls -la /var/www/html/nextcloud/`)
+  * ☐ Datenbank `nextcloud` existiert
+  * ☐ Benutzer `nc_user` kann auf Datenbank zugreifen
+  * ☐ Webserver antwortet (`curl http://localhost/nextcloud/`)
+
+===== Weiter zur Konfiguration =====
+
+**🎉 Installation erfolgreich!**
+
+Die technischen Komponenten sind jetzt installiert. Im nächsten Schritt konfigurieren wir Nextcloud über die Web-Oberfläche.
+
+👉 **[[aufgaben:nextcloud_2:03-konfiguration|03 - Web-Setup und Konfiguration]]**
+
+**In der nächsten Lektion werden wir:**
+  * Nextcloud über den Browser einrichten
+  * Administrator-Account erstellen
+  * Datenbank-Verbindung konfigurieren
+  * Erste Sicherheitseinstellungen vornehmen
+
+===== Zusätzliche Informationen =====
+
+**Installierte Software-Versionen prüfen:**
+<code>
+apache2 -v
+mysql --version
+php --version
+redis-server --version
+</code>
+
+**Speicherverbrauch prüfen:**
+<code>
+free -h
+df -h
+</code>
+
+**Log-Dateien für Monitoring:**
+<code>
+# Apache
+sudo tail -f /var/log/apache2/access.log
+sudo tail -f /var/log/apache2/error.log
+
+# MariaDB
+sudo tail -f /var/log/mysql/error.log
+
+# System
+sudo journalctl -f
+</code>

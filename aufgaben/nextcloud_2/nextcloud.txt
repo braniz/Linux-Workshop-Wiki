@@ -1,0 +1,106 @@
+====== Nextcloud - Workshop Unterlagen ======
+
+**Nextcloud** ist eine Open-Source-Plattform für selbst gehostete Cloud-Speicher und Kollaboration.
+
+===== Übersicht der Lektionen =====
+
+Diese Workshop-Serie führt Sie durch die komplette Installation und Konfiguration einer Nextcloud-Instanz:
+
+==== 📚 Lektionen-Übersicht ====
+
+^ Lektion ^ Thema ^ Beschreibung ^ Dauer ^
+| **[[aufgaben:nextcloud_2:01-vorbereitung|01]]** | **Vorbereitung** | Systemanforderungen, Planung und erste Schritte | ~15 Min |
+| **[[aufgaben:nextcloud_2:02-installation|02]]** | **Installation** | Schritt-für-Schritt Installation aller Komponenten | ~30 Min |
+| **[[aufgaben:nextcloud_2:03-konfiguration|03]]** | **Konfiguration** | Web-Setup und Grundkonfiguration | ~20 Min |
+| **[[aufgaben:nextcloud_2:04-optimierung|04]]** | **Optimierung** | Performance-Tuning und erweiterte Einstellungen | ~25 Min |
+| **[[aufgaben:nextcloud_2:05-wartung|05]]** | **Wartung & Updates** | Backup, Updates und Maintenance | ~20 Min |
+| **[[aufgaben:nextcloud_2:06-troubleshooting|06]]** | **Fehlerbehebung** | Häufige Probleme und deren Lösung | ~15 Min |
+| **[[aufgaben:nextcloud_2:07-quick-install|07]]** | **Quick Install** | Automatisierte Installation für Fortgeschrittene | ~10 Min |
+
+===== Voraussetzungen =====
+
+**System:**
+  * **Ubuntu 24.04 LTS** (oder neuer)
+  * **Mindestens 2 GB RAM** (4 GB empfohlen)
+  * **20 GB freier Speicherplatz** (für System und Nextcloud)
+  * **Internetverbindung** für Downloads
+
+**Kenntnisse:**
+  * Grundlagen Linux-Kommandozeile
+  * Basis-Kenntnisse in Webserver-Administration
+  * Text-Editor Verwendung (nano/vim)
+
+===== Schulungsumgebung =====
+
+<WRAP center round info 80%>
+**🎓 SCHULUNGSUMGEBUNG**
+
+Diese Unterlagen sind speziell für Schulungszwecke optimiert:
+
+**Standard-Zugangsdaten:**
+  * **Admin-Benutzer**: Admin
+  * **Admin-Passwort**: Start1234
+  * **DB-Benutzer**: nc_user
+  * **DB-Passwort**: nc_pass
+  * **Datenbank**: nextcloud
+
+**⚠️ WICHTIG:** Diese Passwörter sind bewusst einfach gehalten für den Schulungskontext.
+**Für Produktions-Systeme verwenden Sie immer starke, individuelle Passwörter!**
+</WRAP>
+
+===== Was Sie lernen werden =====
+
+**Nach diesem Workshop können Sie:**
+  * ✅ Nextcloud vollständig installieren und konfigurieren
+  * ✅ Performance-Optimierungen durchführen
+  * ✅ Häufige Probleme selbstständig lösen
+  * ✅ Updates und Wartung durchführen
+  * ✅ Sicherheitseinstellungen konfigurieren
+  * ✅ OCC-Kommandozeilen-Tools verwenden
+
+===== Empfohlener Lernpfad =====
+
+**🚀 Anfänger (Detaillierter Weg):**
+Folgen Sie den Lektionen 01-06 in der Reihenfolge für eine umfassende Einführung.
+
+**⚡ Fortgeschrittene (Schneller Weg):**
+Nutzen Sie Lektion 07 für eine automatisierte Installation und springen dann zu Lektion 04-06.
+
+**🔧 Wartung & Support:**
+Lektion 05-06 als Referenz für laufende Systeme.
+
+===== Zusätzliche Ressourcen =====
+
+**Offizielle Dokumentation:**
+  * [[https://docs.nextcloud.com/|Nextcloud Documentation]]
+  * [[https://docs.nextcloud.com/server/stable/admin_manual/|Admin Manual]]
+  * [[https://help.nextcloud.com/|Community Forum]]
+
+**Weiterführende Themen:**
+  * SSL/TLS-Zertifikate (Let's Encrypt)
+  * Reverse Proxy Konfiguration
+  * Nextcloud Apps und Erweiterungen
+  * Monitoring und Logging
+
+===== Workshop-Support =====
+
+**Bei Fragen oder Problemen:**
+  1. Konsultieren Sie zunächst die [[aufgaben:nextcloud_2:06-troubleshooting|Troubleshooting-Sektion]]
+  2. Überprüfen Sie die Nextcloud-Logs: ``/var/www/html/nextcloud/data/nextcloud.log``
+  3. Nutzen Sie den OCC-Befehl für Diagnosen: ``sudo -u www-data php occ check``
+
+===== Versionshinweise =====
+
+**Aktualisiert:** Juli 2025
+**Getestet mit:**
+  * Ubuntu 24.04 LTS
+  * Nextcloud 30.x
+  * PHP 8.3
+  * Apache 2.4
+  * MariaDB 10.11
+
+**Letzte Änderungen:**
+  * Aktualisierung auf Nextcloud 30.x
+  * Verbesserte Performance-Einstellungen
+  * Erweiterte Troubleshooting-Sektion
+  * Automatisierte Installations-Skripts

@@ -1,0 +1,376 @@
+====== 03 - Web-Setup und Konfiguration ======
+
+===== Lernziele =====
+
+Nach dieser Lektion haben Sie:
+  * Nextcloud über die Web-Oberfläche eingerichtet
+  * Administrator-Konto erstellt und konfiguriert
+  * Datenbank-Verbindung hergestellt
+  * Grundlegende Sicherheitseinstellungen vorgenommen
+
+===== Web-Setup starten =====
+
+**1. IP-Adresse des Servers ermitteln:**
+<code>
+hostname -I
+# oder
+ip addr show | grep "inet " | grep -v 127.0.0.1
+</code>
+
+**2. Browser öffnen und Nextcloud aufrufen:**
+
+<WRAP center round info 70%>
+**🌐 Nextcloud im Browser öffnen:**
+
+**Lokaler Zugriff:**
+  * `http://localhost/nextcloud`
+
+**Netzwerk-Zugriff:**
+  * `http://[IHRE-SERVER-IP]/nextcloud`
+  * Beispiel: `http://192.168.1.100/nextcloud`
+</WRAP>
+
+**3. Setup-Seite sollte erscheinen:**
+
+Sie sollten die Nextcloud-Installationsseite sehen mit Feldern für:
+  * Administrator-Benutzername
+  * Administrator-Passwort
+  * Datenverzeichnis
+  * Datenbank-Konfiguration
+
+===== Administrator-Konto erstellen =====
+
+**Administrator-Zugangsdaten eingeben:**
+
+^ Feld ^ Wert (Schulungsumgebung) ^
+| **Benutzername** | Admin |
+| **Passwort** | Start1234 |
+
+<WRAP center round tip 70%>
+**💡 Schulungshinweis:**
+
+Verwenden Sie exakt diese Zugangsdaten, damit alle Workshop-Teilnehmer die gleichen Einstellungen haben.
+
+**Für Produktionsumgebungen:**
+  * Benutzername: Nicht "admin" oder vorhersagbar
+  * Passwort: Mindestens 12 Zeichen, Sonderzeichen, Zahlen
+</WRAP>
+
+===== Datenverzeichnis konfigurieren =====
+
+**Standard-Datenverzeichnis:**
+<code>
+/var/www/html/nextcloud/data
+</code>
+
+**Empfehlung:** Belassen Sie das Standardverzeichnis für diese Schulung.
+
+**Für Produktionsumgebungen** könnten Sie ein separates Verzeichnis verwenden:
+<code>
+/var/nextcloud-data
+# oder
+/opt/nextcloud-data
+</code>
+
+===== Datenbank-Konfiguration =====
+
+**Datenbank-Typ auswählen:**
+  * MySQL/MariaDB auswählen (nicht SQLite für Produktionsumgebungen)
+
+**Datenbank-Zugangsdaten eingeben:**
+
+^ Feld ^ Wert ^
+| **Datenbankbenutzer** | nc_user |
+| **Datenbankpasswort** | nc_pass |
+| **Datenbankname** | nextcloud |
+| **Datenbankhost** | localhost |
+
+**Port:** Leer lassen (verwendet Standard-Port 3306)
+
+===== Installation durchführen =====
+
+**1. "Installation fertigstellen" klicken**
+
+Die Installation dauert typischerweise 30-60 Sekunden.
+
+**2. Mögliche Meldungen während der Installation:**
+  * "Datenbank wird eingerichtet..."
+  * "Dateien werden kopiert..."
+  * "Apps werden installiert..."
+
+**3. Bei erfolgreicher Installation:**
+  * Weiterleitung zur Nextcloud-Hauptseite
+  * Anmeldung mit Admin/Start1234
+
+===== Erste Anmeldung =====
+
+**1. Nach der Installation automatische Anmeldung oder:**
+<code>
+Benutzername: Admin
+Passwort: Start1234
+</code>
+
+**2. Willkommens-Tour (optional):**
+  * Sie können die Tour durchgehen oder überspringen
+  * Alle Features werden später erklärt
+
+**3. Desktop und Mobile Apps:**
+  * Überspringen Sie vorerst die App-Installation
+  * Focus liegt auf Server-Konfiguration
+
+===== Erste Sicherheitsüberprüfung =====
+
+**Administrations-Einstellungen aufrufen:**
+  1. Rechts oben auf Benutzer-Avatar klicken
+  2. "Einstellungen" auswählen
+  3. Links im Menü "Verwaltung" → "Übersicht"
+
+**Typische Warnungen beim ersten Start:**
+
+<WRAP center round important 80%>
+**⚠️ Erwartete Sicherheitswarnungen:**
+
+Diese Warnungen sind normal und werden in den nächsten Lektionen behoben:
+
+  * **HTTP anstatt HTTPS** - Sicherheitsproblem
+  * **PHP-Speicherlimit** - Performance-Problem  
+  * **Caching nicht konfiguriert** - Performance-Problem
+  * **Fehlende PHP-Module** - Funktionalitätsprobleme
+  * **Well-known URLs** - Kompatibilitätsproblem
+
+**➡️ Diese werden in Lektion 04 (Optimierung) behandelt.**
+</WRAP>
+
+===== Grundlegende Konfiguration =====
+
+**1. Grundeinstellungen anpassen:**
+
+Gehen Sie zu: **Einstellungen** → **Verwaltung** → **Grundeinstellungen**
+
+**Email-Server (optional für Schulung):**
+  * Vorerst leer lassen
+  * In Produktionsumgebungen: SMTP-Server konfigurieren
+
+**Telefonregion einstellen:**
+  * **Standard-Telefonregion:** DE (Deutschland)
+  * Für andere Länder entsprechenden ISO-Code verwenden
+
+**2. Benutzer-Standardeinstellungen:**
+
+Gehen Sie zu: **Einstellungen** → **Verwaltung** → **Benutzer**
+
+**Standard-Gruppe:** Belassen auf "users"
+**Standard-Speicherkontingent:** Vorerst "Unbegrenzt" für Schulung
+
+===== Grundlegende Apps aktivieren =====
+
+**Empfohlene Apps für den Workshop:**
+
+Gehen Sie zu: **Einstellungen** → **Apps**
+
+**Bereits aktiviert (Standard):**
+  * Files (Dateien)
+  * Activity (Aktivitäten)
+  * Photos (Fotos)
+  * Text (Text-Editor)
+
+**Zusätzlich aktivieren (empfohlen):**
+  * Calendar (Kalender)
+  * Contacts (Kontakte)
+  * Notes (Notizen)
+
+**Apps deaktivieren (optional, für bessere Performance):**
+  * Talk (Video-Chat) - ressourcenintensiv
+  * Office Apps - benötigen zusätzliche Server
+
+===== Test-Benutzer erstellen =====
+
+**Für Workshop-Zwecke einen Test-Benutzer anlegen:**
+
+Gehen Sie zu: **Einstellungen** → **Verwaltung** → **Benutzer**
+
+**Neuen Benutzer hinzufügen:**
+^ Feld ^ Wert ^
+| **Benutzername** | testuser |
+| **Anzeigename** | Test User |
+| **Passwort** | test123 |
+| **Gruppe** | users |
+| **Speicherkontingent** | 1 GB |
+
+===== Erste Funktionalitätstests =====
+
+**1. Datei-Upload testen:**
+  * Gehen Sie zu "Dateien"
+  * Laden Sie eine kleine Testdatei hoch
+  * Überprüfen Sie ob Upload funktioniert
+
+**2. Ordner erstellen:**
+  * Erstellen Sie einen neuen Ordner "Workshop"
+  * Überprüfen Sie Berechtigungen
+
+**3. Teilen testen:**
+  * Klicken Sie auf eine Datei
+  * Testen Sie die Teilen-Funktion
+  * Erstellen Sie einen öffentlichen Link
+
+**4. Mit Test-Benutzer anmelden:**
+  * Abmelden vom Admin-Account
+  * Anmelden als "testuser" / "test123"
+  * Grundfunktionen testen
+  * Wieder als Admin anmelden
+
+===== Backup der Konfiguration =====
+
+**Wichtige Dateien sichern:**
+<code>
+# Nextcloud-Konfiguration
+sudo cp /var/www/html/nextcloud/config/config.php /home/backup-config.php
+
+# Datenbank sichern
+mysqldump -u nc_user -p nextcloud > /home/backup-nextcloud.sql
+# Passwort: nc_pass
+
+# Berechtigungen prüfen
+ls -la /var/www/html/nextcloud/config/config.php
+</code>
+
+===== Häufige Setup-Probleme =====
+
+**Problem 1: "Internal Server Error" beim Setup**
+<code>
+# Apache-Logs prüfen:
+sudo tail -f /var/log/apache2/error.log
+
+# Häufige Ursachen:
+# - Falsche Berechtigungen
+# - PHP-Fehler
+# - Datenbank-Verbindung fehlgeschlagen
+</code>
+
+**Lösung - Berechtigungen korrigieren:**
+<code>
+sudo chown -R www-data:www-data /var/www/html/nextcloud/
+sudo chmod -R 755 /var/www/html/nextcloud/
+sudo systemctl restart apache2
+</code>
+
+**Problem 2: Datenbank-Verbindung fehlgeschlagen**
+<code>
+# Datenbank-Zugang testen:
+mysql -u nc_user -p nextcloud
+# Passwort: nc_pass
+
+# Falls Fehler: Benutzer-Rechte prüfen
+mysql -u root -p
+SHOW GRANTS FOR 'nc_user'@'localhost';
+</code>
+
+**Problem 3: Setup-Seite lädt nicht**
+<code>
+# Webserver-Status prüfen:
+sudo systemctl status apache2
+
+# Nextcloud-Dateien prüfen:
+ls -la /var/www/html/nextcloud/index.php
+
+# Curl-Test:
+curl -v http://localhost/nextcloud/
+</code>
+
+**Problem 4: PHP-Fehler im Setup**
+<code>
+# PHP-Fehlerlog prüfen:
+sudo tail -f /var/log/apache2/error.log
+
+# PHP-Konfiguration prüfen:
+php --ini
+
+# Module prüfen:
+php -m | grep -E "(mysql|xml|gd|curl)"
+</code>
+
+===== Konfigurationsdatei verstehen =====
+
+**Nach dem Setup: config.php prüfen**
+<code>
+sudo cat /var/www/html/nextcloud/config/config.php
+</code>
+
+**Wichtige Konfigurationsparameter:**
+<code>
+<?php
+$CONFIG = array (
+  'instanceid' => 'abc123def456',           // Eindeutige Instanz-ID
+  'passwordsalt' => 'xyz789...',            // Passwort-Salt
+  'secret' => 'secret123...',               // Geheimer Schlüssel
+  'trusted_domains' => array (              // Erlaubte Domains
+    0 => 'localhost',
+    1 => '192.168.1.100',
+  ),
+  'datadirectory' => '/var/www/html/nextcloud/data',  // Datenverzeichnis
+  'dbtype' => 'mysql',                      // Datenbank-Typ
+  'version' => '30.0.2.1',                 // Nextcloud-Version
+  'overwrite.cli.url' => 'http://localhost/nextcloud',  // CLI-URL
+  'dbname' => 'nextcloud',                 // Datenbank-Name
+  'dbhost' => 'localhost',                 // Datenbank-Host
+  'dbuser' => 'nc_user',                   // Datenbank-Benutzer
+  'dbpassword' => 'nc_pass',               // Datenbank-Passwort
+  'installed' => true,                     // Installation abgeschlossen
+);
+</code>
+
+===== Checkliste Web-Setup =====
+
+**Nach dem Setup prüfen:**
+
+  * ☐ Nextcloud lädt ohne Fehler (`http://[SERVER-IP]/nextcloud`)
+  * ☐ Admin-Anmeldung funktioniert (Admin/Start1234)
+  * ☐ Datenbank-Verbindung ist hergestellt
+  * ☐ Dateien können hochgeladen werden
+  * ☐ Test-Benutzer wurde erstellt und funktioniert
+  * ☐ Grundlegende Apps sind aktiviert
+  * ☐ Konfigurationsdatei ist erstellt (`config.php`)
+  * ☐ Administrations-Übersicht zeigt Status an
+  * ☐ Backup der Konfiguration wurde erstellt
+
+===== Weiter zur Optimierung =====
+
+**🎉 Grundkonfiguration abgeschlossen!**
+
+Nextcloud ist jetzt funktionsfähig, aber noch nicht optimiert. Die Administrations-Übersicht zeigt wahrscheinlich mehrere Warnungen.
+
+👉 **[[aufgaben:nextcloud_2:04-optimierung|04 - Performance-Optimierung und Fehlerbehebung]]**
+
+**In der nächsten Lektion werden wir:**
+  * Alle Sicherheitswarnungen beheben
+  * Performance-Optimierungen durchführen
+  * Caching konfigurieren
+  * PHP und Apache fine-tunen
+  * Wartungsfenster einrichten
+
+===== Zusätzliche Tests =====
+
+**Erweiterte Funktionalitätstests:**
+<code>
+# Nextcloud-Kommandozeilen-Tool (OCC) testen:
+cd /var/www/html/nextcloud
+sudo -u www-data php occ check
+
+# Status prüfen:
+sudo -u www-data php occ status
+
+# Benutzer auflisten:
+sudo -u www-data php occ user:list
+</code>
+
+**Browser-Tests:**
+  * Upload großer Dateien (>10MB)
+  * Ordner-Navigation
+  * Datei-Vorschau (Bilder, PDFs)
+  * Teilen-Funktionalität
+  * Mobile-responsive Design testen
+
+**Netzwerk-Tests (falls mehrere Rechner verfügbar):**
+  * Zugriff von anderem Computer im Netzwerk
+  * Gleichzeitige Anmeldung mehrerer Benutzer
+  * Datei-Synchronisation testen

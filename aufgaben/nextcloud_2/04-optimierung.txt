@@ -1,0 +1,481 @@
+====== 04 - Performance-Optimierung und Fehlerbehebung ======
+
+===== Lernziele =====
+
+Nach dieser Lektion haben Sie:
+  * Alle Sicherheitswarnungen in der Nextcloud-Übersicht behoben
+  * Performance-Optimierungen durch Caching implementiert
+  * PHP und Apache für optimale Leistung konfiguriert
+  * Wartungsfenster und automatische Aufgaben eingerichtet
+
+===== Übersicht der Optimierungen =====
+
+**Typische Warnungen nach der Grundinstallation:**
+  1. **HTTP statt HTTPS** - Sicherheitsproblem
+  2. **PHP-Speicherlimit zu niedrig** - Performance-Problem
+  3. **Fehlende Caching-Konfiguration** - Performance-Problem
+  4. **Well-known URLs nicht konfiguriert** - Kompatibilitätsproblem
+  5. **Fehlende PHP-Module** - Funktionalitätsprobleme
+  6. **Wartungsfenster nicht konfiguriert** - Verwaltungsproblem
+
+===== Aktuelle Probleme identifizieren =====
+
+**1. Nextcloud-Administrations-Übersicht öffnen:**
+  * Als Admin anmelden
+  * **Einstellungen** → **Verwaltung** → **Übersicht**
+
+**2. Setup-Check über Kommandozeile:**
+<code>
+cd /var/www/html/nextcloud
+sudo -u www-data php occ check
+sudo -u www-data php occ setupchecks
+</code>
+
+===== 1. PHP-Optimierungen =====
+
+**PHP-Speicherlimit und Performance-Einstellungen:**
+<code>
+sudo nano /etc/php/8.3/apache2/php.ini
+</code>
+
+**Wichtige Anpassungen:**
+<code>
+# Speicher-Einstellungen (um Zeile 409)
+memory_limit = 1024M
+
+# Upload-Einstellungen (um Zeile 845)
+upload_max_filesize = 1G
+post_max_size = 1G
+max_file_uploads = 100
+
+# Zeitlimits (um Zeile 369)
+max_execution_time = 300
+max_input_time = 300
+
+# Output Buffering (um Zeile 226)
+output_buffering = Off
+
+# Session-Einstellungen (um Zeile 1430)
+session.gc_maxlifetime = 7200
+
+# OPcache-Optimierungen (am Ende der Datei hinzufügen)
+[opcache]
+opcache.enable=1
+opcache.enable_cli=1
+opcache.interned_strings_buffer=16
+opcache.max_accelerated_files=10000
+opcache.memory_consumption=128
+opcache.save_comments=1
+opcache.revalidate_freq=1
+opcache.validate_timestamps=1
+</code>
+
+**CLI-PHP auch optimieren:**
+<code>
+sudo nano /etc/php/8.3/cli/php.ini
+</code>
+
+**Gleiche memory_limit Einstellung:**
+<code>
+memory_limit = 1024M
+</code>
+
+===== 2. APCu-Caching konfigurieren =====
+
+**APCu-Konfiguration optimieren:**
+<code>
+sudo nano /etc/php/8.3/mods-available/apcu.ini
+</code>
+
+**Optimierte APCu-Konfiguration:**
+<code>
+extension=apcu.so
+apc.enabled=1
+apc.enable_cli=1
+apc.shm_size=64M
+apc.num_files_hint=7000
+apc.user_entries_hint=4096
+apc.ttl=7200
+apc.user_ttl=7200
+apc.gc_ttl=3600
+apc.max_file_size=1M
+apc.stat=1
+</code>
+
+===== 3. Redis-Caching konfigurieren =====
+
+**Redis-Server für www-data-Gruppe zugänglich machen:**
+<code>
+sudo usermod -a -G redis www-data
+</code>
+
+**Redis-Konfiguration prüfen:**
+<code>
+sudo systemctl status redis-server
+redis-cli ping  # Sollte "PONG" zurückgeben
+</code>
+
+**Nextcloud-Konfiguration für Redis erweitern:**
+<code>
+sudo nano /var/www/html/nextcloud/config/config.php
+</code>
+
+**Redis-Konfiguration hinzufügen (vor der schließenden Klammer):**
+<code>
+  // Caching-Konfiguration
+  'memcache.local' => '\\OC\\Memcache\\APCu',
+  'memcache.locking' => '\\OC\\Memcache\\Redis',
+  'redis' => [
+    'host' => 'localhost',
+    'port' => 6379,
+    'timeout' => 0.0,
+    'password' => '',
+  ],
+</code>
+
+===== 4. Wartungsfenster konfigurieren =====
+
+**Wartungsfenster in Nextcloud-Konfiguration hinzufügen:**
+<code>
+sudo nano /var/www/html/nextcloud/config/config.php
+</code>
+
+**Wartungsfenster-Einstellung hinzufügen:**
+<code>
+  // Wartungsfenster (1 = 01:00 Uhr nachts)
+  'maintenance_window_start' => 1,
+</code>
+
+===== 5. Standard-Telefonregion festlegen =====
+
+**Telefonregion in Konfiguration hinzufügen:**
+<code>
+sudo nano /var/www/html/nextcloud/config/config.php
+</code>
+
+**Region hinzufügen:**
+<code>
+  // Standard-Telefonregion für Deutschland
+  'default_phone_region' => 'DE',
+</code>
+
+===== 6. Apache-Optimierungen =====
+
+**Apache-Module aktivieren:**
+<code>
+sudo a2enmod headers rewrite env dir mime setenvif expires
+</code>
+
+**Apache-Konfiguration bereits in Lektion 02 optimiert, prüfen:**
+<code>
+sudo nano /etc/apache2/sites-available/000-default.conf
+</code>
+
+**Zusätzliche Performance-Einstellungen (optional):**
+<code>
+sudo nano /etc/apache2/apache2.conf
+</code>
+
+**Am Ende hinzufügen:**
+<code>
+# Performance-Optimierungen
+KeepAlive On
+MaxKeepAliveRequests 100
+KeepAliveTimeout 5
+
+# Gzip-Kompression
+LoadModule deflate_module modules/mod_deflate.so
+<Location />
+    SetOutputFilter DEFLATE
+    SetEnvIfNoCase Request_URI \
+        \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+    SetEnvIfNoCase Request_URI \
+        \.(?:exe|t?gz|zip|bz2|sit|rar)$ no-gzip dont-vary
+</Location>
+</code>
+
+===== 7. Fehlende PHP-Module installieren =====
+
+**Alle empfohlenen Module installieren:**
+<code>
+sudo apt install -y php-intl php-bcmath php-gmp php-imagick libmagickcore-6.q16-6-extra
+</code>
+
+**Imagick für SVG-Unterstützung konfigurieren:**
+<code>
+# Imagick-Richtlinien prüfen:
+sudo nano /etc/ImageMagick-6/policy.xml
+</code>
+
+**SVG-Unterstützung aktivieren (Zeile finden und ändern):**
+<code>
+<!-- Alte Zeile: -->
+<policy domain="coder" rights="none" pattern="SVG" />
+
+<!-- Neue Zeile: -->
+<policy domain="coder" rights="read|write" pattern="SVG" />
+</code>
+
+===== 8. OCC-Befehle für Optimierung =====
+
+**Datenbank-Indizes hinzufügen:**
+<code>
+cd /var/www/html/nextcloud
+sudo -u www-data php occ db:add-missing-indices
+</code>
+
+**Mimetype-Migrationen durchführen:**
+<code>
+sudo -u www-data php occ maintenance:repair --include-expensive
+</code>
+
+**Datei-Scan durchführen:**
+<code>
+sudo -u www-data php occ files:scan --all
+</code>
+
+===== 9. Services neustarten =====
+
+**Alle Services nach Konfigurationsänderungen neustarten:**
+<code>
+sudo systemctl restart apache2
+sudo systemctl restart redis-server
+sudo systemctl restart mariadb
+
+# PHP-FPM falls verwendet:
+# sudo systemctl restart php8.3-fpm
+</code>
+
+**Service-Status prüfen:**
+<code>
+sudo systemctl status apache2
+sudo systemctl status redis-server
+sudo systemctl status mariadb
+</code>
+
+===== 10. Optimierungen verifizieren =====
+
+**1. Nextcloud-Übersicht erneut prüfen:**
+  * Als Admin anmelden
+  * **Einstellungen** → **Verwaltung** → **Übersicht**
+  * Warnungen sollten deutlich reduziert sein
+
+**2. OCC-Checks durchführen:**
+<code>
+cd /var/www/html/nextcloud
+sudo -u www-data php occ check
+sudo -u www-data php occ setupchecks
+</code>
+
+**3. Cache-Status prüfen:**
+<code>
+# APCu-Status:
+sudo -u www-data php occ config:list | grep memcache
+
+# Redis-Status:
+redis-cli info memory
+</code>
+
+===== 11. Performance-Tests =====
+
+**Upload-Geschwindigkeit testen:**
+  * Große Datei (>100MB) hochladen
+  * Zeit messen und mit vorherigen Tests vergleichen
+
+**Seiten-Ladezeiten messen:**
+<code>
+# Curl-Performance-Test:
+curl -w "Zeit: %{time_total}s\n" -o /dev/null -s http://localhost/nextcloud/
+
+# Apache Benchmark (falls installiert):
+ab -n 100 -c 10 http://localhost/nextcloud/
+</code>
+
+**Speicherverbrauch überwachen:**
+<code>
+# Während der Nutzung:
+htop
+free -h
+</code>
+
+===== Erweiterte Konfiguration =====
+
+**Komplette optimierte config.php Beispiel:**
+<code>
+sudo nano /var/www/html/nextcloud/config/config.php
+</code>
+
+**Beispiel einer optimierten Konfiguration:**
+<code>
+<?php
+$CONFIG = array (
+  'instanceid' => 'abc123def456',
+  'passwordsalt' => 'xyz789...',
+  'secret' => 'secret123...',
+  'trusted_domains' => array (
+    0 => 'localhost',
+    1 => '192.168.1.100',
+  ),
+  'datadirectory' => '/var/www/html/nextcloud/data',
+  'dbtype' => 'mysql',
+  'version' => '30.0.2.1',
+  'overwrite.cli.url' => 'http://localhost/nextcloud',
+  'dbname' => 'nextcloud',
+  'dbhost' => 'localhost',
+  'dbuser' => 'nc_user',
+  'dbpassword' => 'nc_pass',
+  'installed' => true,
+  
+  // Optimierungen:
+  'default_phone_region' => 'DE',
+  'maintenance_window_start' => 1,
+  'memcache.local' => '\\OC\\Memcache\\APCu',
+  'memcache.locking' => '\\OC\\Memcache\\Redis',
+  'redis' => array (
+    'host' => 'localhost',
+    'port' => 6379,
+    'timeout' => 0.0,
+    'password' => '',
+  ),
+  
+  // Performance-Einstellungen:
+  'htaccess.RewriteBase' => '/nextcloud',
+  'log_type' => 'file',
+  'loglevel' => 2,
+  'log_rotate_size' => 104857600,
+  'enable_previews' => true,
+  'enabledPreviewProviders' => array (
+    'OC\\Preview\\PNG',
+    'OC\\Preview\\JPEG',
+    'OC\\Preview\\GIF',
+    'OC\\Preview\\BMP',
+    'OC\\Preview\\XBitmap',
+    'OC\\Preview\\MP3',
+    'OC\\Preview\\TXT',
+    'OC\\Preview\\MarkDown',
+  ),
+  
+  // Sicherheitseinstellungen:
+  'overwriteprotocol' => 'http',
+  'check_for_working_wellknown_setup' => false,
+  'trusted_proxies' => array(),
+  'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
+);
+</code>
+
+===== Häufige Optimierungsprobleme =====
+
+**Problem 1: APCu funktioniert nicht**
+<code>
+# APCu-Status prüfen:
+php -m | grep apcu
+
+# Falls nicht geladen:
+sudo phpenmod apcu
+sudo systemctl restart apache2
+</code>
+
+**Problem 2: Redis-Verbindung fehlgeschlagen**
+<code>
+# Redis-Status prüfen:
+sudo systemctl status redis-server
+
+# Verbindung testen:
+redis-cli ping
+
+# Logs prüfen:
+sudo tail -f /var/log/redis/redis-server.log
+</code>
+
+**Problem 3: Wartungsmodus aktiviert sich**
+<code>
+# Wartungsmodus deaktivieren:
+sudo -u www-data php occ maintenance:mode --off
+
+# Status prüfen:
+sudo -u www-data php occ status
+</code>
+
+**Problem 4: OCC-Befehle funktionieren nicht**
+<code>
+# Berechtigungen prüfen:
+ls -la /var/www/html/nextcloud/occ
+
+# Falls nötig korrigieren:
+sudo chmod +x /var/www/html/nextcloud/occ
+sudo chown www-data:www-data /var/www/html/nextcloud/occ
+</code>
+
+===== Monitoring und Logging =====
+
+**Log-Dateien für Performance-Monitoring:**
+<code>
+# Nextcloud-Logs:
+sudo tail -f /var/www/html/nextcloud/data/nextcloud.log
+
+# Apache-Performance:
+sudo tail -f /var/log/apache2/access.log
+
+# System-Resources:
+watch -n 1 'free -h && echo "---" && df -h /'
+</code>
+
+**Performance-Metriken sammeln:**
+<code>
+# Nextcloud-Status:
+sudo -u www-data php occ status
+
+# Datenbank-Performance:
+mysql -u nc_user -p -e "SHOW PROCESSLIST;" nextcloud
+
+# Redis-Statistiken:
+redis-cli info stats
+</code>
+
+===== Checkliste Optimierung =====
+
+**Nach der Optimierung prüfen:**
+
+  * ☐ PHP memory_limit auf 1024M erhöht
+  * ☐ APCu-Caching konfiguriert und aktiv
+  * ☐ Redis-Caching für Locking konfiguriert
+  * ☐ Wartungsfenster eingerichtet (01:00 Uhr)
+  * ☐ Standard-Telefonregion (DE) gesetzt
+  * ☐ Alle empfohlenen PHP-Module installiert
+  * ☐ Datenbank-Indizes hinzugefügt
+  * ☐ Mimetype-Migrationen durchgeführt
+  * ☐ Apache-Performance-Module aktiviert
+  * ☐ Services erfolgreich neugestartet
+  * ☐ Administrations-Übersicht zeigt weniger/keine Warnungen
+  * ☐ Performance-Tests zeigen Verbesserung
+
+===== Weiter zur Wartung =====
+
+**🚀 Performance-Optimierung abgeschlossen!**
+
+Ihre Nextcloud-Installation ist jetzt optimiert und sollte deutlich bessere Performance zeigen. Die meisten Sicherheitswarnungen sollten behoben sein.
+
+👉 **[[aufgaben:nextcloud_2:05-wartung|05 - Wartung, Updates und Backup]]**
+
+**In der nächsten Lektion lernen Sie:**
+  * Automatische Wartungsaufgaben einrichten
+  * Backup-Strategien implementieren
+  * Update-Prozesse durchführen
+  * Monitoring und Log-Management
+  * Datenbank-Wartung
+
+===== Performance-Vergleich =====
+
+**Vor und nach der Optimierung messen:**
+
+**Messungen vor Optimierung:**
+  * Seiten-Ladezeit: ~2-4 Sekunden
+  * RAM-Verbrauch: ~200-400 MB
+  * Upload-Geschwindigkeit: Basis-Geschwindigkeit
+
+**Erwartete Verbesserungen nach Optimierung:**
+  * Seiten-Ladezeit: ~1-2 Sekunden (50% schneller)
+  * RAM-Verbrauch: Effizienter durch Caching
+  * Upload-Geschwindigkeit: Deutlich verbessert bei großen Dateien
+  * Weniger Datenbank-Abfragen durch APCu-Cache
+  * Bessere Concurrent-User-Performance
