@@ -1,0 +1,327 @@
+====== AWK - Übungen und Referenz ======
+
+**AWK** (Aho, Weinberger, Kernighan) - Mächtiges Werkzeug zum Manipulieren von Dateien und Reportgenerator.
+
+===== Beschreibung =====
+
+**AWK** ist ein vielseitiges Werkzeug für:
+  * **Feldweise Bearbeitung** von Dateien oder Strings (liest zeilenweise)
+  * **Suchen nach Text** mit vorgegebenen Mustern (reguläre Ausdrücke wie in grep)
+  * **Aktionen für gefundene Muster**
+
+**AWK kann folgende Operationen ausführen:**
+  * Ausgabe (print und printf)
+  * Ersetzen von Text
+  * Arithmetische Operationen: **+**, **-**, *****, **/**, **%**
+  * Mathematische Funktionen: **exp()**, **cos()**, **atan()**, **log()**, **sqrt()**
+  * String-Funktionen: **length()**, **split()**, **substr()**, **index()**
+  * Schleifen, bedingte Anweisungen, Variablen und andere Operationen
+
+===== Struktur des AWK-Programms =====
+
+<code>
+BEGIN { 
+    # Optional: Voreinstellungen und Startanweisungen
+}
+
+[Suchmuster] {
+    # Aktionen für jede Zeile
+}
+
+END { 
+    # Optional: Abschließende Anweisungen
+}
+</code>
+
+**Grundsyntax:**
+<code>
+awk 'BEGIN { Startanweisungen } [Suchmuster] { Aktionen } END { Endanweisungen }' [Eingabedatei(en)]
+</code>
+
+===== AWK-Variablen =====
+
+**Eingebaute Variablen:**
+^ Variable ^ Beschreibung ^
+| **$0** | Gesamte aktuelle Zeile |
+| **$1, $2, $n** | 1., 2., n-tes Feld (Spalte) |
+| **FS** | Field Separator (Feldtrennzeichen, Standard: Leerzeichen) |
+| **NF** | Number of Fields (Anzahl der Felder je Zeile) |
+| **NR** | Number of Records (aktuelle Zeilennummer) |
+| **RS** | Record Separator (Satztrennzeichen, Standard: Newline) |
+
+**Beispiel-Datenstruktur:**
+<code>
+Name      Ort        Telefon      Umsatz    Vorjahr
+Albers    Hamburg    040-213344   30000     20000
+Mayer     München    089-432678   60000     55000
+Huber     München    089-915530   25000     22000
+</code>
+
+===== Grundlegende Beispiele =====
+
+**Einfache Suche und Ausgabe:**
+<code>
+# Alle Zeilen mit "München" und Ausgabe des ersten Feldes
+awk '/München/ { print $1 }' statistik
+# Ausgabe:
+# Mayer
+# Huber
+</code>
+
+**Field Separator setzen:**
+<code>
+# /etc/passwd durchsuchen (Feldtrenner: Doppelpunkt)
+sort /etc/passwd | awk '
+BEGIN {
+    FS=":"
+}
+{
+    print $1, $4, $5
+}
+'
+</code>
+
+===== Formatierte Ausgabe mit printf =====
+
+**Printf-Syntax:**
+<code>
+printf ("Formatstring", wert1, wert2, ...)
+printf ("%-20s %10.2f\n", $7, $3/1000)
+</code>
+
+**Format-Kennzeichen:**
+^ Format ^ Bedeutung ^
+| **%s** | String |
+| **%d** | Ganzahl (decimal) |
+| **%f** | Gleitkommazahl |
+| **%-20s** | Linksbündig, 20 Zeichen breit |
+| **%10.2f** | 10 Zeichen breit, 2 Nachkommastellen |
+| **\n** | Zeilenumbruch |
+| **\t** | Tabulator |
+
+===== Eigene Variablen erstellen =====
+
+**Beispiel: Disk-Free in MegaBytes:**
+<code>
+#!/bin/bash
+# Disk-Free Anzeige in MegaBytes
+df -k | tail -n +2 | awk '
+BEGIN {
+    print "_________________________________________"
+    printf ("%-20s %10s\n","Dateisystem","Frei (MB)")
+    freie_bytes = 0
+    insgesamt = 0
+}
+{
+    freie_bytes = $4/1024
+    insgesamt += freie_bytes
+    printf("%-20s %10.2f\n", $6, freie_bytes)
+}
+END {
+    print "_________________________________________"
+    printf ("%-20s %10.2f\n", "Summe:", insgesamt)
+}
+'
+</code>
+
+===== AWK-Konstanten =====
+
+**Numerische Konstanten:**
+  * **Ganze Zahlen**: 127, -42
+  * **Gleitpunktzahlen**: 1.2, .3, 23e2, -1.5e-3
+
+**Text-Konstanten:**
+  * **Strings**: "Text in Anführungszeichen"
+  * **Escape-Sequenzen**: 
+    * **\"** - Anführungszeichen im Text
+    * **\n** - Neue Zeile
+    * **\t** - Tabulator
+    * **\\** - Backslash
+
+===== AWK-Ausdrücke und Operatoren =====
+
+**Arithmetische Operatoren:**
+<code>
++, -, *, /, % (Modulo)
+</code>
+
+**Text-Verkettung:**
+<code>
+"30 °" " Celsius"    # Ergebnis: "30 ° Celsius"
+</code>
+
+**Vergleichsoperatoren:**
+<code>
+<, <=, ==, !=, >=, >
+</code>
+
+**Logische Operatoren:**
+<code>
+&&    # UND
+||    # ODER  
+!     # Negation
+</code>
+
+**Pattern-Matching:**
+<code>
+~     # "ist enthalten in"
+!~    # "ist nicht enthalten in"
+</code>
+
+===== Erweiterte Zuweisungsoperatoren =====
+
+^ Operator ^ Bedeutung ^
+| **variable += ausdruck** | variable = variable + ausdruck |
+| **variable -= ausdruck** | variable = variable - ausdruck |
+| **variable *= ausdruck** | variable = variable * ausdruck |
+| **variable /= ausdruck** | variable = variable / ausdruck |
+| **variable++** | variable = variable + 1 (Post-Increment) |
+| **++variable** | variable = variable + 1 (Pre-Increment) |
+| **variable--** | variable = variable - 1 (Post-Decrement) |
+| **--variable** | variable = variable - 1 (Pre-Decrement) |
+
+===== Kontrollstrukturen =====
+
+**Bedingte Anweisungen:**
+<code>
+if (bedingung) anweisung_1
+if (bedingung) { anweisung_1; anweisung_2 }
+if (bedingung) anweisung_1 else anweisung_2
+</code>
+
+**Schleifen:**
+<code>
+while (bedingung) anweisung
+for (ausdruck_1; bedingung; ausdruck_2) anweisung
+for (variable in array) anweisung
+</code>
+
+**Sprungbefehle:**
+  * **break** - Beendet for- oder while-Schleife
+  * **continue** - Springt zum Ende der Schleife
+  * **next** - Überspringt Rest der aktuellen Zeile, geht zur nächsten
+  * **exit** - Beendet AWK (END-Block wird noch ausgeführt)
+  * **return** - Rücksprung aus Funktion
+
+===== Wichtige AWK-Funktionen =====
+
+**String-Funktionen:**
+^ Funktion ^ Beschreibung ^
+| **gsub(ra, neu, text)** | Globale Ersetzung: Ersetzt alle Vorkommen von "ra" durch "neu" in "text" |
+| **sub(ra, neu, text)** | Ersetzt nur das erste Vorkommen von "ra" durch "neu" in "text" |
+| **index(t1, t2)** | Sucht "t2" in "t1", gibt Position zurück (0 wenn nicht gefunden) |
+| **length(ausdruck)** | Gibt Anzahl der Zeichen zurück |
+| **split(text, array, trenn)** | Teilt "text" am "trenn"-Zeichen und speichert in "array" |
+| **match(text, regex)** | Sucht "regex" in "text", gibt Position zurück |
+| **substr(text, start, länge)** | Extrahiert Teilstring ab Position "start" mit "länge" Zeichen |
+| **substr(text, start)** | Extrahiert Teilstring ab Position "start" bis Ende |
+
+===== Praktische Beispiele =====
+
+**1. Verzeichnisse aus ls -l anzeigen:**
+<code>
+ls -l | awk '/^d/ {print $9, $1}'
+</code>
+
+**2. Text zwischen Markierungen extrahieren:**
+<code>
+awk '/Anfang/,/Ende/' datei.txt
+</code>
+
+**3. Zeilen mit Zahlen am Anfang:**
+<code>
+awk '/^[0-9]+/ {print $1}' datei.txt
+</code>
+
+**4. Adressen aus München zählen:**
+<code>
+awk '
+/München/ { count++ }
+END { 
+    print "Anzahl der Münchner:", count 
+}
+' statistik
+</code>
+
+**5. Leerzeilen zählen:**
+<code>
+awk '
+BEGIN { N = 0 }
+{ 
+    if (length == 0) N++ 
+}
+END { 
+    print "Anzahl Leerzeilen:", N 
+} 
+' text.dat
+</code>
+
+**6. Erweiterte Disk-Free-Anzeige mit Warnung:**
+<code>
+#!/bin/bash
+df -k | tail -n +2 | awk '
+BEGIN {
+    print "-----------------------------------------"
+    printf ("%-20s %10s\n", "Dateisystem:", "MB Frei:")
+    print "-----------------------------------------"
+    freie_bytes = 0
+    summe = 0
+}
+{
+    freie_bytes = $4/1024
+    summe += freie_bytes
+    if (freie_bytes < 10)
+        printf("%-20s %10.2f *** ACHTUNG\n", $6, freie_bytes)
+    else
+        printf("%-20s %10.2f\n", $6, freie_bytes)
+}
+END {
+    print "------------------------------------------"
+    printf("%-20s %10.2f\n", "Summe:", summe)
+}
+'
+</code>
+
+===== Übungsaufgaben =====
+
+**Aufgabe 1: Benutzer-Statistik**
+Erstellen Sie ein AWK-Script, das aus /etc/passwd alle Benutzer mit einer UID >= 1000 anzeigt.
+
+**Aufgabe 2: Log-Analyse**
+Analysieren Sie eine Apache-Access-Log und geben Sie die häufigsten IP-Adressen aus.
+
+**Aufgabe 3: CSV-Verarbeitung**
+Verarbeiten Sie eine CSV-Datei und berechnen Sie Summen für numerische Spalten.
+
+**Aufgabe 4: Textformatierung**
+Formatieren Sie eine Textdatei so um, dass alle Zeilen genau 80 Zeichen lang sind.
+
+===== Tipps und Tricks =====
+
+  * **AWK automatisch numerisch**: AWK konvertiert Strings automatisch zu Zahlen wenn nötig
+  * **Reguläre Ausdrücke**: AWK unterstützt erweiterte reguläre Ausdrücke
+  * **Arrays**: AWK hat assoziative Arrays (keine Deklaration nötig)
+  * **Mehrere Dateien**: AWK kann mehrere Eingabedateien gleichzeitig verarbeiten
+  * **FILENAME**: Variable enthält Namen der aktuellen Eingabedatei
+
+===== Verwandte Befehle =====
+
+  * **sed** - Stream Editor für einfache Textmanipulation
+  * **grep** - Pattern-Matching und Suche
+  * **cut** - Spalten aus Dateien extrahieren
+  * **sort** - Zeilen sortieren
+  * **uniq** - Doppelte Zeilen entfernen
+
+===== Literatur und Referenzen =====
+
+  * **sed & awk** - Dale Dougherty, O'Reilly Verlag, ISBN 0-937175-59-6
+  * **UNIX** - J. Gulbins, K. Obermayr, Springer, ISBN 3-540-58864-7
+  * **man awk** - Manual-Seite für AWK
+  * **info gawk** - GNU AWK Dokumentation
+
+===== Siehe auch =====
+
+  * **man awk** - AWK Manual-Seite
+  * **info gawk** - GNU AWK Info-Seiten
+  * [[anhang:linux:befehle:grep|grep]] - Pattern-Matching
+  * [[anhang:linux:befehle:sed|sed]] - Stream Editor
